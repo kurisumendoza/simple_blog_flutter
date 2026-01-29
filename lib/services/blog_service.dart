@@ -1,8 +1,11 @@
+import 'package:simple_blog_flutter/models/blog.dart';
 import 'package:simple_blog_flutter/services/database_service.dart';
 
 class BlogService extends DatabaseService {
-  static Future<List<dynamic>> getBlogs() async {
+  // get all blogs
+  static Future<List<Blog>> getBlogs() async {
     final data = await DatabaseService.supabase.from('blogs').select();
-    return data;
+
+    return data.map<Blog>((d) => Blog.fromSupabase(d)).toList();
   }
 }
