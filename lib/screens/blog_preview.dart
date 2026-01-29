@@ -1,0 +1,27 @@
+import 'package:flutter/material.dart';
+import 'package:simple_blog_flutter/models/blog.dart';
+import 'package:simple_blog_flutter/services/blog_service.dart';
+
+class BlogPreview extends StatelessWidget {
+  const BlogPreview({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: BlogService.getBlogs(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        final List<Blog> blogs = snapshot.data!;
+        return ListView.builder(
+          itemCount: blogs.length,
+          itemBuilder: ((context, index) {
+            final Blog blog = blogs[index];
+            return ListTile(title: Text(blog.title));
+          }),
+        );
+      },
+    );
+  }
+}

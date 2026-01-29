@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:simple_blog_flutter/screens/blog_preview.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -13,7 +14,7 @@ class HomeScreen extends StatelessWidget {
       ),
       body: Container(
         padding: const EdgeInsets.all(16),
-        child: const Text('Home Screen'),
+        child: const BlogPreview(),
       ),
     );
   }
