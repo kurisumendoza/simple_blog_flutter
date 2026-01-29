@@ -22,11 +22,14 @@ class BlogScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (blog.imagePath != null)
-              Image.network(
-                BlogStorageService.getImageUrl(blog.imagePath!),
-                height: 350,
-                width: double.infinity,
-                fit: BoxFit.cover,
+              Hero(
+                tag: blog.id,
+                child: Image.network(
+                  BlogStorageService.getImageUrl(blog.imagePath!),
+                  height: 350,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
               ),
             SizedBox(height: 15),
             StyledHeading(blog.title, maxLines: 3),
