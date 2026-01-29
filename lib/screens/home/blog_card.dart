@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:simple_blog_flutter/models/blog.dart';
+import 'package:simple_blog_flutter/services/blog_storage_service.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
 
 class BlogCard extends StatelessWidget {
@@ -27,7 +28,19 @@ class BlogCard extends StatelessWidget {
               ],
             ),
             SizedBox(height: 10),
-            Row(children: [Expanded(child: StyledPreviewText(blog.body))]),
+            Row(
+              children: [
+                Expanded(child: StyledPreviewText(blog.body)),
+                SizedBox(width: 10),
+                if (blog.imagePath != null)
+                  Image.network(
+                    BlogStorageService.getImageUrl(blog.imagePath!),
+                    height: 75,
+                    width: 120,
+                    fit: BoxFit.cover,
+                  ),
+              ],
+            ),
           ],
         ),
       ),
