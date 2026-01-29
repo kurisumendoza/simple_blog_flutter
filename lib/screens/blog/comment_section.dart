@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:simple_blog_flutter/screens/blog/comment_form.dart';
+import 'package:simple_blog_flutter/screens/blog/comment_list.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
 import 'package:simple_blog_flutter/theme.dart';
 
 class CommentSection extends StatelessWidget {
-  const CommentSection({super.key});
+  const CommentSection({super.key, required this.blogId});
+
+  final int blogId;
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +21,8 @@ class CommentSection extends StatelessWidget {
           StyledHeading('Comments'),
           SizedBox(height: 20),
           CommentForm(),
+          SizedBox(height: 20),
+          CommentList(blogId: blogId),
         ],
       ),
     );

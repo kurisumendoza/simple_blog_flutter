@@ -44,7 +44,7 @@ class BlogScreen extends StatelessWidget {
             SizedBox(height: 15),
             StyledText(blog.body),
             SizedBox(height: 30),
-            CommentSection(),
+            CommentSection(blogId: blog.id),
           ],
         ),
       ),
