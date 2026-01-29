@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:simple_blog_flutter/models/blog.dart';
 import 'package:simple_blog_flutter/services/blog_storage_service.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
+import 'package:simple_blog_flutter/theme.dart';
 
 class BlogCard extends StatelessWidget {
   const BlogCard({super.key, required this.blog});
@@ -39,6 +40,26 @@ class BlogCard extends StatelessWidget {
                     width: 120,
                     fit: BoxFit.cover,
                   ),
+              ],
+            ),
+            SizedBox(height: 10),
+            Row(
+              children: [
+                Spacer(),
+                TextButton(
+                  onPressed: () {},
+                  child: Row(
+                    children: [
+                      StyledColoredText('Read More', color: AppColors.accent),
+                      SizedBox(width: 6),
+                      Icon(
+                        Icons.keyboard_double_arrow_right,
+                        color: AppColors.accent,
+                        size: 20,
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ],

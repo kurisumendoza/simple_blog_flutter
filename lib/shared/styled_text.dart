@@ -17,6 +17,24 @@ class StyledText extends StatelessWidget {
   }
 }
 
+class StyledColoredText extends StatelessWidget {
+  const StyledColoredText(this.text, {super.key, required this.color});
+
+  final String text;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: GoogleFonts.poppins(
+        textStyle: Theme.of(context).textTheme.bodyMedium,
+        color: color,
+      ),
+    );
+  }
+}
+
 // for blog body preview in blog card
 class StyledPreviewText extends StatelessWidget {
   const StyledPreviewText(this.text, {super.key});
