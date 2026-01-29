@@ -9,7 +9,23 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: StyledTitle('Blogs'), centerTitle: true),
-      body: Container(padding: const EdgeInsets.all(16), child: BlogList()),
+      body: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                StyledHeading('Hi, Guest'),
+                TextButton(onPressed: () {}, child: StyledHeading('Login')),
+              ],
+            ),
+            SizedBox(height: 10),
+            Expanded(child: BlogList()),
+            SizedBox(height: 10),
+          ],
+        ),
+      ),
     );
   }
 }
