@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:simple_blog_flutter/screens/home/blog_list.dart';
+import 'package:simple_blog_flutter/screens/home/page_indicator.dart';
 import 'package:simple_blog_flutter/services/blog_service.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
 
@@ -14,6 +15,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final _controller = PageController();
   final int _blogsPerPage = 5;
   late int _totalPages;
+  int _currentPage = 1;
 
   @override
   void initState() {
@@ -48,7 +50,11 @@ class _HomeScreenState extends State<HomeScreen> {
               child: PageView.builder(
                 itemCount: _totalPages,
                 controller: _controller,
+                onPageChanged: (index) {
+                  setState(() => _currentPage = index + 1);
+                },
                 itemBuilder: (context, index) {
+                  _currentPage = index + 1;
                   final start = index * _blogsPerPage;
                   final end = start + _blogsPerPage - 1;
 
@@ -62,6 +68,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
               ),
             ),
+            SizedBox(height: 20),
+            PageIndicator(currentPage: _currentPage, lastPage: _totalPages),
+            SizedBox(height: 30),
           ],
         ),
       ),
