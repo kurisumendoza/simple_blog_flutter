@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class Blog {
   final int id;
   final DateTime createdAt;
@@ -42,4 +44,7 @@ class Blog {
       imagePath: data['image_path'],
     );
   }
+
+  String get formattedDate => DateFormat.yMMMd().format(createdAt);
+  String get formattedTime => DateFormat.jm().format(createdAt);
 }

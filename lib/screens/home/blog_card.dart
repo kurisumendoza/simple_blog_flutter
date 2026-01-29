@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_blog_flutter/models/blog.dart';
 import 'package:simple_blog_flutter/screens/blog/blog_screen.dart';
@@ -11,8 +10,6 @@ class BlogCard extends StatelessWidget {
   const BlogCard({super.key, required this.blog});
 
   final Blog blog;
-  String get formattedDate => DateFormat.yMMMd().format(blog.createdAt);
-  String get formattedTime => DateFormat.jm().format(blog.createdAt);
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +25,7 @@ class BlogCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 StyledRichText(blog.user),
-                StyledSmallText('$formattedDate $formattedTime'),
+                StyledSmallText('${blog.formattedDate} ${blog.formattedTime}'),
               ],
             ),
             SizedBox(height: 10),

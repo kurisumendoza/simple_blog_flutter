@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_blog_flutter/models/blog.dart';
 import 'package:simple_blog_flutter/screens/blog/comment_section.dart';
@@ -12,9 +11,6 @@ class BlogScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final blog = Provider.of<Blog>(context, listen: false);
-
-    String formattedDate = DateFormat.yMMMd().format(blog.createdAt);
-    String formattedTime = DateFormat.jm().format(blog.createdAt);
 
     return Scaffold(
       appBar: AppBar(title: StyledTitle(blog.title), centerTitle: true),
@@ -40,7 +36,10 @@ class BlogScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 StyledRichText(blog.user, fontSize: 16),
-                StyledSmallText('$formattedDate $formattedTime', fontSize: 14),
+                StyledSmallText(
+                  '${blog.formattedDate} ${blog.formattedTime}',
+                  fontSize: 14,
+                ),
               ],
             ),
             SizedBox(height: 15),
