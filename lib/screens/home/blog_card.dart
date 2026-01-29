@@ -23,8 +23,9 @@ class BlogCard extends StatelessWidget {
             StyledHeading(blog.title, maxLines: 1),
             SizedBox(height: 5),
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Expanded(child: StyledRichText(blog.user)),
+                StyledRichText(blog.user),
                 StyledSmallText('$formattedDate $formattedTime'),
               ],
             ),
