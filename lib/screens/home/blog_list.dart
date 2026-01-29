@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:simple_blog_flutter/models/blog.dart';
 import 'package:simple_blog_flutter/services/blog_service.dart';
 
-class BlogPreview extends StatelessWidget {
-  const BlogPreview({super.key});
+class BlogList extends StatelessWidget {
+  const BlogList({super.key});
 
   @override
   Widget build(BuildContext context) {
