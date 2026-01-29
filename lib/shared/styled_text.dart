@@ -55,9 +55,10 @@ class StyledPreviewText extends StatelessWidget {
 }
 
 class StyledSmallText extends StatelessWidget {
-  const StyledSmallText(this.text, {super.key});
+  const StyledSmallText(this.text, {super.key, this.fontSize});
 
   final String text;
+  final double? fontSize;
 
   @override
   Widget build(BuildContext context) {
@@ -66,6 +67,7 @@ class StyledSmallText extends StatelessWidget {
       style: GoogleFonts.poppins(
         textStyle: Theme.of(context).textTheme.bodySmall,
         fontStyle: FontStyle.italic,
+        fontSize: fontSize ?? 12,
       ),
     );
   }
@@ -73,9 +75,10 @@ class StyledSmallText extends StatelessWidget {
 
 // for blog ownership
 class StyledRichText extends StatelessWidget {
-  const StyledRichText(this.text, {super.key});
+  const StyledRichText(this.text, {super.key, this.fontSize});
 
   final String text;
+  final double? fontSize;
 
   @override
   Widget build(BuildContext context) {
@@ -85,6 +88,7 @@ class StyledRichText extends StatelessWidget {
         style: GoogleFonts.poppins(
           textStyle: Theme.of(context).textTheme.bodySmall,
           fontStyle: FontStyle.italic,
+          fontSize: (fontSize ?? 14) - 2,
         ),
         children: <TextSpan>[
           TextSpan(
@@ -93,7 +97,7 @@ class StyledRichText extends StatelessWidget {
               textStyle: Theme.of(context).textTheme.bodySmall,
               fontWeight: FontWeight.bold,
               fontStyle: FontStyle.normal,
-              fontSize: 12,
+              fontSize: fontSize ?? 14,
             ),
           ),
         ],

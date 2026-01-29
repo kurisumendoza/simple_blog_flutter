@@ -20,7 +20,7 @@ ThemeData primaryTheme = ThemeData(
   ),
 
   textTheme: TextTheme(
-    bodySmall: TextStyle(color: AppColors.text, fontSize: 12, letterSpacing: 1),
+    bodySmall: TextStyle(color: AppColors.text, letterSpacing: 1),
     bodyMedium: TextStyle(
       color: AppColors.text,
       fontSize: 16,
