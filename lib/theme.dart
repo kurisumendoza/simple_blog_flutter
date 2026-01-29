@@ -28,7 +28,7 @@ ThemeData primaryTheme = ThemeData(
     ),
     headlineMedium: TextStyle(
       color: AppColors.text,
-      fontSize: 16,
+      fontSize: 18,
       fontWeight: FontWeight.bold,
       letterSpacing: 1,
     ),

@@ -55,11 +55,7 @@ class BlogCard extends StatelessWidget {
                     children: [
                       StyledColoredText('Read More', color: AppColors.accent),
                       SizedBox(width: 6),
-                      Icon(
-                        Icons.keyboard_double_arrow_right,
-                        color: AppColors.accent,
-                        size: 20,
-                      ),
+                      Icon(Icons.read_more, color: AppColors.accent, size: 25),
                     ],
                   ),
                 ),
