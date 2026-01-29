@@ -12,4 +12,11 @@ class BlogService extends DatabaseService {
 
     return data.map<Blog>((d) => Blog.fromSupabase(d)).toList();
   }
+
+  // get blogs total count
+  static Future<int> getBlogsCount() async {
+    final data = await DatabaseService.supabase.from('blogs').select().count();
+
+    return data.count;
+  }
 }
