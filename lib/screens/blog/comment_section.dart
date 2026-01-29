@@ -5,9 +5,7 @@ import 'package:simple_blog_flutter/shared/styled_text.dart';
 import 'package:simple_blog_flutter/theme.dart';
 
 class CommentSection extends StatelessWidget {
-  const CommentSection({super.key, required this.blogId});
-
-  final int blogId;
+  const CommentSection({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +20,7 @@ class CommentSection extends StatelessWidget {
           SizedBox(height: 20),
           CommentForm(),
           SizedBox(height: 20),
-          CommentList(blogId: blogId),
+          CommentList(),
         ],
       ),
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:simple_blog_flutter/models/blog.dart';
 import 'package:simple_blog_flutter/screens/blog/blog_screen.dart';
 import 'package:simple_blog_flutter/services/blog_storage_service.dart';
@@ -58,7 +59,8 @@ class BlogCard extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => BlogScreen(blog: blog),
+                        builder: (context) =>
+                            Provider.value(value: blog, child: BlogScreen()),
                       ),
                     );
                   },

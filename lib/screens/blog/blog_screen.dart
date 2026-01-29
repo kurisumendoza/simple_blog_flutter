@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:simple_blog_flutter/models/blog.dart';
 import 'package:simple_blog_flutter/screens/blog/comment_section.dart';
 import 'package:simple_blog_flutter/services/blog_storage_service.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
 
 class BlogScreen extends StatelessWidget {
-  const BlogScreen({super.key, required this.blog});
-
-  final Blog blog;
-  String get formattedDate => DateFormat.yMMMd().format(blog.createdAt);
-  String get formattedTime => DateFormat.jm().format(blog.createdAt);
+  const BlogScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final blog = Provider.of<Blog>(context, listen: false);
+
+    String formattedDate = DateFormat.yMMMd().format(blog.createdAt);
+    String formattedTime = DateFormat.jm().format(blog.createdAt);
+
     return Scaffold(
       appBar: AppBar(title: StyledTitle(blog.title), centerTitle: true),
       body: SingleChildScrollView(
@@ -44,7 +46,7 @@ class BlogScreen extends StatelessWidget {
             SizedBox(height: 15),
             StyledText(blog.body),
             SizedBox(height: 30),
-            CommentSection(blogId: blog.id),
+            CommentSection(),
           ],
         ),
       ),
