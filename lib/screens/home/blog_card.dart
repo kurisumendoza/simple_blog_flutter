@@ -31,16 +31,18 @@ class BlogCard extends StatelessWidget {
             ),
             SizedBox(height: 10),
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(child: StyledPreviewText(blog.body)),
-                SizedBox(width: 10),
-                if (blog.imagePath != null)
+                if (blog.imagePath != null) ...[
                   Image.network(
                     BlogStorageService.getImageUrl(blog.imagePath!),
-                    height: 75,
-                    width: 120,
+                    height: 100,
+                    width: 100,
                     fit: BoxFit.cover,
                   ),
+                  SizedBox(width: 15),
+                ],
+                Expanded(child: StyledPreviewText(blog.body)),
               ],
             ),
             SizedBox(height: 10),

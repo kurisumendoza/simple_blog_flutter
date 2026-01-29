@@ -45,7 +45,7 @@ class StyledPreviewText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text,
-      maxLines: 3,
+      maxLines: 4,
       overflow: TextOverflow.ellipsis,
       style: GoogleFonts.poppins(
         textStyle: Theme.of(context).textTheme.bodyMedium,
@@ -90,9 +90,10 @@ class StyledRichText extends StatelessWidget {
           TextSpan(
             text: text,
             style: GoogleFonts.poppins(
-              textStyle: Theme.of(context).textTheme.bodyMedium,
+              textStyle: Theme.of(context).textTheme.bodySmall,
               fontWeight: FontWeight.bold,
               fontStyle: FontStyle.normal,
+              fontSize: 12,
             ),
           ),
         ],
