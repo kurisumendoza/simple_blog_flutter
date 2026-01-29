@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:simple_blog_flutter/models/blog.dart';
+import 'package:simple_blog_flutter/screens/blog/comment_section.dart';
 import 'package:simple_blog_flutter/services/blog_storage_service.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
 
@@ -40,6 +41,7 @@ class BlogScreen extends StatelessWidget {
             SizedBox(height: 15),
             StyledText(blog.body),
             SizedBox(height: 30),
+            CommentSection(),
           ],
         ),
       ),
