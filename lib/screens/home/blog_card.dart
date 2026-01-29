@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:simple_blog_flutter/models/blog.dart';
+import 'package:simple_blog_flutter/screens/blog/blog_screen.dart';
 import 'package:simple_blog_flutter/services/blog_storage_service.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
 import 'package:simple_blog_flutter/theme.dart';
@@ -50,7 +51,14 @@ class BlogCard extends StatelessWidget {
               children: [
                 Spacer(),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => BlogScreen(blog: blog),
+                      ),
+                    );
+                  },
                   child: Row(
                     children: [
                       StyledColoredText('Read More', color: AppColors.accent),
