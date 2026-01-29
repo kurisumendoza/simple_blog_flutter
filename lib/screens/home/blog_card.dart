@@ -4,7 +4,7 @@ import 'package:simple_blog_flutter/models/blog.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
 
 class BlogCard extends StatelessWidget {
-  BlogCard({super.key, required this.blog});
+  const BlogCard({super.key, required this.blog});
 
   final Blog blog;
   String get formattedDate => DateFormat.yMMMd().format(blog.createdAt);
@@ -19,8 +19,15 @@ class BlogCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             StyledHeading(blog.title, maxLines: 1),
-            StyledSmallText('$formattedDate at $formattedTime'),
-            StyledRichText(blog.user),
+            SizedBox(height: 5),
+            Row(
+              children: [
+                Expanded(child: StyledRichText(blog.user)),
+                StyledSmallText('$formattedDate $formattedTime'),
+              ],
+            ),
+            SizedBox(height: 10),
+            Row(children: [Expanded(child: StyledPreviewText(blog.body))]),
           ],
         ),
       ),
