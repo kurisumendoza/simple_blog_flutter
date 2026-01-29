@@ -19,8 +19,8 @@ class BlogCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             StyledHeading(blog.title, maxLines: 1),
-            StyledText('$formattedDate at $formattedTime', isSmall: true),
-            StyledText('by ${blog.user}', isItalic: true),
+            StyledSmallText('$formattedDate at $formattedTime'),
+            StyledRichText(blog.user),
           ],
         ),
       ),
