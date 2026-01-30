@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:simple_blog_flutter/services/auth_service.dart';
 import 'package:simple_blog_flutter/shared/styled_button.dart';
 import 'package:simple_blog_flutter/shared/styled_form_field.dart';
 
@@ -42,6 +43,8 @@ class _LoginFormState extends State<LoginForm> {
               onPressed: () async {
                 if (_formGlobalKey.currentState!.validate()) {
                   _formGlobalKey.currentState!.save();
+                  AuthService.loginUser(_email, _password);
+                  Navigator.pop(context);
                 }
               },
             ),
