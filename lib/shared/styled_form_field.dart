@@ -4,12 +4,14 @@ import 'package:simple_blog_flutter/shared/styled_text.dart';
 import 'package:simple_blog_flutter/theme.dart';
 
 class StyledFormField extends StatelessWidget {
-  const StyledFormField({
+  StyledFormField({
     super.key,
     required this.label,
     this.maxLength,
     this.validator,
     this.color,
+    this.isEmail = false,
+    this.isPassword = false,
     this.minLength = 5,
   });
 
@@ -17,12 +19,19 @@ class StyledFormField extends StatelessWidget {
   final int? maxLength;
   final FormFieldValidator<String>? validator;
   final Color? color;
+  final bool isPassword;
+  final bool isEmail;
   final int minLength;
+
+  final _emailRe = RegExp(
+    r'''^(?:(?:[^<>()\[\]\\.,;:\s@"']+(?:\.[^<>()\[\]\\.,;:\s@"']+)*)|".+")@(?:\[[0-9.]+\]|(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})$''',
+  );
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       maxLength: maxLength,
+      obscureText: isPassword,
       style: GoogleFonts.poppins(
         textStyle: Theme.of(context).textTheme.bodyMedium,
       ),
@@ -39,6 +48,9 @@ class StyledFormField extends StatelessWidget {
             }
             if (value.length < (minLength)) {
               return '$label should be at least $minLength characters';
+            }
+            if (isEmail && !_emailRe.hasMatch(value)) {
+              return 'Enter a valid email address';
             }
 
             return null;
