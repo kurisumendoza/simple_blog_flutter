@@ -11,7 +11,7 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: StyledTitle('Login'), centerTitle: true),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Expanded(
           child: Container(
@@ -20,13 +20,13 @@ class LoginScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Spacer(flex: 1),
+                SizedBox(height: 20),
                 Center(
                   child: StyledHeading('Login to your account', fontSize: 18),
                 ),
-                Spacer(flex: 2),
+                SizedBox(height: 20),
                 Padding(padding: const EdgeInsets.all(8), child: LoginForm()),
-                Spacer(flex: 7),
+                SizedBox(height: 30),
                 Row(
                   children: [
                     StyledText("Don't have an account yet? ", fontSize: 14),
