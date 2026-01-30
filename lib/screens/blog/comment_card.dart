@@ -19,13 +19,27 @@ class CommentCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              StyledColoredText(comment.user, color: AppColors.accent),
+              Row(
+                children: [
+                  SizedBox(
+                    height: 30,
+                    width: 30,
+                    child: Container(
+                      color: AppColors.primary,
+                      child: Icon(Icons.person),
+                    ),
+                  ),
+                  SizedBox(width: 5),
+                  StyledColoredText(comment.user, color: AppColors.accent),
+                ],
+              ),
               StyledSmallText(
                 '${comment.formattedDate} ${comment.formattedTime}',
                 fontSize: 14,
               ),
             ],
           ),
+          SizedBox(height: 8),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
