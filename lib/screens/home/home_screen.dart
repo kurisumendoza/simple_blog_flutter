@@ -58,13 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   final start = index * _blogsPerPage;
                   final end = start + _blogsPerPage - 1;
 
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 5,
-                      vertical: 0,
-                    ),
-                    child: BlogList(start: start, end: end),
-                  );
+                  return BlogList(start: start, end: end);
                 },
               ),
             ),

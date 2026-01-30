@@ -17,7 +17,9 @@ class BlogList extends StatelessWidget {
         if (!snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
         }
+
         final List<Blog> blogs = snapshot.data!;
+
         return ListView.builder(
           itemCount: blogs.length,
           itemBuilder: ((context, index) {
