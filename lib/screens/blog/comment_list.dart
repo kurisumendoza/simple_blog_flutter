@@ -32,6 +32,7 @@ class CommentList extends StatelessWidget {
         return ListView.separated(
           itemCount: comments.length,
           shrinkWrap: true,
+          physics: ClampingScrollPhysics(),
           separatorBuilder: (BuildContext context, int index) =>
               const Divider(),
           itemBuilder: ((context, index) {
