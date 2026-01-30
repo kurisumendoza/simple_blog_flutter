@@ -30,12 +30,13 @@ class CommentCard extends StatelessWidget {
                     ),
                   ),
                   SizedBox(width: 5),
-                  StyledColoredText(comment.user, color: AppColors.accent),
+                  StyledText(comment.user, color: AppColors.accent),
                 ],
               ),
-              StyledSmallText(
+              StyledText(
                 '${comment.formattedDate} ${comment.formattedTime}',
-                fontSize: 14,
+                fontSize: 12,
+                fontStyle: FontStyle.italic,
               ),
             ],
           ),

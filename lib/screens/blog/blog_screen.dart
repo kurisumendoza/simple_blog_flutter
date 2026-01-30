@@ -36,9 +36,10 @@ class BlogScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 StyledRichText(blog.user, fontSize: 16),
-                StyledSmallText(
+                StyledText(
                   '${blog.formattedDate} ${blog.formattedTime}',
                   fontSize: 14,
+                  fontStyle: FontStyle.italic,
                 ),
               ],
             ),

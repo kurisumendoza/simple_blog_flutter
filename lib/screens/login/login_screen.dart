@@ -24,11 +24,18 @@ class LoginScreen extends StatelessWidget {
                   SizedBox(height: 30),
                   LoginForm(),
                   SizedBox(height: 30),
-                  StyledText("Don't have an account yet?"),
-                  TextButton(
-                    onPressed: () {},
-                    style: TextButton.styleFrom(padding: EdgeInsets.zero),
-                    child: StyledHeading('Register'),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      StyledText("Don't have an account yet?", fontSize: 15),
+                      TextButton(
+                        onPressed: () {},
+                        child: StyledHeading(
+                          'Register',
+                          color: AppColors.accent,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

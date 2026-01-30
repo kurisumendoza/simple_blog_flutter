@@ -20,7 +20,6 @@ ThemeData primaryTheme = ThemeData(
   ),
 
   textTheme: TextTheme(
-    bodySmall: TextStyle(color: AppColors.text, letterSpacing: 1),
     bodyMedium: TextStyle(
       color: AppColors.text,
       fontSize: 16,
@@ -28,7 +27,7 @@ ThemeData primaryTheme = ThemeData(
     ),
     headlineMedium: TextStyle(
       color: AppColors.text,
-      fontSize: 18,
+      fontSize: 16,
       fontWeight: FontWeight.bold,
       letterSpacing: 1,
     ),

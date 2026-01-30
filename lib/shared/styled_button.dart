@@ -23,7 +23,7 @@ class StyledFilledButton extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         backgroundColor: color ?? AppColors.primary,
       ),
-      child: StyledText(text),
+      child: StyledHeading(text),
     );
   }
 }

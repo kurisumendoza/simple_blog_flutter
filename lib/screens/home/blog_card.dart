@@ -25,7 +25,11 @@ class BlogCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 StyledRichText(blog.user),
-                StyledSmallText('${blog.formattedDate} ${blog.formattedTime}'),
+                StyledText(
+                  '${blog.formattedDate} ${blog.formattedTime}',
+                  fontSize: 12,
+                  fontStyle: FontStyle.italic,
+                ),
               ],
             ),
             SizedBox(height: 10),
@@ -63,7 +67,11 @@ class BlogCard extends StatelessWidget {
                   },
                   child: Row(
                     children: [
-                      StyledColoredText('Read More', color: AppColors.accent),
+                      StyledHeading(
+                        'Read More',
+                        color: AppColors.accent,
+                        fontSize: 14,
+                      ),
                       SizedBox(width: 6),
                       Icon(Icons.read_more, color: AppColors.accent, size: 25),
                     ],
