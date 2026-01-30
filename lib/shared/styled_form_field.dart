@@ -7,6 +7,7 @@ class StyledFormField extends StatelessWidget {
   StyledFormField({
     super.key,
     required this.label,
+    required this.onSaved,
     this.maxLength,
     this.validator,
     this.color,
@@ -16,6 +17,7 @@ class StyledFormField extends StatelessWidget {
   });
 
   final String label;
+  final FormFieldSetter<String> onSaved;
   final int? maxLength;
   final FormFieldValidator<String>? validator;
   final Color? color;
@@ -55,6 +57,7 @@ class StyledFormField extends StatelessWidget {
 
             return null;
           },
+      onSaved: onSaved,
     );
   }
 }

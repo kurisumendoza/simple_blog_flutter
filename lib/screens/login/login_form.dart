@@ -12,6 +12,9 @@ class LoginForm extends StatefulWidget {
 class _LoginFormState extends State<LoginForm> {
   final _formGlobalKey = GlobalKey<FormState>();
 
+  String _email = '';
+  String _password = '';
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -19,15 +22,27 @@ class _LoginFormState extends State<LoginForm> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          StyledFormField(label: 'Email', isEmail: true, maxLength: 50),
+          StyledFormField(
+            label: 'Email',
+            isEmail: true,
+            onSaved: (value) => _email = value!,
+            maxLength: 50,
+          ),
           SizedBox(height: 15),
-          StyledFormField(label: 'Password', isPassword: true, maxLength: 30),
+          StyledFormField(
+            label: 'Password',
+            isPassword: true,
+            onSaved: (value) => _password = value!,
+            maxLength: 30,
+          ),
           SizedBox(height: 15),
           Center(
             child: StyledFilledButton(
               'Login',
-              onPressed: () {
-                _formGlobalKey.currentState!.validate();
+              onPressed: () async {
+                if (_formGlobalKey.currentState!.validate()) {
+                  _formGlobalKey.currentState!.save();
+                }
               },
             ),
           ),

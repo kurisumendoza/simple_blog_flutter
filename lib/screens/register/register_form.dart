@@ -12,6 +12,10 @@ class RegisterForm extends StatefulWidget {
 class _RegisterFormState extends State<RegisterForm> {
   final _formGlobalKey = GlobalKey<FormState>();
 
+  String _username = '';
+  String _email = '';
+  String _password = '';
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -19,17 +23,34 @@ class _RegisterFormState extends State<RegisterForm> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          StyledFormField(label: 'Username', maxLength: 12, minLength: 3),
+          StyledFormField(
+            label: 'Username',
+            onSaved: (value) => _username = value!,
+            maxLength: 12,
+            minLength: 3,
+          ),
           SizedBox(height: 15),
-          StyledFormField(label: 'Email', isEmail: true, maxLength: 50),
+          StyledFormField(
+            label: 'Email',
+            isEmail: true,
+            onSaved: (value) => _email = value!,
+            maxLength: 50,
+          ),
           SizedBox(height: 15),
-          StyledFormField(label: 'Password', isPassword: true, maxLength: 30),
+          StyledFormField(
+            label: 'Password',
+            isPassword: true,
+            onSaved: (value) => _password = value!,
+            maxLength: 30,
+          ),
           SizedBox(height: 30),
           Center(
             child: StyledFilledButton(
               'Register',
-              onPressed: () {
-                _formGlobalKey.currentState!.validate();
+              onPressed: () async {
+                if (_formGlobalKey.currentState!.validate()) {
+                  _formGlobalKey.currentState!.save();
+                }
               },
             ),
           ),
