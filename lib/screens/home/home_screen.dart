@@ -14,7 +14,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final _controller = PageController();
   final int _blogsPerPage = 5;
-  late int _totalPages;
+  int _totalPages = 1;
   int _currentPage = 1;
 
   @override
