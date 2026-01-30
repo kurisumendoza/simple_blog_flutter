@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class Comment {
   final int id;
   final int blogId;
@@ -38,4 +40,7 @@ class Comment {
       imagePath: data['image_path'],
     );
   }
+
+  String get formattedDate => DateFormat.yMMMd().format(createdAt);
+  String get formattedTime => DateFormat.jm().format(createdAt);
 }

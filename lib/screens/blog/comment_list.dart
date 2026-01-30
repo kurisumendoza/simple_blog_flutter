@@ -4,6 +4,7 @@ import 'package:simple_blog_flutter/models/blog.dart';
 import 'package:simple_blog_flutter/models/comment.dart';
 import 'package:simple_blog_flutter/screens/blog/comment_card.dart';
 import 'package:simple_blog_flutter/services/comment_service.dart';
+import 'package:simple_blog_flutter/shared/styled_text.dart';
 
 class CommentList extends StatelessWidget {
   const CommentList({super.key});
@@ -21,9 +22,18 @@ class CommentList extends StatelessWidget {
 
         final List<Comment> comments = snapshot.data!;
 
-        return ListView.builder(
+        if (comments.isEmpty) {
+          return Align(
+            alignment: Alignment.centerLeft,
+            child: StyledText('No comments yet'),
+          );
+        }
+
+        return ListView.separated(
           itemCount: comments.length,
           shrinkWrap: true,
+          separatorBuilder: (BuildContext context, int index) =>
+              const Divider(),
           itemBuilder: ((context, index) {
             return CommentCard(comment: comments[index]);
           }),
