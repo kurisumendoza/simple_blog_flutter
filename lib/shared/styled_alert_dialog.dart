@@ -9,12 +9,14 @@ class StyledAlertDialog extends StatefulWidget {
     required this.title,
     required this.content,
     required this.mainAction,
+    required this.mainActionLabel,
     this.mainActionColor,
   });
 
   final String title;
-  final String content;
+  final Widget content;
   final void Function() mainAction;
+  final String mainActionLabel;
   final Color? mainActionColor;
 
   @override
@@ -26,10 +28,10 @@ class _StyledAlertDialogState extends State<StyledAlertDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: StyledTitle(widget.title),
-      content: StyledText(widget.content),
+      content: widget.content,
       actions: [
         StyledFilledButton(
-          'Delete',
+          widget.mainActionLabel,
           onPressed: widget.mainAction,
           color: widget.mainActionColor,
         ),

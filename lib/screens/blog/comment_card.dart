@@ -73,9 +73,11 @@ class CommentCard extends StatelessWidget {
                         context: context,
                         builder: (context) => StyledAlertDialog(
                           title: 'Delete Comment',
-                          content:
-                              'Are you sure you want to delete this comment?',
+                          content: StyledText(
+                            'Are you sure you want to delete this comment?',
+                          ),
                           mainAction: () {},
+                          mainActionLabel: 'Delete',
                           mainActionColor: Colors.red[400],
                         ),
                       ),

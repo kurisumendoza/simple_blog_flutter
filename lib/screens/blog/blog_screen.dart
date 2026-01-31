@@ -46,9 +46,11 @@ class BlogScreen extends StatelessWidget {
                           context: context,
                           builder: (context) => StyledAlertDialog(
                             title: 'Delete Blog',
-                            content:
-                                'Are you sure you want to delete this blog?',
+                            content: StyledText(
+                              'Are you sure you want to delete this blog?',
+                            ),
                             mainAction: () {},
+                            mainActionLabel: 'Delete',
                             mainActionColor: Colors.red[400],
                           ),
                         ),
