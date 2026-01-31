@@ -13,4 +13,9 @@ class AuthService {
       password: password,
     );
   }
+
+  // logout user
+  static Future<void> logoutUser() async {
+    await DatabaseService.supabase.auth.signOut();
+  }
 }

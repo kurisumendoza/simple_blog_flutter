@@ -15,7 +15,13 @@ class UserGreeting extends StatelessWidget {
       children: [
         StyledHeading('Hi, ${userName ?? 'Guest'}'),
         userName != null
-            ? TextButton(onPressed: () {}, child: StyledHeading('Logout'))
+            ? TextButton(
+                onPressed: () {
+                  // replace with profile page later
+                  AuthService.logoutUser();
+                },
+                child: StyledHeading('Logout'),
+              )
             : TextButton(
                 onPressed: () {
                   Navigator.push(
