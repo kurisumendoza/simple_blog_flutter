@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_blog_flutter/screens/login/login_screen.dart';
-import 'package:simple_blog_flutter/services/auth_service.dart';
 import 'package:simple_blog_flutter/services/user_provider.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
 
@@ -24,7 +23,7 @@ class _UserGreetingState extends State<UserGreeting> {
               ? TextButton(
                   onPressed: () {
                     // replace with profile page later
-                    AuthService.logoutUser();
+                    value.logoutUser();
                   },
                   child: StyledHeading('Logout'),
                 )
