@@ -31,7 +31,7 @@ class RegisterScreen extends StatelessWidget {
                   StyledText("Already have an account? ", fontSize: 14),
                   TextButton(
                     onPressed: () {
-                      Navigator.push(
+                      Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(builder: (context) => LoginScreen()),
                       );

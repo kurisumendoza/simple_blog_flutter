@@ -31,7 +31,7 @@ class LoginScreen extends StatelessWidget {
                   StyledText("Don't have an account yet? ", fontSize: 14),
                   TextButton(
                     onPressed: () {
-                      Navigator.push(
+                      Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
                           builder: (context) => RegisterScreen(),
