@@ -41,7 +41,7 @@ class StyledEditIconButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      onPressed: () {},
+      onPressed: onPressed,
       icon: Icon(Icons.edit_square, color: Colors.grey[400], size: size),
     );
   }
