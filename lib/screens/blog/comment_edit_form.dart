@@ -4,29 +4,22 @@ import 'package:simple_blog_flutter/shared/styled_form_field.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
 import 'package:simple_blog_flutter/theme.dart';
 
-class CommentForm extends StatefulWidget {
-  const CommentForm({super.key});
+class CommentEditForm extends StatelessWidget {
+  CommentEditForm({super.key, required this.onEditEnd});
 
-  @override
-  State<CommentForm> createState() => _CommentFormState();
-}
-
-class _CommentFormState extends State<CommentForm> {
   final _formGlobalKey = GlobalKey<FormState>();
-
-  String _comment = '';
-  String _image = '';
+  final void Function() onEditEnd;
 
   @override
   Widget build(BuildContext context) {
     return Form(
       key: _formGlobalKey,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          SizedBox(height: 6),
           StyledFormField(
-            label: 'Leave a comment',
-            onSaved: (newValue) {},
+            label: 'Update',
+            onSaved: (value) {},
             maxLength: 100,
             lines: 3,
           ),
@@ -48,7 +41,17 @@ class _CommentFormState extends State<CommentForm> {
             ],
           ),
           SizedBox(height: 10),
-          StyledFilledButton('Post Comment', onPressed: () {}),
+          Row(
+            children: [
+              StyledFilledButton('Update', onPressed: () {}),
+              SizedBox(width: 10),
+              StyledFilledButton(
+                'Cancel',
+                onPressed: onEditEnd,
+                color: Colors.red[300],
+              ),
+            ],
+          ),
         ],
       ),
     );
