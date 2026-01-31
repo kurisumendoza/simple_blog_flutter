@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:simple_blog_flutter/screens/create/create_blog_screen.dart';
 import 'package:simple_blog_flutter/screens/home/blog_list.dart';
 import 'package:simple_blog_flutter/screens/home/page_indicator.dart';
 import 'package:simple_blog_flutter/screens/home/user_greeting.dart';
@@ -68,7 +69,12 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       floatingActionButton: context.watch<UserProvider>().isLoggedIn
           ? FloatingActionButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => CreateBlogScreen()),
+                );
+              },
               child: Icon(Icons.add, color: AppColors.accent, size: 40),
             )
           : null,
