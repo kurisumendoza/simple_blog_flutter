@@ -3,8 +3,8 @@ import 'package:simple_blog_flutter/screens/login/login_screen.dart';
 import 'package:simple_blog_flutter/shared/styled_button.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
 
-class CommentForm extends StatelessWidget {
-  const CommentForm({super.key});
+class CommentLogin extends StatelessWidget {
+  const CommentLogin({super.key});
 
   @override
   Widget build(BuildContext context) {
