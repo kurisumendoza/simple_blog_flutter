@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:simple_blog_flutter/models/comment.dart';
 import 'package:simple_blog_flutter/services/comment_storage_service.dart';
 import 'package:simple_blog_flutter/services/user_provider.dart';
+import 'package:simple_blog_flutter/shared/styled_alert_dialog.dart';
 import 'package:simple_blog_flutter/shared/styled_button.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
 import 'package:simple_blog_flutter/theme.dart';
@@ -67,7 +68,19 @@ class CommentCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     StyledEditIconButton(onPressed: () {}, size: 20),
-                    StyledDeleteIconButton(onPressed: () {}, size: 24),
+                    StyledDeleteIconButton(
+                      onPressed: () => showDialog(
+                        context: context,
+                        builder: (context) => StyledAlertDialog(
+                          title: 'Delete Comment',
+                          content:
+                              'Are you sure you want to delete this comment?',
+                          mainAction: () {},
+                          mainActionColor: Colors.red[400],
+                        ),
+                      ),
+                      size: 24,
+                    ),
                   ],
                 ),
               ],
