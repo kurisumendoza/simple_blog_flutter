@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:simple_blog_flutter/screens/home/blog_list.dart';
 import 'package:simple_blog_flutter/screens/home/page_indicator.dart';
 import 'package:simple_blog_flutter/screens/home/user_greeting.dart';
 import 'package:simple_blog_flutter/services/blog_service.dart';
+import 'package:simple_blog_flutter/services/user_provider.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
+import 'package:simple_blog_flutter/theme.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -63,6 +66,13 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
+      floatingActionButton: context.watch<UserProvider>().isLoggedIn
+          ? FloatingActionButton(
+              onPressed: () {},
+              child: Icon(Icons.add, color: AppColors.accent, size: 40),
+            )
+          : null,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
     );
   }
 }
