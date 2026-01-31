@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_blog_flutter/models/comment.dart';
+import 'package:simple_blog_flutter/screens/blog/comment_card_actions.dart';
 import 'package:simple_blog_flutter/screens/blog/comment_edit_form.dart';
 import 'package:simple_blog_flutter/services/comment_storage_service.dart';
 import 'package:simple_blog_flutter/services/user_provider.dart';
-import 'package:simple_blog_flutter/shared/styled_alert_dialog.dart';
-import 'package:simple_blog_flutter/shared/styled_button.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
 import 'package:simple_blog_flutter/theme.dart';
 
@@ -82,38 +81,12 @@ class _CommentCardState extends State<CommentCard> {
           if (!isEditing &&
               context.watch<UserProvider>().isLoggedIn &&
               context.read<UserProvider>().username == widget.comment.user)
-            Column(
-              children: [
-                SizedBox(height: 5),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    StyledEditIconButton(
-                      onPressed: () {
-                        setState(() {
-                          isEditing = true;
-                        });
-                      },
-                      size: 20,
-                    ),
-                    StyledDeleteIconButton(
-                      onPressed: () => showDialog(
-                        context: context,
-                        builder: (context) => StyledAlertDialog(
-                          title: 'Delete Comment',
-                          content: StyledText(
-                            'Are you sure you want to delete this comment?',
-                          ),
-                          mainAction: () {},
-                          mainActionLabel: 'Delete',
-                          mainActionColor: Colors.red[400],
-                        ),
-                      ),
-                      size: 24,
-                    ),
-                  ],
-                ),
-              ],
+            CommentCardActions(
+              onEditStart: () {
+                setState(() {
+                  isEditing = true;
+                });
+              },
             ),
         ],
       ),
