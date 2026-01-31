@@ -1,14 +1,16 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:simple_blog_flutter/services/database_service.dart';
 
 class AuthService {
-  static final _supabase = Supabase.instance.client;
+  // user and username getters
+  static User? get user => DatabaseService.supabase.auth.currentUser;
+  static String? get userName => user?.userMetadata?['user'];
 
-  static Future<AuthResponse> loginUser(String email, String password) async {
-    final AuthResponse res = await _supabase.auth.signInWithPassword(
+  // login user
+  static Future<void> loginUser(String email, String password) async {
+    await DatabaseService.supabase.auth.signInWithPassword(
       email: email,
       password: password,
     );
-
-    return res;
   }
 }
