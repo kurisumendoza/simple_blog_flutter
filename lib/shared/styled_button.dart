@@ -27,3 +27,41 @@ class StyledFilledButton extends StatelessWidget {
     );
   }
 }
+
+class StyledEditIconButton extends StatelessWidget {
+  const StyledEditIconButton({
+    super.key,
+    required this.onPressed,
+    required this.size,
+  });
+
+  final void Function() onPressed;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed: () {},
+      icon: Icon(Icons.edit_square, color: Colors.grey[400], size: size),
+    );
+  }
+}
+
+class StyledDeleteIconButton extends StatelessWidget {
+  const StyledDeleteIconButton({
+    super.key,
+    required this.onPressed,
+    required this.size,
+  });
+
+  final void Function() onPressed;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed: () {},
+      icon: Icon(Icons.delete, color: Colors.red[400], size: size),
+    );
+  }
+}

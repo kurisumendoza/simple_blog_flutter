@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:simple_blog_flutter/models/comment.dart';
 import 'package:simple_blog_flutter/services/comment_storage_service.dart';
+import 'package:simple_blog_flutter/services/user_provider.dart';
+import 'package:simple_blog_flutter/shared/styled_button.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
 import 'package:simple_blog_flutter/theme.dart';
 
@@ -55,6 +58,20 @@ class CommentCard extends StatelessWidget {
                 ),
             ],
           ),
+          if (context.watch<UserProvider>().isLoggedIn &&
+              context.read<UserProvider>().username == comment.user)
+            Column(
+              children: [
+                SizedBox(height: 5),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    StyledEditIconButton(onPressed: () {}, size: 20),
+                    StyledDeleteIconButton(onPressed: () {}, size: 24),
+                  ],
+                ),
+              ],
+            ),
         ],
       ),
     );

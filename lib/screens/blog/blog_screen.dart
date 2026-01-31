@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:simple_blog_flutter/models/blog.dart';
 import 'package:simple_blog_flutter/screens/blog/comment_section.dart';
 import 'package:simple_blog_flutter/services/blog_storage_service.dart';
+import 'package:simple_blog_flutter/services/user_provider.dart';
+import 'package:simple_blog_flutter/shared/styled_button.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
 
 class BlogScreen extends StatelessWidget {
@@ -19,6 +21,20 @@ class BlogScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            if (context.watch<UserProvider>().isLoggedIn &&
+                context.read<UserProvider>().username == blog.user)
+              Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      StyledEditIconButton(onPressed: () {}, size: 28),
+                      StyledDeleteIconButton(onPressed: () {}, size: 30),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                ],
+              ),
             if (blog.imagePath != null)
               Hero(
                 tag: blog.id,
@@ -29,8 +45,8 @@ class BlogScreen extends StatelessWidget {
                   fit: BoxFit.cover,
                 ),
               ),
-            SizedBox(height: 15),
-            StyledHeading(blog.title, maxLines: 3),
+            SizedBox(height: 10),
+            StyledHeading(blog.title, fontSize: 20, maxLines: 3),
             SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
