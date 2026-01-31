@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_blog_flutter/models/blog.dart';
 import 'package:simple_blog_flutter/screens/blog/comment_section.dart';
+import 'package:simple_blog_flutter/screens/update/update_blog_screen.dart';
 import 'package:simple_blog_flutter/services/blog_storage_service.dart';
 import 'package:simple_blog_flutter/services/user_provider.dart';
 import 'package:simple_blog_flutter/shared/styled_button.dart';
@@ -28,7 +29,17 @@ class BlogScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      StyledEditIconButton(onPressed: () {}, size: 28),
+                      StyledEditIconButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => UpdateBlogScreen(),
+                            ),
+                          );
+                        },
+                        size: 28,
+                      ),
                       StyledDeleteIconButton(onPressed: () {}, size: 30),
                     ],
                   ),
