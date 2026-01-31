@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:simple_blog_flutter/screens/profile_edit/edit_profile_screen.dart';
 import 'package:simple_blog_flutter/shared/styled_button.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
 import 'package:simple_blog_flutter/theme.dart';
@@ -51,7 +52,17 @@ class ProfileScreen extends StatelessWidget {
                       ],
                     ),
                     SizedBox(height: 10),
-                    StyledFilledButton('Edit Profile', onPressed: () {}),
+                    StyledFilledButton(
+                      'Edit Profile',
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => EditProfileScreen(),
+                          ),
+                        );
+                      },
+                    ),
                   ],
                 ),
               ],
