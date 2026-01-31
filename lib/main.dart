@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:simple_blog_flutter/theme.dart';
+import 'package:provider/provider.dart';
+import 'package:simple_blog_flutter/services/user_provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:simple_blog_flutter/theme.dart';
 import 'package:simple_blog_flutter/screens/home/home_screen.dart';
 
 void main() async {
@@ -19,6 +21,9 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(theme: primaryTheme, home: HomeScreen());
+    return ChangeNotifierProvider(
+      create: (context) => UserProvider(),
+      child: MaterialApp(theme: primaryTheme, home: HomeScreen()),
+    );
   }
 }
