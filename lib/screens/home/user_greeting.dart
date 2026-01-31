@@ -19,7 +19,7 @@ class _UserGreetingState extends State<UserGreeting> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           StyledHeading('Hi, ${value.username ?? 'Guest'}'),
-          value.username != null
+          value.isLoggedIn
               ? TextButton(
                   onPressed: () {
                     // replace with profile page later

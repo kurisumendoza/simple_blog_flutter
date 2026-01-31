@@ -5,6 +5,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class UserProvider extends ChangeNotifier {
   User? get user => AuthService.user;
   String? get username => AuthService.username;
+  bool get isLoggedIn => user != null;
 
   Future<void> loginUser(String email, String password) async {
     await AuthService.loginUser(email, password);
