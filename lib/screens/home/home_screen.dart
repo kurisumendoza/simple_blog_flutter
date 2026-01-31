@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:simple_blog_flutter/screens/home/blog_list.dart';
 import 'package:simple_blog_flutter/screens/home/page_indicator.dart';
-import 'package:simple_blog_flutter/screens/login/login_screen.dart';
+import 'package:simple_blog_flutter/screens/home/user_greeting.dart';
 import 'package:simple_blog_flutter/services/blog_service.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
 
@@ -39,21 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                StyledHeading('Hi, Guest'),
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => LoginScreen()),
-                    );
-                  },
-                  child: StyledHeading('Login'),
-                ),
-              ],
-            ),
+            UserGreeting(),
             SizedBox(height: 10),
             Expanded(
               child: PageView.builder(
