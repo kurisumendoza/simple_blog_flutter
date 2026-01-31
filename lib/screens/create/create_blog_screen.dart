@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:simple_blog_flutter/shared/blog_form.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
 import 'package:simple_blog_flutter/theme.dart';
 
@@ -20,10 +21,7 @@ class CreateBlogScreen extends StatelessWidget {
                 child: StyledHeading('Create a new blog post', fontSize: 18),
               ),
               SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.all(8),
-                child: Text('BLOG FORM'),
-              ),
+              Padding(padding: const EdgeInsets.all(8), child: BlogForm()),
             ],
           ),
         ),
