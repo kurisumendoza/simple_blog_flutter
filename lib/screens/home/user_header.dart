@@ -3,22 +3,41 @@ import 'package:provider/provider.dart';
 import 'package:simple_blog_flutter/screens/login/login_screen.dart';
 import 'package:simple_blog_flutter/services/user_provider.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
+import 'package:simple_blog_flutter/theme.dart';
 
-class UserGreeting extends StatefulWidget {
-  const UserGreeting({super.key});
+class UserHeader extends StatefulWidget {
+  const UserHeader({super.key});
 
   @override
-  State<UserGreeting> createState() => _UserGreetingState();
+  State<UserHeader> createState() => _UserHeaderState();
 }
 
-class _UserGreetingState extends State<UserGreeting> {
+class _UserHeaderState extends State<UserHeader> {
   @override
   Widget build(BuildContext context) {
     return Consumer<UserProvider>(
       builder: (context, value, child) => Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          StyledHeading('Hi, ${value.username ?? 'Guest'}'),
+          value.username != null
+              ? GestureDetector(
+                  onTap: () {},
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        height: 40,
+                        width: 40,
+                        child: Container(
+                          color: AppColors.primary,
+                          child: Icon(Icons.person),
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                      StyledHeading('${value.username}'),
+                    ],
+                  ),
+                )
+              : StyledHeading('Hi, Guest'),
           value.isLoggedIn
               ? TextButton(
                   onPressed: () {
