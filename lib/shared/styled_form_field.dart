@@ -14,6 +14,7 @@ class StyledFormField extends StatelessWidget {
     this.isEmail = false,
     this.isPassword = false,
     this.minLength = 5,
+    this.lines = 1,
   });
 
   final String label;
@@ -24,6 +25,7 @@ class StyledFormField extends StatelessWidget {
   final bool isPassword;
   final bool isEmail;
   final int minLength;
+  final int lines;
 
   final _emailRe = RegExp(
     r'''^(?:(?:[^<>()\[\]\\.,;:\s@"']+(?:\.[^<>()\[\]\\.,;:\s@"']+)*)|".+")@(?:\[[0-9.]+\]|(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})$''',
@@ -33,6 +35,8 @@ class StyledFormField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       maxLength: maxLength,
+      minLines: lines,
+      maxLines: lines,
       obscureText: isPassword,
       style: GoogleFonts.poppins(
         textStyle: Theme.of(context).textTheme.bodyMedium,
@@ -41,6 +45,13 @@ class StyledFormField extends StatelessWidget {
         label: StyledText(label),
         labelStyle: TextStyle(),
         counterStyle: TextStyle(color: color ?? AppColors.accent),
+        border: OutlineInputBorder(),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: AppColors.text),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: AppColors.accent, width: 2),
+        ),
       ),
       validator:
           validator ??
