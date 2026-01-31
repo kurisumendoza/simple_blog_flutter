@@ -5,6 +5,7 @@ import 'package:simple_blog_flutter/screens/blog/comment_section.dart';
 import 'package:simple_blog_flutter/screens/update/update_blog_screen.dart';
 import 'package:simple_blog_flutter/services/blog_storage_service.dart';
 import 'package:simple_blog_flutter/services/user_provider.dart';
+import 'package:simple_blog_flutter/shared/styled_alert_dialog.dart';
 import 'package:simple_blog_flutter/shared/styled_button.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
 
@@ -40,7 +41,19 @@ class BlogScreen extends StatelessWidget {
                         },
                         size: 28,
                       ),
-                      StyledDeleteIconButton(onPressed: () {}, size: 30),
+                      StyledDeleteIconButton(
+                        onPressed: () => showDialog(
+                          context: context,
+                          builder: (context) => StyledAlertDialog(
+                            title: 'Delete Blog',
+                            content:
+                                'Are you sure you want to delete this blog?',
+                            mainAction: () {},
+                            mainActionColor: Colors.red[400],
+                          ),
+                        ),
+                        size: 30,
+                      ),
                     ],
                   ),
                   SizedBox(height: 10),

@@ -60,7 +60,7 @@ class StyledDeleteIconButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      onPressed: () {},
+      onPressed: onPressed,
       icon: Icon(Icons.delete, color: Colors.red[400], size: size),
     );
   }
