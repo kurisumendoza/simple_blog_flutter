@@ -44,6 +44,7 @@ class StyledFormField extends StatelessWidget {
       decoration: InputDecoration(
         label: StyledText(label),
         labelStyle: TextStyle(),
+        alignLabelWithHint: true,
         counterStyle: TextStyle(color: color ?? AppColors.accent),
         border: OutlineInputBorder(),
         enabledBorder: OutlineInputBorder(
