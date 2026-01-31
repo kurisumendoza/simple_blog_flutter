@@ -21,7 +21,10 @@ class CreateBlogScreen extends StatelessWidget {
                 child: StyledHeading('Create a new blog post', fontSize: 18),
               ),
               SizedBox(height: 20),
-              Padding(padding: const EdgeInsets.all(8), child: BlogForm()),
+              Padding(
+                padding: const EdgeInsets.all(8),
+                child: BlogForm(buttonText: 'Create Blog'),
+              ),
             ],
           ),
         ),

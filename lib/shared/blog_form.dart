@@ -5,7 +5,9 @@ import 'package:simple_blog_flutter/shared/styled_text.dart';
 import 'package:simple_blog_flutter/theme.dart';
 
 class BlogForm extends StatefulWidget {
-  const BlogForm({super.key});
+  const BlogForm({super.key, required this.buttonText});
+
+  final String buttonText;
 
   @override
   State<BlogForm> createState() => _BlogFormState();
@@ -58,7 +60,9 @@ class _BlogFormState extends State<BlogForm> {
             ],
           ),
           SizedBox(height: 30),
-          Center(child: StyledFilledButton('Create Blog', onPressed: () {})),
+          Center(
+            child: StyledFilledButton(widget.buttonText, onPressed: () {}),
+          ),
         ],
       ),
     );
