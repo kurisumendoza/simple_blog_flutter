@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:simple_blog_flutter/screens/create/create_blog_screen.dart';
 import 'package:simple_blog_flutter/screens/home/blog_list.dart';
 import 'package:simple_blog_flutter/screens/home/page_indicator.dart';
-import 'package:simple_blog_flutter/screens/home/user_greeting.dart';
+import 'package:simple_blog_flutter/screens/home/user_header.dart';
 import 'package:simple_blog_flutter/services/blog_service.dart';
 import 'package:simple_blog_flutter/services/user_provider.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
