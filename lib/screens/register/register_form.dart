@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:simple_blog_flutter/services/user_provider.dart';
 import 'package:simple_blog_flutter/shared/styled_button.dart';
 import 'package:simple_blog_flutter/shared/styled_form_field.dart';
 
@@ -50,6 +52,25 @@ class _RegisterFormState extends State<RegisterForm> {
               onPressed: () async {
                 if (_formGlobalKey.currentState!.validate()) {
                   _formGlobalKey.currentState!.save();
+                  final (success, message) = await context
+                      .read<UserProvider>()
+                      .registerUser(_email, _password, _username);
+
+                  if (success) {
+                    Navigator.pop(context);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(message),
+                        action: SnackBarAction(
+                          label: 'Action',
+                          onPressed: () {
+                            // Code to execute.
+                          },
+                        ),
+                      ),
+                    );
+                  }
                 }
               },
             ),

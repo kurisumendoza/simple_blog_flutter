@@ -16,4 +16,19 @@ class UserProvider extends ChangeNotifier {
     await AuthService.logoutUser();
     notifyListeners();
   }
+
+  Future<(bool, String)> registerUser(
+    String email,
+    String password,
+    String username,
+  ) async {
+    try {
+      await AuthService.registerUser(email, password, username);
+      notifyListeners();
+
+      return (true, 'Welcome, $username!');
+    } catch (e) {
+      return (false, 'Failed to register!');
+    }
+  }
 }
