@@ -4,7 +4,7 @@ import 'package:simple_blog_flutter/models/blog.dart';
 import 'package:simple_blog_flutter/screens/blog/comment_section.dart';
 import 'package:simple_blog_flutter/screens/update/update_blog_screen.dart';
 import 'package:simple_blog_flutter/services/blog_storage_service.dart';
-import 'package:simple_blog_flutter/services/user_provider.dart';
+import 'package:simple_blog_flutter/services/auth_provider.dart';
 import 'package:simple_blog_flutter/shared/styled_alert_dialog.dart';
 import 'package:simple_blog_flutter/shared/styled_button.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
@@ -23,8 +23,8 @@ class BlogScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (context.watch<UserProvider>().isLoggedIn &&
-                context.read<UserProvider>().username == blog.user)
+            if (context.watch<AuthProvider>().isLoggedIn &&
+                context.read<AuthProvider>().username == blog.user)
               Column(
                 children: [
                   Row(

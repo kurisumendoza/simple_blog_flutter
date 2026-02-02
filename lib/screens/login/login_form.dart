@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:simple_blog_flutter/services/user_provider.dart';
+import 'package:simple_blog_flutter/services/auth_provider.dart';
 import 'package:simple_blog_flutter/shared/styled_button.dart';
 import 'package:simple_blog_flutter/shared/styled_form_field.dart';
 import 'package:simple_blog_flutter/shared/styled_snack_bar.dart';
@@ -46,7 +46,7 @@ class _LoginFormState extends State<LoginForm> {
                 if (_formGlobalKey.currentState!.validate()) {
                   _formGlobalKey.currentState!.save();
                   final (success, message) = await context
-                      .read<UserProvider>()
+                      .read<AuthProvider>()
                       .loginUser(_email, _password);
 
                   if (success) {

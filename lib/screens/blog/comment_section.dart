@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:simple_blog_flutter/screens/blog/comment_form.dart';
 import 'package:simple_blog_flutter/screens/blog/comment_login.dart';
 import 'package:simple_blog_flutter/screens/blog/comment_list.dart';
-import 'package:simple_blog_flutter/services/user_provider.dart';
+import 'package:simple_blog_flutter/services/auth_provider.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
 import 'package:simple_blog_flutter/theme.dart';
 
@@ -20,7 +20,7 @@ class CommentSection extends StatelessWidget {
         children: [
           StyledHeading('Comments'),
           SizedBox(height: 20),
-          context.watch<UserProvider>().isLoggedIn
+          context.watch<AuthProvider>().isLoggedIn
               ? CommentForm()
               : CommentLogin(),
           SizedBox(height: 20),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:simple_blog_flutter/services/user_provider.dart';
+import 'package:simple_blog_flutter/services/auth_provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:simple_blog_flutter/theme.dart';
 import 'package:simple_blog_flutter/screens/home/home_screen.dart';
@@ -22,7 +22,7 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => UserProvider(),
+      create: (context) => AuthProvider(),
       child: MaterialApp(theme: primaryTheme, home: HomeScreen()),
     );
   }

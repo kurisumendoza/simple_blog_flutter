@@ -5,7 +5,7 @@ import 'package:simple_blog_flutter/screens/home/blog_list.dart';
 import 'package:simple_blog_flutter/screens/home/page_indicator.dart';
 import 'package:simple_blog_flutter/screens/home/user_header.dart';
 import 'package:simple_blog_flutter/services/blog_service.dart';
-import 'package:simple_blog_flutter/services/user_provider.dart';
+import 'package:simple_blog_flutter/services/auth_provider.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
 import 'package:simple_blog_flutter/theme.dart';
 
@@ -67,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      floatingActionButton: context.watch<UserProvider>().isLoggedIn
+      floatingActionButton: context.watch<AuthProvider>().isLoggedIn
           ? FloatingActionButton(
               onPressed: () {
                 Navigator.push(

@@ -4,7 +4,7 @@ import 'package:simple_blog_flutter/models/comment.dart';
 import 'package:simple_blog_flutter/screens/blog/comment_card_actions.dart';
 import 'package:simple_blog_flutter/screens/blog/comment_edit_form.dart';
 import 'package:simple_blog_flutter/services/comment_storage_service.dart';
-import 'package:simple_blog_flutter/services/user_provider.dart';
+import 'package:simple_blog_flutter/services/auth_provider.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
 import 'package:simple_blog_flutter/theme.dart';
 
@@ -54,7 +54,7 @@ class _CommentCardState extends State<CommentCard> {
           SizedBox(height: 8),
           isEditing &&
                   (widget.comment.userId ==
-                      context.watch<UserProvider>().user!.id)
+                      context.watch<AuthProvider>().user!.id)
               ? CommentEditForm(
                   onEditEnd: () {
                     setState(() {
@@ -79,8 +79,8 @@ class _CommentCardState extends State<CommentCard> {
                   ],
                 ),
           if (!isEditing &&
-              context.watch<UserProvider>().isLoggedIn &&
-              context.read<UserProvider>().username == widget.comment.user)
+              context.watch<AuthProvider>().isLoggedIn &&
+              context.read<AuthProvider>().username == widget.comment.user)
             CommentCardActions(
               onEditStart: () {
                 setState(() {
