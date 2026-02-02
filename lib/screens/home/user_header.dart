@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:simple_blog_flutter/screens/login/login_screen.dart';
 import 'package:simple_blog_flutter/screens/profile/profile_screen.dart';
 import 'package:simple_blog_flutter/services/user_provider.dart';
+import 'package:simple_blog_flutter/shared/styled_snack_bar.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
 import 'package:simple_blog_flutter/theme.dart';
 
@@ -46,9 +47,18 @@ class _UserHeaderState extends State<UserHeader> {
               : StyledHeading('Hi, Guest'),
           value.isLoggedIn
               ? TextButton(
-                  onPressed: () {
-                    // replace with profile page later
-                    value.logoutUser();
+                  onPressed: () async {
+                    final (success, message) = await value.logoutUser();
+
+                    if (success) {
+                      ScaffoldMessenger.of(
+                        context,
+                      ).showSnackBar(styledSnackBar(message: message));
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        styledSnackBar(message: message, isError: true),
+                      );
+                    }
                   },
                   child: StyledHeading('Logout'),
                 )

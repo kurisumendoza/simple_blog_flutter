@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:simple_blog_flutter/services/user_provider.dart';
 import 'package:simple_blog_flutter/shared/styled_button.dart';
 import 'package:simple_blog_flutter/shared/styled_form_field.dart';
+import 'package:simple_blog_flutter/shared/styled_snack_bar.dart';
 
 class RegisterForm extends StatefulWidget {
   const RegisterForm({super.key});
@@ -58,17 +59,12 @@ class _RegisterFormState extends State<RegisterForm> {
 
                   if (success) {
                     Navigator.pop(context);
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(styledSnackBar(message: message));
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(message),
-                        action: SnackBarAction(
-                          label: 'Action',
-                          onPressed: () {
-                            // Code to execute.
-                          },
-                        ),
-                      ),
+                      styledSnackBar(message: message, isError: true),
                     );
                   }
                 }

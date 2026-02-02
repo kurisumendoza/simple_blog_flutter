@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:simple_blog_flutter/services/user_provider.dart';
 import 'package:simple_blog_flutter/shared/styled_button.dart';
 import 'package:simple_blog_flutter/shared/styled_form_field.dart';
+import 'package:simple_blog_flutter/shared/styled_snack_bar.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
@@ -41,11 +42,23 @@ class _LoginFormState extends State<LoginForm> {
           Center(
             child: StyledFilledButton(
               'Login',
-              onPressed: () {
+              onPressed: () async {
                 if (_formGlobalKey.currentState!.validate()) {
                   _formGlobalKey.currentState!.save();
-                  context.read<UserProvider>().loginUser(_email, _password);
-                  Navigator.pop(context);
+                  final (success, message) = await context
+                      .read<UserProvider>()
+                      .loginUser(_email, _password);
+
+                  if (success) {
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(styledSnackBar(message: message));
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      styledSnackBar(message: message, isError: true),
+                    );
+                  }
                 }
               },
             ),
