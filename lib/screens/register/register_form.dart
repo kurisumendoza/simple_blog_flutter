@@ -59,10 +59,12 @@ class _RegisterFormState extends State<RegisterForm> {
 
                   if (success) {
                     Navigator.pop(context);
+                    ScaffoldMessenger.of(context).removeCurrentSnackBar();
                     ScaffoldMessenger.of(
                       context,
                     ).showSnackBar(styledSnackBar(message: message));
                   } else {
+                    ScaffoldMessenger.of(context).removeCurrentSnackBar();
                     ScaffoldMessenger.of(context).showSnackBar(
                       styledSnackBar(message: message, isError: true),
                     );

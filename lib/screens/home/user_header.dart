@@ -51,10 +51,12 @@ class _UserHeaderState extends State<UserHeader> {
                     final (success, message) = await value.logoutUser();
 
                     if (success) {
+                      ScaffoldMessenger.of(context).removeCurrentSnackBar();
                       ScaffoldMessenger.of(
                         context,
                       ).showSnackBar(styledSnackBar(message: message));
                     } else {
+                      ScaffoldMessenger.of(context).removeCurrentSnackBar();
                       ScaffoldMessenger.of(context).showSnackBar(
                         styledSnackBar(message: message, isError: true),
                       );

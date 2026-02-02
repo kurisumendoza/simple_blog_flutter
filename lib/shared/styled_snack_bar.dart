@@ -10,10 +10,5 @@ SnackBar styledSnackBar({required String message, bool isError = false}) {
     backgroundColor: isError ? Colors.red[400] : AppColors.accent,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     content: StyledText(message),
-    action: SnackBarAction(
-      label: 'OK',
-      textColor: AppColors.text,
-      onPressed: () {},
-    ),
   );
 }
