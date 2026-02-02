@@ -6,6 +6,9 @@ class BlogProvider extends ChangeNotifier {
   List<Blog> _blogs = [];
   List<Blog> get blogs => _blogs;
 
+  int _count = 0;
+  int get count => _count;
+
   Future<bool> getBlogs(int start, int end) async {
     try {
       _blogs = await BlogService.getBlogs(start, end);
@@ -17,13 +20,11 @@ class BlogProvider extends ChangeNotifier {
     }
   }
 
-  Future<int> getBlogsCount() async {
+  Future<void> getBlogsCount() async {
     try {
-      final count = await BlogService.getBlogsCount();
-
-      return count;
+      _count = await BlogService.getBlogsCount();
     } catch (e) {
-      return -1;
+      _count = -1;
     }
   }
 }

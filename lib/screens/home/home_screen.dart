@@ -4,7 +4,7 @@ import 'package:simple_blog_flutter/screens/create/create_blog_screen.dart';
 import 'package:simple_blog_flutter/screens/home/blog_list.dart';
 import 'package:simple_blog_flutter/screens/home/page_indicator.dart';
 import 'package:simple_blog_flutter/screens/home/user_header.dart';
-import 'package:simple_blog_flutter/services/blog_service.dart';
+import 'package:simple_blog_flutter/services/blog_provider.dart';
 import 'package:simple_blog_flutter/services/auth_provider.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
 import 'package:simple_blog_flutter/theme.dart';
@@ -19,8 +19,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final _controller = PageController();
   final int _blogsPerPage = 5;
-  int _totalPages = 1;
   int _currentPage = 1;
+  int _totalPages = 1;
 
   @override
   void initState() {
@@ -29,9 +29,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _loadBlogCount() async {
-    int count = await BlogService.getBlogsCount();
+    await context.read<BlogProvider>().getBlogsCount();
+
     setState(() {
-      _totalPages = (count / _blogsPerPage).ceil();
+      _totalPages = (context.read<BlogProvider>().count / _blogsPerPage).ceil();
     });
   }
 
@@ -53,10 +54,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   setState(() => _currentPage = index + 1);
                 },
                 itemBuilder: (context, index) {
-                  _currentPage = index + 1;
                   final start = index * _blogsPerPage;
                   final end = start + _blogsPerPage - 1;
-
                   return BlogList(start: start, end: end);
                 },
               ),
