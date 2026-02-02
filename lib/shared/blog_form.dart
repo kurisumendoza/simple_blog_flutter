@@ -1,13 +1,20 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:simple_blog_flutter/services/auth_provider.dart';
+import 'package:simple_blog_flutter/services/blog_service.dart';
 import 'package:simple_blog_flutter/shared/styled_button.dart';
 import 'package:simple_blog_flutter/shared/styled_form_field.dart';
+import 'package:simple_blog_flutter/shared/styled_snack_bar.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
 import 'package:simple_blog_flutter/theme.dart';
 
 class BlogForm extends StatefulWidget {
-  const BlogForm({super.key, required this.buttonText});
+  const BlogForm({super.key, required this.buttonText, this.isUpdate = false});
 
   final String buttonText;
+  final bool isUpdate;
 
   @override
   State<BlogForm> createState() => _BlogFormState();
@@ -18,7 +25,21 @@ class _BlogFormState extends State<BlogForm> {
 
   String _title = '';
   String _body = '';
-  String _image = '';
+  // String _imagePath = '';
+
+  String _generateSlug() {
+    int end = min(_title.length, 30);
+    String suffix = Random().nextInt(1000000).toRadixString(36);
+
+    String slug = _title
+        .substring(0, end)
+        .trim()
+        .toLowerCase()
+        .split(' ')
+        .join('-');
+
+    return '$slug + $suffix';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +82,27 @@ class _BlogFormState extends State<BlogForm> {
           ),
           SizedBox(height: 30),
           Center(
-            child: StyledFilledButton(widget.buttonText, onPressed: () {}),
+            child: StyledFilledButton(
+              widget.buttonText,
+              onPressed: () {
+                if (_formGlobalKey.currentState!.validate()) {
+                  _formGlobalKey.currentState!.save();
+                  if (!widget.isUpdate) {
+                    BlogService.createBlog(
+                      _title.trim(),
+                      _generateSlug(),
+                      _body.trim(),
+                      context.read<AuthProvider>().username!,
+                      context.read<AuthProvider>().userId!,
+                    );
+                  }
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    styledSnackBar(message: 'Blog posted successfully!'),
+                  );
+                }
+              },
+            ),
           ),
         ],
       ),

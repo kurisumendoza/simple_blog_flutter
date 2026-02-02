@@ -5,6 +5,7 @@ class AuthService {
   // user and username getters
   static User? get user => DatabaseService.supabase.auth.currentUser;
   static String? get username => user?.userMetadata?['user'];
+  static String? get userId => user?.id;
 
   // login user
   static Future<void> loginUser(String email, String password) async {
