@@ -5,7 +5,7 @@ import 'package:simple_blog_flutter/screens/home/blog_list.dart';
 import 'package:simple_blog_flutter/screens/home/page_indicator.dart';
 import 'package:simple_blog_flutter/screens/home/user_header.dart';
 import 'package:simple_blog_flutter/services/auth_provider.dart';
-import 'package:simple_blog_flutter/services/blog_service.dart';
+import 'package:simple_blog_flutter/services/blog_provider.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
 import 'package:simple_blog_flutter/theme.dart';
 
@@ -19,8 +19,11 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final _controller = PageController();
   final int _blogsPerPage = 5;
-  int _currentPage = 1;
   int _totalPages = 1;
+  int _currentPage = 1;
+  int _count = 0;
+  int _start = 0;
+  int _end = 4;
 
   @override
   void initState() {
@@ -29,15 +32,17 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _loadBlogCount() async {
-    int count = await BlogService.getBlogsCount();
+    await context.read<BlogProvider>().getBlogs(_start, _end);
 
     setState(() {
-      _totalPages = (count / _blogsPerPage).ceil();
+      _count = context.read<BlogProvider>().count;
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    _totalPages = (_count / _blogsPerPage).ceil();
+
     return Scaffold(
       appBar: AppBar(title: StyledTitle('Blogs'), centerTitle: true),
       body: Container(
@@ -51,12 +56,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 itemCount: _totalPages,
                 controller: _controller,
                 onPageChanged: (index) {
-                  setState(() => _currentPage = index + 1);
+                  setState(() {
+                    _currentPage = index + 1;
+                    _start = index * _blogsPerPage;
+                    _end = _start + _blogsPerPage - 1;
+                  });
+
+                  context.read<BlogProvider>().getBlogs(_start, _end);
                 },
                 itemBuilder: (context, index) {
-                  final start = index * _blogsPerPage;
-                  final end = start + _blogsPerPage - 1;
-                  return BlogList(start: start, end: end);
+                  return BlogList();
                 },
               ),
             ),

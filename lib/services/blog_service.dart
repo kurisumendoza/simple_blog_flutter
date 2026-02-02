@@ -47,7 +47,7 @@ class BlogService {
         'body': body,
         'user': user,
         'user_id': userId,
-        // imagePath ?? 'image_path': imagePath,
+        // imagePath ?? 'image_path' : imagePath,
       });
     } catch (e) {
       rethrow;

@@ -2,8 +2,9 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:simple_blog_flutter/screens/home/home_screen.dart';
 import 'package:simple_blog_flutter/services/auth_provider.dart';
-import 'package:simple_blog_flutter/services/blog_service.dart';
+import 'package:simple_blog_flutter/services/blog_provider.dart';
 import 'package:simple_blog_flutter/shared/styled_button.dart';
 import 'package:simple_blog_flutter/shared/styled_form_field.dart';
 import 'package:simple_blog_flutter/shared/styled_snack_bar.dart';
@@ -88,7 +89,7 @@ class _BlogFormState extends State<BlogForm> {
                 if (_formGlobalKey.currentState!.validate()) {
                   _formGlobalKey.currentState!.save();
                   if (!widget.isUpdate) {
-                    BlogService.createBlog(
+                    context.read<BlogProvider>().createBlog(
                       _title.trim(),
                       _generateSlug(),
                       _body.trim(),
@@ -96,7 +97,10 @@ class _BlogFormState extends State<BlogForm> {
                       context.read<AuthProvider>().userId!,
                     );
                   }
-                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomeScreen()),
+                  );
                   ScaffoldMessenger.of(context).showSnackBar(
                     styledSnackBar(message: 'Blog posted successfully!'),
                   );

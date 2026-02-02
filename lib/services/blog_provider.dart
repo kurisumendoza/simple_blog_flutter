@@ -6,14 +6,37 @@ class BlogProvider extends ChangeNotifier {
   List<Blog> _blogs = [];
   List<Blog> get blogs => _blogs;
 
-  Future<bool> getBlogs(int start, int end) async {
-    try {
-      _blogs = await BlogService.getBlogs(start, end);
-      notifyListeners();
+  int _count = 0;
+  int get count => _count;
 
-      return true;
-    } catch (e) {
-      return false;
-    }
+  Future<void> getBlogs(int start, int end) async {
+    List<Blog> blogs = await BlogService.getBlogs(start, end);
+
+    int count = await BlogService.getBlogsCount();
+
+    _blogs = blogs;
+    _count = count;
+
+    notifyListeners();
+  }
+
+  Future<void> createBlog(
+    String title,
+    String slug,
+    String body,
+    String user,
+    String userId,
+    // String? imagePath,
+  ) async {
+    await BlogService.createBlog(
+      title,
+      slug,
+      body,
+      user,
+      userId,
+      // imagePath ?? 'image_path' : imagePath,
+    );
+
+    notifyListeners();
   }
 }
