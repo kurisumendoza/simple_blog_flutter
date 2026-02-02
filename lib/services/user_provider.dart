@@ -7,14 +7,26 @@ class UserProvider extends ChangeNotifier {
   String? get username => AuthService.username;
   bool get isLoggedIn => user != null;
 
-  Future<void> loginUser(String email, String password) async {
-    await AuthService.loginUser(email, password);
-    notifyListeners();
+  Future<(bool, String)> loginUser(String email, String password) async {
+    try {
+      await AuthService.loginUser(email, password);
+      notifyListeners();
+
+      return (true, 'Welcome, $username!');
+    } catch (e) {
+      return (false, 'Failed to login!');
+    }
   }
 
-  Future<void> logoutUser() async {
-    await AuthService.logoutUser();
-    notifyListeners();
+  Future<(bool, String)> logoutUser() async {
+    try {
+      await AuthService.logoutUser();
+      notifyListeners();
+
+      return (true, 'Successfully logged out.');
+    } catch (e) {
+      return (false, 'Failed to logout!');
+    }
   }
 
   Future<(bool, String)> registerUser(

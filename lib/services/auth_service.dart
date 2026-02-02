@@ -8,15 +8,23 @@ class AuthService {
 
   // login user
   static Future<void> loginUser(String email, String password) async {
-    await DatabaseService.supabase.auth.signInWithPassword(
-      email: email,
-      password: password,
-    );
+    try {
+      await DatabaseService.supabase.auth.signInWithPassword(
+        email: email,
+        password: password,
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
 
   // logout user
   static Future<void> logoutUser() async {
-    await DatabaseService.supabase.auth.signOut();
+    try {
+      await DatabaseService.supabase.auth.signOut();
+    } catch (e) {
+      rethrow;
+    }
   }
 
   // create user
