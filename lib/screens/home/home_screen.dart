@@ -4,8 +4,8 @@ import 'package:simple_blog_flutter/screens/create/create_blog_screen.dart';
 import 'package:simple_blog_flutter/screens/home/blog_list.dart';
 import 'package:simple_blog_flutter/screens/home/page_indicator.dart';
 import 'package:simple_blog_flutter/screens/home/user_header.dart';
-import 'package:simple_blog_flutter/services/blog_provider.dart';
 import 'package:simple_blog_flutter/services/auth_provider.dart';
+import 'package:simple_blog_flutter/services/blog_service.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
 import 'package:simple_blog_flutter/theme.dart';
 
@@ -29,10 +29,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _loadBlogCount() async {
-    await context.read<BlogProvider>().getBlogsCount();
+    int count = await BlogService.getBlogsCount();
 
     setState(() {
-      _totalPages = (context.read<BlogProvider>().count / _blogsPerPage).ceil();
+      _totalPages = (count / _blogsPerPage).ceil();
     });
   }
 
