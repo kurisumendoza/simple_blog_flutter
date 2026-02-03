@@ -26,13 +26,15 @@ class CommentProvider extends ChangeNotifier {
     int blogId,
     // String? imagePath,
   ) async {
-    await CommentService.createComment(
+    List<Comment> comment = await CommentService.createComment(
       body,
       user,
       userId,
       blogId,
       // imagePath ?? 'image_path' : imagePath,
     );
+
+    _comments.insert(0, comment[0]);
 
     notifyListeners();
   }

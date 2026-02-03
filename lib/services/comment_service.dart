@@ -13,7 +13,7 @@ class CommentService extends DatabaseService {
     return data.map<Comment>((d) => Comment.fromSupabase(d)).toList();
   }
 
-  static Future<void> createComment(
+  static Future<List<Comment>> createComment(
     String body,
     String user,
     String userId,
@@ -21,13 +21,15 @@ class CommentService extends DatabaseService {
     // String? imagePath,
   ) async {
     try {
-      await DatabaseService.supabase.from('comments').insert({
+      final data = await DatabaseService.supabase.from('comments').insert({
         'body': body,
         'user': user,
         'user_id': userId,
         'blog_id': blogId,
         // imagePath ?? 'image_path' : imagePath,
-      });
+      }).select();
+
+      return data.map<Comment>((d) => Comment.fromSupabase(d)).toList();
     } catch (e) {
       rethrow;
     }
