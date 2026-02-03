@@ -56,6 +56,8 @@ class _CommentCardState extends State<CommentCard> {
                   (widget.comment.userId ==
                       context.watch<AuthProvider>().user!.id)
               ? CommentEditForm(
+                  id: widget.comment.id,
+                  body: widget.comment.body,
                   onEditEnd: () {
                     setState(() {
                       isEditing = false;

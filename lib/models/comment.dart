@@ -19,6 +19,26 @@ class Comment {
     this.imagePath,
   });
 
+  Comment copyWith({
+    int? id,
+    int? blogId,
+    DateTime? createdAt,
+    String? body,
+    String? user,
+    String? userId,
+    String? imagePath,
+  }) {
+    return Comment(
+      id: id ?? this.id,
+      blogId: blogId ?? this.blogId,
+      createdAt: createdAt ?? this.createdAt,
+      body: body ?? this.body,
+      user: user ?? this.user,
+      userId: userId ?? this.userId,
+      imagePath: imagePath ?? this.imagePath,
+    );
+  }
+
   Map<String, dynamic> toSupabase() {
     return {
       'blog_id': blogId,

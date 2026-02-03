@@ -34,4 +34,18 @@ class CommentService extends DatabaseService {
       rethrow;
     }
   }
+
+  static Future<List<Comment>> updateComment(int id, String body) async {
+    try {
+      final data = await DatabaseService.supabase
+          .from('comments')
+          .update({'body': body})
+          .eq('id', id)
+          .select();
+
+      return data.map<Comment>((d) => Comment.fromSupabase(d)).toList();
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

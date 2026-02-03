@@ -15,6 +15,8 @@ class StyledFormField extends StatelessWidget {
     this.isPassword = false,
     this.minLength = 5,
     this.lines = 1,
+    this.isUpdate = false,
+    this.initialValue,
   });
 
   final String label;
@@ -26,6 +28,8 @@ class StyledFormField extends StatelessWidget {
   final bool isEmail;
   final int minLength;
   final int lines;
+  final bool isUpdate;
+  final String? initialValue;
 
   final _emailRe = RegExp(
     r'''^(?:(?:[^<>()\[\]\\.,;:\s@"']+(?:\.[^<>()\[\]\\.,;:\s@"']+)*)|".+")@(?:\[[0-9.]+\]|(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})$''',
@@ -34,6 +38,7 @@ class StyledFormField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      initialValue: initialValue,
       maxLength: maxLength,
       minLines: lines,
       maxLines: lines,

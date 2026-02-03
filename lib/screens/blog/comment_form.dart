@@ -9,9 +9,7 @@ import 'package:simple_blog_flutter/shared/styled_text.dart';
 import 'package:simple_blog_flutter/theme.dart';
 
 class CommentForm extends StatefulWidget {
-  const CommentForm({super.key, this.isUpdate = false});
-
-  final bool isUpdate;
+  const CommentForm({super.key});
 
   @override
   State<CommentForm> createState() => _CommentFormState();
@@ -59,14 +57,14 @@ class _CommentFormState extends State<CommentForm> {
             onPressed: () {
               if (_formGlobalKey.currentState!.validate()) {
                 _formGlobalKey.currentState!.save();
-                if (!widget.isUpdate) {
-                  context.read<CommentProvider>().createComment(
-                    _body.trim(),
-                    context.read<AuthProvider>().username!,
-                    context.read<AuthProvider>().userId!,
-                    context.read<Blog>().id,
-                  );
-                }
+
+                context.read<CommentProvider>().createComment(
+                  _body.trim(),
+                  context.read<AuthProvider>().username!,
+                  context.read<AuthProvider>().userId!,
+                  context.read<Blog>().id,
+                );
+
                 _formGlobalKey.currentState!.reset();
               }
             },

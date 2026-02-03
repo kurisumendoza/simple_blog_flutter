@@ -38,4 +38,14 @@ class CommentProvider extends ChangeNotifier {
 
     notifyListeners();
   }
+
+  Future<void> updateComment(int id, String body) async {
+    await CommentService.updateComment(id, body);
+
+    final comment = _comments.firstWhere((c) => c.id == id);
+    final int i = _comments.indexOf(comment);
+
+    _comments[i] = _comments[i].copyWith(body: body);
+    notifyListeners();
+  }
 }
