@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:simple_blog_flutter/models/blog.dart';
 import 'package:simple_blog_flutter/shared/blog_form.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
 import 'package:simple_blog_flutter/theme.dart';
 
 class UpdateBlogScreen extends StatelessWidget {
-  const UpdateBlogScreen({super.key});
+  const UpdateBlogScreen(this.blog, {super.key});
+
+  final Blog blog;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +25,12 @@ class UpdateBlogScreen extends StatelessWidget {
               SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.all(8),
-                child: BlogForm(buttonText: 'Update Blog'),
+                child: BlogForm(
+                  buttonText: 'Update Blog',
+                  isUpdate: true,
+                  oldTitle: blog.title,
+                  oldBody: blog.body,
+                ),
               ),
             ],
           ),

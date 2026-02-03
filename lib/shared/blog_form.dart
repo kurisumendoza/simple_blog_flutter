@@ -12,10 +12,20 @@ import 'package:simple_blog_flutter/shared/styled_text.dart';
 import 'package:simple_blog_flutter/theme.dart';
 
 class BlogForm extends StatefulWidget {
-  const BlogForm({super.key, required this.buttonText, this.isUpdate = false});
+  const BlogForm({
+    super.key,
+    required this.buttonText,
+    this.isUpdate = false,
+    this.oldTitle,
+    this.oldBody,
+    this.oldImagePath,
+  });
 
   final String buttonText;
   final bool isUpdate;
+  final String? oldTitle;
+  final String? oldBody;
+  final String? oldImagePath;
 
   @override
   State<BlogForm> createState() => _BlogFormState();
@@ -51,6 +61,7 @@ class _BlogFormState extends State<BlogForm> {
         children: [
           StyledFormField(
             label: 'Title',
+            initialValue: widget.oldTitle,
             onSaved: (value) => _title = value!,
             maxLength: 60,
             minLength: 5,
@@ -59,6 +70,7 @@ class _BlogFormState extends State<BlogForm> {
           SizedBox(height: 15),
           StyledFormField(
             label: 'Body',
+            initialValue: widget.oldBody,
             onSaved: (value) => _body = value!,
             maxLength: 1000,
             minLength: 50,

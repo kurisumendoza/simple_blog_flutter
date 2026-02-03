@@ -35,7 +35,7 @@ class BlogScreen extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => UpdateBlogScreen(),
+                              builder: (context) => UpdateBlogScreen(blog),
                             ),
                           );
                         },
