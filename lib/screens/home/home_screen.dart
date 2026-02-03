@@ -51,24 +51,28 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             UserHeader(),
             SizedBox(height: 10),
-            Expanded(
-              child: PageView.builder(
-                itemCount: _totalPages,
-                controller: _controller,
-                onPageChanged: (index) {
-                  setState(() {
-                    _currentPage = index + 1;
-                    _start = index * _blogsPerPage;
-                    _end = _start + _blogsPerPage - 1;
-                  });
+            (_currentPage == 1 && context.watch<BlogProvider>().blogs.isEmpty)
+                ? Expanded(
+                    child: const Center(child: CircularProgressIndicator()),
+                  )
+                : Expanded(
+                    child: PageView.builder(
+                      itemCount: _totalPages,
+                      controller: _controller,
+                      onPageChanged: (index) {
+                        setState(() {
+                          _currentPage = index + 1;
+                          _start = index * _blogsPerPage;
+                          _end = _start + _blogsPerPage - 1;
+                        });
 
-                  context.read<BlogProvider>().getBlogs(_start, _end);
-                },
-                itemBuilder: (context, index) {
-                  return BlogList();
-                },
-              ),
-            ),
+                        context.read<BlogProvider>().getBlogs(_start, _end);
+                      },
+                      itemBuilder: (context, index) {
+                        return BlogList();
+                      },
+                    ),
+                  ),
             SizedBox(height: 20),
             PageIndicator(currentPage: _currentPage, lastPage: _totalPages),
             SizedBox(height: 30),

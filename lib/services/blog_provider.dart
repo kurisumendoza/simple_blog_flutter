@@ -9,14 +9,21 @@ class BlogProvider extends ChangeNotifier {
   int _count = 0;
   int get count => _count;
 
+  bool _isLoading = true;
+  bool get isLoading => _isLoading;
+
   Future<void> getBlogs(int start, int end) async {
+    _isLoading = true;
+
     List<Blog> blogs = await BlogService.getBlogs(start, end);
 
     int count = await BlogService.getBlogsCount();
 
+    _blogs.clear();
     _blogs = blogs;
     _count = count;
 
+    _isLoading = false;
     notifyListeners();
   }
 

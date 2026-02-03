@@ -10,7 +10,7 @@ class BlogList extends StatelessWidget {
   Widget build(BuildContext context) {
     final blogs = context.watch<BlogProvider>().blogs;
 
-    if (blogs.isEmpty) {
+    if (context.watch<BlogProvider>().isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
 
