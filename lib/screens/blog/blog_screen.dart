@@ -14,7 +14,7 @@ class BlogScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final blog = Provider.of<Blog>(context, listen: false);
+    final blog = context.read<Blog>();
 
     return Scaffold(
       appBar: AppBar(title: StyledTitle(blog.title), centerTitle: true),
