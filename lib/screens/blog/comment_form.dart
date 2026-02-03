@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:simple_blog_flutter/models/blog.dart';
+import 'package:simple_blog_flutter/services/auth_provider.dart';
+import 'package:simple_blog_flutter/services/comment_provider.dart';
 import 'package:simple_blog_flutter/shared/styled_button.dart';
 import 'package:simple_blog_flutter/shared/styled_form_field.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
 import 'package:simple_blog_flutter/theme.dart';
 
 class CommentForm extends StatefulWidget {
-  const CommentForm({super.key});
+  const CommentForm({super.key, this.isUpdate = false});
+
+  final bool isUpdate;
 
   @override
   State<CommentForm> createState() => _CommentFormState();
@@ -14,8 +20,8 @@ class CommentForm extends StatefulWidget {
 class _CommentFormState extends State<CommentForm> {
   final _formGlobalKey = GlobalKey<FormState>();
 
-  String _comment = '';
-  String _image = '';
+  String _body = '';
+  // String _imagePath = '';
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +32,7 @@ class _CommentFormState extends State<CommentForm> {
         children: [
           StyledFormField(
             label: 'Leave a comment',
-            onSaved: (newValue) {},
+            onSaved: (value) => _body = value!,
             maxLength: 100,
             lines: 3,
           ),
@@ -48,7 +54,23 @@ class _CommentFormState extends State<CommentForm> {
             ],
           ),
           SizedBox(height: 10),
-          StyledFilledButton('Post Comment', onPressed: () {}),
+          StyledFilledButton(
+            'Post Comment',
+            onPressed: () {
+              if (_formGlobalKey.currentState!.validate()) {
+                _formGlobalKey.currentState!.save();
+                if (!widget.isUpdate) {
+                  context.read<CommentProvider>().createComment(
+                    _body.trim(),
+                    context.read<AuthProvider>().username!,
+                    context.read<AuthProvider>().userId!,
+                    context.read<Blog>().id,
+                  );
+                }
+                _formGlobalKey.currentState!.reset();
+              }
+            },
+          ),
         ],
       ),
     );

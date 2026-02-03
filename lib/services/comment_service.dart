@@ -12,4 +12,24 @@ class CommentService extends DatabaseService {
 
     return data.map<Comment>((d) => Comment.fromSupabase(d)).toList();
   }
+
+  static Future<void> createComment(
+    String body,
+    String user,
+    String userId,
+    int blogId,
+    // String? imagePath,
+  ) async {
+    try {
+      await DatabaseService.supabase.from('comments').insert({
+        'body': body,
+        'user': user,
+        'user_id': userId,
+        'blog_id': blogId,
+        // imagePath ?? 'image_path' : imagePath,
+      });
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

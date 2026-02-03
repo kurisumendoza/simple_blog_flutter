@@ -14,7 +14,6 @@ class CommentList extends StatefulWidget {
 }
 
 class _CommentListState extends State<CommentList> {
-  @override
   List<Comment> _comments = [];
 
   @override
@@ -34,9 +33,9 @@ class _CommentListState extends State<CommentList> {
 
   @override
   Widget build(BuildContext context) {
-    // if (!snapshot.hasData) {
-    //   return const Center(child: CircularProgressIndicator());
-    // }
+    if (context.read<CommentProvider>().isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
 
     if (_comments.isEmpty) {
       return Align(
