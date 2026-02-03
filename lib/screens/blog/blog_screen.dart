@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:simple_blog_flutter/models/blog.dart';
 import 'package:simple_blog_flutter/screens/blog/comment_section.dart';
 import 'package:simple_blog_flutter/screens/update/update_blog_screen.dart';
+import 'package:simple_blog_flutter/services/blog_provider.dart';
 import 'package:simple_blog_flutter/services/blog_storage_service.dart';
 import 'package:simple_blog_flutter/services/auth_provider.dart';
 import 'package:simple_blog_flutter/shared/styled_alert_dialog.dart';
@@ -10,11 +11,15 @@ import 'package:simple_blog_flutter/shared/styled_button.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
 
 class BlogScreen extends StatelessWidget {
-  const BlogScreen({super.key});
+  const BlogScreen({super.key, this.id});
+
+  final int? id;
 
   @override
   Widget build(BuildContext context) {
-    final blog = context.read<Blog>();
+    final blog = id == null
+        ? context.read<Blog>()
+        : context.watch<BlogProvider>().blogs.firstWhere((b) => b.id == id);
 
     return Scaffold(
       appBar: AppBar(title: StyledTitle(blog.title), centerTitle: true),
@@ -32,7 +37,7 @@ class BlogScreen extends StatelessWidget {
                     children: [
                       StyledEditIconButton(
                         onPressed: () {
-                          Navigator.push(
+                          Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
                               builder: (context) => UpdateBlogScreen(blog),

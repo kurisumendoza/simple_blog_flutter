@@ -46,4 +46,14 @@ class BlogProvider extends ChangeNotifier {
 
     notifyListeners();
   }
+
+  Future<void> updateBlog(int id, String title, String body) async {
+    await BlogService.updateBlog(id, title, body);
+
+    final blog = _blogs.firstWhere((c) => c.id == id);
+    final int i = _blogs.indexOf(blog);
+
+    _blogs[i] = _blogs[i].copyWith(title: title, body: body);
+    notifyListeners();
+  }
 }

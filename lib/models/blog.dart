@@ -21,6 +21,28 @@ class Blog {
     this.imagePath,
   });
 
+  Blog copyWith({
+    int? id,
+    DateTime? createdAt,
+    String? title,
+    String? slug,
+    String? body,
+    String? user,
+    String? userId,
+    String? imagePath,
+  }) {
+    return Blog(
+      id: id ?? this.id,
+      createdAt: createdAt ?? this.createdAt,
+      title: title ?? this.title,
+      slug: slug ?? this.slug,
+      body: body ?? this.body,
+      user: user ?? this.user,
+      userId: userId ?? this.userId,
+      imagePath: imagePath ?? this.imagePath,
+    );
+  }
+
   Map<String, dynamic> toSupabase() {
     return {
       'title': title,

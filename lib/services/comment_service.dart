@@ -8,7 +8,7 @@ class CommentService extends DatabaseService {
         .from('comments')
         .select()
         .eq('blog_id', blogId)
-        .order('created_at', ascending: true);
+        .order('created_at');
 
     return data.map<Comment>((d) => Comment.fromSupabase(d)).toList();
   }

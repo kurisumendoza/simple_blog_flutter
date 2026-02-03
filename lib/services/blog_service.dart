@@ -53,4 +53,22 @@ class BlogService {
       rethrow;
     }
   }
+
+  static Future<List<Blog>> updateBlog(
+    int id,
+    String title,
+    String body,
+  ) async {
+    try {
+      final data = await DatabaseService.supabase
+          .from('blogs')
+          .update({'title': title, 'body': body})
+          .eq('id', id)
+          .select();
+
+      return data.map<Blog>((d) => Blog.fromSupabase(d)).toList();
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

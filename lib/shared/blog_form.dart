@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:simple_blog_flutter/screens/blog/blog_screen.dart';
 import 'package:simple_blog_flutter/screens/home/home_screen.dart';
 import 'package:simple_blog_flutter/services/auth_provider.dart';
 import 'package:simple_blog_flutter/services/blog_provider.dart';
@@ -16,6 +17,7 @@ class BlogForm extends StatefulWidget {
     super.key,
     required this.buttonText,
     this.isUpdate = false,
+    this.id,
     this.oldTitle,
     this.oldBody,
     this.oldImagePath,
@@ -23,6 +25,7 @@ class BlogForm extends StatefulWidget {
 
   final String buttonText;
   final bool isUpdate;
+  final int? id;
   final String? oldTitle;
   final String? oldBody;
   final String? oldImagePath;
@@ -108,14 +111,37 @@ class _BlogFormState extends State<BlogForm> {
                       context.read<AuthProvider>().username!,
                       context.read<AuthProvider>().userId!,
                     );
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomeScreen()),
+                    );
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      styledSnackBar(message: 'Blog posted successfully!'),
+                    );
                   }
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => HomeScreen()),
-                  );
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    styledSnackBar(message: 'Blog posted successfully!'),
-                  );
+
+                  if (widget.isUpdate) {
+                    context.read<BlogProvider>().updateBlog(
+                      widget.id!,
+                      _title.trim(),
+                      _body.trim(),
+                    );
+
+                    // Navigator.pop(context);
+
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => BlogScreen(id: widget.id),
+                      ),
+                    );
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      styledSnackBar(message: 'Blog updated successfully!'),
+                    );
+                  }
                 }
               },
             ),
