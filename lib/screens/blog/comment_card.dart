@@ -89,6 +89,7 @@ class _CommentCardState extends State<CommentCard> {
                   isEditing = true;
                 });
               },
+              id: widget.comment.id,
             ),
         ],
       ),

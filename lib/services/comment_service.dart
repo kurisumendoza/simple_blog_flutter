@@ -48,4 +48,12 @@ class CommentService extends DatabaseService {
       rethrow;
     }
   }
+
+  static Future<void> deleteComment(int id) async {
+    try {
+      await DatabaseService.supabase.from('comments').delete().eq('id', id);
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

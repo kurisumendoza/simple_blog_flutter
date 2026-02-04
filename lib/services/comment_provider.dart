@@ -48,4 +48,12 @@ class CommentProvider extends ChangeNotifier {
     _comments[i] = _comments[i].copyWith(body: body);
     notifyListeners();
   }
+
+  Future<void> deleteComment(int id) async {
+    await CommentService.deleteComment(id);
+
+    _comments.removeWhere((c) => c.id == id);
+
+    notifyListeners();
+  }
 }
