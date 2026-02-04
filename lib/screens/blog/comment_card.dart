@@ -17,9 +17,9 @@ class CommentCard extends StatefulWidget {
   State<CommentCard> createState() => _CommentCardState();
 }
 
-bool isEditing = false;
-
 class _CommentCardState extends State<CommentCard> {
+  bool isEditing = false;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
