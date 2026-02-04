@@ -35,11 +35,18 @@ class CommentService extends DatabaseService {
     }
   }
 
-  static Future<List<Comment>> updateComment(int id, String body) async {
+  static Future<List<Comment>> updateComment({
+    required int id,
+    required String body,
+    String? imagePath,
+  }) async {
     try {
       final data = await DatabaseService.supabase
           .from('comments')
-          .update({'body': body})
+          .update({
+            'body': body,
+            if (imagePath != null) 'image_path': imagePath,
+          })
           .eq('id', id)
           .select();
 
