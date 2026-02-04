@@ -56,6 +56,10 @@ class BlogScreen extends StatelessWidget {
                             ),
                             mainAction: () {
                               context.read<BlogProvider>().deleteBlog(blog.id);
+                              if (blog.imagePath != null) {
+                                BlogStorageService.deleteImage(blog.imagePath!);
+                              }
+
                               Navigator.pop(context);
                               Navigator.pop(context);
                             },

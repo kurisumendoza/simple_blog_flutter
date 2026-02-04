@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_blog_flutter/services/comment_provider.dart';
+import 'package:simple_blog_flutter/services/comment_storage_service.dart';
 import 'package:simple_blog_flutter/shared/styled_alert_dialog.dart';
 import 'package:simple_blog_flutter/shared/styled_button.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
@@ -10,10 +11,12 @@ class CommentCardActions extends StatelessWidget {
     super.key,
     required this.onEditStart,
     required this.id,
+    this.imagePath,
   });
 
   final void Function() onEditStart;
   final int id;
+  final String? imagePath;
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +37,11 @@ class CommentCardActions extends StatelessWidget {
                   ),
                   mainAction: () {
                     context.read<CommentProvider>().deleteComment(id);
+
+                    if (imagePath != null) {
+                      CommentStorageService.deleteImage(imagePath!);
+                    }
+
                     Navigator.pop(context);
                   },
                   mainActionLabel: 'Delete',

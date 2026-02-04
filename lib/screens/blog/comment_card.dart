@@ -91,6 +91,7 @@ class _CommentCardState extends State<CommentCard> {
                 });
               },
               id: widget.comment.id,
+              imagePath: widget.comment.imagePath,
             ),
         ],
       ),
