@@ -63,11 +63,7 @@ class BlogService {
     try {
       final data = await DatabaseService.supabase
           .from('blogs')
-          .update({
-            'title': title,
-            'body': body,
-            if (imagePath != null) 'image_path': imagePath,
-          })
+          .update({'title': title, 'body': body, 'image_path': imagePath})
           .eq('id', id)
           .select();
 

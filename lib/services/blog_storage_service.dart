@@ -22,4 +22,11 @@ class BlogStorageService extends DatabaseService {
           fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
         );
   }
+
+  // delete one image
+  static Future<void> deleteImage(String filePath) async {
+    await DatabaseService.supabase.storage.from('blog-images').remove([
+      filePath.trim(),
+    ]);
+  }
 }

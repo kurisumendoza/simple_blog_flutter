@@ -189,6 +189,19 @@ class _BlogFormState extends State<BlogForm> {
                   if (_image != null) {
                     imagePath = _generateImagePath();
                     await BlogStorageService.addImage(imagePath, _image!);
+
+                    if (widget.oldImagePath != null) {
+                      await BlogStorageService.deleteImage(
+                        widget.oldImagePath!,
+                      );
+                    }
+                  }
+
+                  if (_image == null &&
+                      _imagePath == null &&
+                      widget.oldImagePath != null) {
+                    imagePath = null;
+                    await BlogStorageService.deleteImage(widget.oldImagePath!);
                   }
 
                   if (!widget.isUpdate) {
