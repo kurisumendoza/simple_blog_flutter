@@ -19,19 +19,19 @@ class CommentProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> createComment(
-    String body,
-    String user,
-    String userId,
-    int blogId,
-    // String? imagePath,
-  ) async {
+  Future<void> createComment({
+    required String body,
+    required String user,
+    required String userId,
+    required int blogId,
+    String? imagePath,
+  }) async {
     List<Comment> comment = await CommentService.createComment(
-      body,
-      user,
-      userId,
-      blogId,
-      // imagePath ?? 'image_path' : imagePath,
+      body: body,
+      user: user,
+      userId: userId,
+      blogId: blogId,
+      imagePath: imagePath,
     );
 
     _comments.insert(0, comment[0]);

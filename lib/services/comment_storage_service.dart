@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:simple_blog_flutter/services/database_service.dart';
 
 class CommentStorageService extends DatabaseService {
@@ -8,5 +10,16 @@ class CommentStorageService extends DatabaseService {
         .getPublicUrl(imagePath);
 
     return publicUrl;
+  }
+
+  // insert new image
+  static Future<void> addImage(String fileName, File file) async {
+    await DatabaseService.supabase.storage
+        .from('comment-images')
+        .upload(
+          fileName,
+          file,
+          fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
+        );
   }
 }
