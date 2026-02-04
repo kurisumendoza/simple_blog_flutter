@@ -25,6 +25,7 @@ class _CommentFormState extends State<CommentForm> {
 
   String _body = '';
   File? _image;
+  bool _isSubmitting = false;
 
   String _generateImagePath() {
     String ext = _image!.path.split('.').last;
@@ -115,40 +116,52 @@ class _CommentFormState extends State<CommentForm> {
           SizedBox(height: 10),
           StyledFilledButton(
             'Post Comment',
-            onPressed: () async {
-              if (_formGlobalKey.currentState!.validate()) {
-                _formGlobalKey.currentState!.save();
+            onPressed: _isSubmitting
+                ? () {
+                    if (_isSubmitting) return;
+                  }
+                : () async {
+                    if (_formGlobalKey.currentState!.validate()) {
+                      _formGlobalKey.currentState!.save();
 
-                final authProvider = context.read<AuthProvider>();
-                final commentProvider = context.read<CommentProvider>();
-                final blogContext = context.read<Blog>();
-                final messenger = ScaffoldMessenger.of(context);
+                      setState(() {
+                        _isSubmitting = true;
+                      });
 
-                String? imagePath;
+                      final authProvider = context.read<AuthProvider>();
+                      final commentProvider = context.read<CommentProvider>();
+                      final blogContext = context.read<Blog>();
+                      final messenger = ScaffoldMessenger.of(context);
 
-                if (_image != null) {
-                  imagePath = _generateImagePath();
-                  await CommentStorageService.addImage(imagePath, _image!);
-                }
+                      String? imagePath;
 
-                await commentProvider.createComment(
-                  body: _body.trim(),
-                  user: authProvider.username!,
-                  userId: authProvider.userId!,
-                  blogId: blogContext.id,
-                  imagePath: imagePath,
-                );
+                      if (_image != null) {
+                        imagePath = _generateImagePath();
+                        await CommentStorageService.addImage(
+                          imagePath,
+                          _image!,
+                        );
+                      }
 
-                _formGlobalKey.currentState!.reset();
-                setState(() {
-                  _image = null;
-                });
+                      await commentProvider.createComment(
+                        body: _body.trim(),
+                        user: authProvider.username!,
+                        userId: authProvider.userId!,
+                        blogId: blogContext.id,
+                        imagePath: imagePath,
+                      );
 
-                messenger.showSnackBar(
-                  styledSnackBar(message: 'Comment posted!'),
-                );
-              }
-            },
+                      _formGlobalKey.currentState!.reset();
+                      setState(() {
+                        _image = null;
+                        _isSubmitting = false;
+                      });
+
+                      messenger.showSnackBar(
+                        styledSnackBar(message: 'Comment posted!'),
+                      );
+                    }
+                  },
           ),
         ],
       ),

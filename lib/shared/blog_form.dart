@@ -43,6 +43,7 @@ class _BlogFormState extends State<BlogForm> {
   String _body = '';
   String? _imagePath;
   File? _image;
+  bool _isSubmitting = false;
 
   String _generateSlug() {
     int end = min(_title.length, 30);
@@ -175,75 +176,95 @@ class _BlogFormState extends State<BlogForm> {
           Center(
             child: StyledFilledButton(
               widget.buttonText,
-              onPressed: () async {
-                if (_formGlobalKey.currentState!.validate()) {
-                  _formGlobalKey.currentState!.save();
-
-                  final authProvider = context.read<AuthProvider>();
-                  final blogProvider = context.read<BlogProvider>();
-                  final navigator = Navigator.of(context);
-                  final messenger = ScaffoldMessenger.of(context);
-
-                  String? imagePath;
-
-                  if (_image != null) {
-                    imagePath = _generateImagePath();
-                    await BlogStorageService.addImage(imagePath, _image!);
-
-                    if (widget.oldImagePath != null) {
-                      await BlogStorageService.deleteImage(
-                        widget.oldImagePath!,
-                      );
+              onPressed: _isSubmitting
+                  ? () {
+                      if (_isSubmitting) return;
                     }
-                  }
+                  : () async {
+                      if (_formGlobalKey.currentState!.validate()) {
+                        _formGlobalKey.currentState!.save();
 
-                  if (_image == null &&
-                      _imagePath == null &&
-                      widget.oldImagePath != null) {
-                    imagePath = null;
-                    await BlogStorageService.deleteImage(widget.oldImagePath!);
-                  }
+                        setState(() {
+                          _isSubmitting = true;
+                        });
 
-                  if (!widget.isUpdate) {
-                    await blogProvider.createBlog(
-                      title: _title.trim(),
-                      slug: _generateSlug(),
-                      body: _body.trim(),
-                      user: authProvider.username!,
-                      userId: authProvider.userId!,
-                      imagePath: imagePath,
-                    );
+                        final authProvider = context.read<AuthProvider>();
+                        final blogProvider = context.read<BlogProvider>();
+                        final navigator = Navigator.of(context);
+                        final messenger = ScaffoldMessenger.of(context);
 
-                    navigator.pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (context) => HomeScreen()),
-                      (route) => false,
-                    );
+                        String? imagePath;
 
-                    messenger.showSnackBar(
-                      styledSnackBar(message: 'Blog posted successfully!'),
-                    );
-                  }
+                        if (_image != null) {
+                          imagePath = _generateImagePath();
+                          await BlogStorageService.addImage(imagePath, _image!);
 
-                  if (widget.isUpdate) {
-                    await blogProvider.updateBlog(
-                      id: widget.id!,
-                      title: _title.trim(),
-                      body: _body.trim(),
-                      imagePath: imagePath,
-                    );
+                          if (widget.oldImagePath != null) {
+                            await BlogStorageService.deleteImage(
+                              widget.oldImagePath!,
+                            );
+                          }
+                        }
 
-                    navigator.pushReplacement(
-                      MaterialPageRoute(
-                        builder: (context) => BlogScreen(id: widget.id),
-                      ),
-                    );
+                        if (_image == null &&
+                            _imagePath == null &&
+                            widget.oldImagePath != null) {
+                          imagePath = null;
+                          await BlogStorageService.deleteImage(
+                            widget.oldImagePath!,
+                          );
+                        }
 
-                    messenger.showSnackBar(
-                      styledSnackBar(message: 'Blog updated successfully!'),
-                    );
-                  }
-                }
-              },
+                        if (!widget.isUpdate) {
+                          await blogProvider.createBlog(
+                            title: _title.trim(),
+                            slug: _generateSlug(),
+                            body: _body.trim(),
+                            user: authProvider.username!,
+                            userId: authProvider.userId!,
+                            imagePath: imagePath,
+                          );
+
+                          navigator.pushAndRemoveUntil(
+                            MaterialPageRoute(
+                              builder: (context) => HomeScreen(),
+                            ),
+                            (route) => false,
+                          );
+
+                          messenger.showSnackBar(
+                            styledSnackBar(
+                              message: 'Blog posted successfully!',
+                            ),
+                          );
+                        }
+
+                        if (widget.isUpdate) {
+                          await blogProvider.updateBlog(
+                            id: widget.id!,
+                            title: _title.trim(),
+                            body: _body.trim(),
+                            imagePath: imagePath,
+                          );
+
+                          navigator.pushReplacement(
+                            MaterialPageRoute(
+                              builder: (context) => BlogScreen(id: widget.id),
+                            ),
+                          );
+
+                          setState(() {
+                            _isSubmitting = false;
+                          });
+
+                          messenger.showSnackBar(
+                            styledSnackBar(
+                              message: 'Blog updated successfully!',
+                            ),
+                          );
+                        }
+                      }
+                    },
             ),
           ),
         ],
