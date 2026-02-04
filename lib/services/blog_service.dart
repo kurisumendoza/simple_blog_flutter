@@ -18,11 +18,12 @@ class BlogService {
   }
 
   // get recent blogs by user
-  static Future<List<Blog>> getUserBlogs() async {
+  static Future<List<Blog>> getUserBlogs(String userId) async {
     try {
       final data = await DatabaseService.supabase
           .from('blogs')
           .select()
+          .eq('user_id', userId)
           .order('created_at')
           .range(0, 4);
 

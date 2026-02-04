@@ -34,10 +34,10 @@ class BlogProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getUserBlogs() async {
+  Future<void> getUserBlogs(String userId) async {
     _isLoading = true;
 
-    List<Blog> blogs = await BlogService.getUserBlogs();
+    List<Blog> blogs = await BlogService.getUserBlogs(userId);
 
     _userBlogs = blogs;
 

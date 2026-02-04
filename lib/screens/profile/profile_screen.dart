@@ -32,7 +32,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     if (_userId != null) {
       await profileProvider.getUser(_userId!.trim());
-      await blogProvider.getUserBlogs();
+      await blogProvider.getUserBlogs(_userId!);
       setState(() {});
     }
   }
@@ -124,19 +124,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         StyledTitle('Recent Posts'),
                         SizedBox(height: 16),
                         Expanded(
-                          child: ListView.builder(
-                            itemCount: context
-                                .read<BlogProvider>()
-                                .userBlogs
-                                .length,
-                            itemBuilder: ((context, index) {
-                              return BlogCard(
-                                blog: context
-                                    .read<BlogProvider>()
-                                    .userBlogs[index],
-                              );
-                            }),
-                          ),
+                          child: context.read<BlogProvider>().userBlogs.isEmpty
+                              ? StyledText('No post yet')
+                              : ListView.builder(
+                                  itemCount: context
+                                      .read<BlogProvider>()
+                                      .userBlogs
+                                      .length,
+                                  itemBuilder: ((context, index) {
+                                    return BlogCard(
+                                      blog: context
+                                          .read<BlogProvider>()
+                                          .userBlogs[index],
+                                    );
+                                  }),
+                                ),
                         ),
                       ],
                     ),
