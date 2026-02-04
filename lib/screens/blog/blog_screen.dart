@@ -10,6 +10,7 @@ import 'package:simple_blog_flutter/services/comment_provider.dart';
 import 'package:simple_blog_flutter/services/comment_storage_service.dart';
 import 'package:simple_blog_flutter/shared/styled_alert_dialog.dart';
 import 'package:simple_blog_flutter/shared/styled_button.dart';
+import 'package:simple_blog_flutter/shared/styled_snack_bar.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
 
 class BlogScreen extends StatelessWidget {
@@ -61,6 +62,7 @@ class BlogScreen extends StatelessWidget {
                               final commentProvider = context
                                   .read<CommentProvider>();
                               final navigator = Navigator.of(context);
+                              final messenger = ScaffoldMessenger.of(context);
 
                               await blogProvider.deleteBlog(blog.id);
 
@@ -80,6 +82,12 @@ class BlogScreen extends StatelessWidget {
 
                               navigator.pop();
                               navigator.pop();
+
+                              messenger.showSnackBar(
+                                styledSnackBar(
+                                  message: 'Blog successfully deleted!',
+                                ),
+                              );
                             },
                             mainActionLabel: 'Delete',
                             mainActionColor: Colors.red[400],

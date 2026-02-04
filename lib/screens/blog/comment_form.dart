@@ -122,6 +122,7 @@ class _CommentFormState extends State<CommentForm> {
                 final authProvider = context.read<AuthProvider>();
                 final commentProvider = context.read<CommentProvider>();
                 final blogContext = context.read<Blog>();
+                final messenger = ScaffoldMessenger.of(context);
 
                 String? imagePath;
 
@@ -142,6 +143,10 @@ class _CommentFormState extends State<CommentForm> {
                 setState(() {
                   _image = null;
                 });
+
+                messenger.showSnackBar(
+                  styledSnackBar(message: 'Comment posted!'),
+                );
               }
             },
           ),

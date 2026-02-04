@@ -4,6 +4,7 @@ import 'package:simple_blog_flutter/services/comment_provider.dart';
 import 'package:simple_blog_flutter/services/comment_storage_service.dart';
 import 'package:simple_blog_flutter/shared/styled_alert_dialog.dart';
 import 'package:simple_blog_flutter/shared/styled_button.dart';
+import 'package:simple_blog_flutter/shared/styled_snack_bar.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
 
 class CommentCardActions extends StatelessWidget {
@@ -43,6 +44,9 @@ class CommentCardActions extends StatelessWidget {
                     }
 
                     Navigator.pop(context);
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(styledSnackBar(message: 'Comment deleted!'));
                   },
                   mainActionLabel: 'Delete',
                   mainActionColor: Colors.red[400],

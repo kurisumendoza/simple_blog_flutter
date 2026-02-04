@@ -150,6 +150,7 @@ class _CommentEditFormState extends State<CommentEditForm> {
                     _formGlobalKey.currentState!.save();
 
                     final commentProvider = context.read<CommentProvider>();
+                    final messenger = ScaffoldMessenger.of(context);
 
                     String? imagePath;
 
@@ -180,6 +181,9 @@ class _CommentEditFormState extends State<CommentEditForm> {
                     );
 
                     widget.onEditEnd();
+                    messenger.showSnackBar(
+                      styledSnackBar(message: 'Comment updated!'),
+                    );
                   }
                 },
               ),
