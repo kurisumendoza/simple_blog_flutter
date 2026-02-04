@@ -64,4 +64,10 @@ class CommentProvider extends ChangeNotifier {
 
     notifyListeners();
   }
+
+  Future<List> deleteAllComments(int blogId) async {
+    final data = await CommentService.deleteAllComments(blogId);
+
+    return data;
+  }
 }

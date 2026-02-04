@@ -60,4 +60,18 @@ class CommentService extends DatabaseService {
       rethrow;
     }
   }
+
+  static Future<List> deleteAllComments(int blogId) async {
+    try {
+      final data = await DatabaseService.supabase
+          .from('comments')
+          .delete()
+          .eq('blog_id', blogId)
+          .select('image_path');
+
+      return data;
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

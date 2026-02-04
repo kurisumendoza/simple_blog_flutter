@@ -6,6 +6,8 @@ import 'package:simple_blog_flutter/screens/update/update_blog_screen.dart';
 import 'package:simple_blog_flutter/services/blog_provider.dart';
 import 'package:simple_blog_flutter/services/blog_storage_service.dart';
 import 'package:simple_blog_flutter/services/auth_provider.dart';
+import 'package:simple_blog_flutter/services/comment_provider.dart';
+import 'package:simple_blog_flutter/services/comment_storage_service.dart';
 import 'package:simple_blog_flutter/shared/styled_alert_dialog.dart';
 import 'package:simple_blog_flutter/shared/styled_button.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
@@ -54,14 +56,30 @@ class BlogScreen extends StatelessWidget {
                             content: StyledText(
                               'Are you sure you want to delete this blog?',
                             ),
-                            mainAction: () {
-                              context.read<BlogProvider>().deleteBlog(blog.id);
+                            mainAction: () async {
+                              final blogProvider = context.read<BlogProvider>();
+                              final commentProvider = context
+                                  .read<CommentProvider>();
+                              final navigator = Navigator.of(context);
+
+                              await blogProvider.deleteBlog(blog.id);
+
+                              final data = await commentProvider
+                                  .deleteAllComments(blog.id);
+
+                              for (final comment in data) {
+                                final path = comment['image_path'];
+                                if (path != null) {
+                                  await CommentStorageService.deleteImage(path);
+                                }
+                              }
+
                               if (blog.imagePath != null) {
                                 BlogStorageService.deleteImage(blog.imagePath!);
                               }
 
-                              Navigator.pop(context);
-                              Navigator.pop(context);
+                              navigator.pop();
+                              navigator.pop();
                             },
                             mainActionLabel: 'Delete',
                             mainActionColor: Colors.red[400],
