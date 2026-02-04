@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_blog_flutter/services/auth_provider.dart';
+import 'package:simple_blog_flutter/services/profile_provider.dart';
 import 'package:simple_blog_flutter/shared/styled_button.dart';
 import 'package:simple_blog_flutter/shared/styled_form_field.dart';
 import 'package:simple_blog_flutter/shared/styled_snack_bar.dart';
@@ -53,19 +54,33 @@ class _RegisterFormState extends State<RegisterForm> {
               onPressed: () async {
                 if (_formGlobalKey.currentState!.validate()) {
                   _formGlobalKey.currentState!.save();
-                  final (success, message) = await context
-                      .read<AuthProvider>()
-                      .registerUser(_email, _password, _username);
+
+                  final authProvider = context.read<AuthProvider>();
+                  final profileProvider = context.read<ProfileProvider>();
+                  final navigator = Navigator.of(context);
+                  final messenger = ScaffoldMessenger.of(context);
+
+                  final (success, message) = await authProvider.registerUser(
+                    _email,
+                    _password,
+                    _username,
+                  );
 
                   if (success) {
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).removeCurrentSnackBar();
-                    ScaffoldMessenger.of(
-                      context,
-                    ).showSnackBar(styledSnackBar(message: message));
+                    final username = authProvider.username;
+                    final userId = authProvider.userId;
+
+                    await profileProvider.createProfile(
+                      username: username!,
+                      userId: userId!,
+                    );
+
+                    navigator.pop();
+                    messenger.removeCurrentSnackBar();
+                    messenger.showSnackBar(styledSnackBar(message: message));
                   } else {
-                    ScaffoldMessenger.of(context).removeCurrentSnackBar();
-                    ScaffoldMessenger.of(context).showSnackBar(
+                    messenger.removeCurrentSnackBar();
+                    messenger.showSnackBar(
                       styledSnackBar(message: message, isError: true),
                     );
                   }
