@@ -103,6 +103,7 @@ class _BlogFormState extends State<BlogForm> {
               onPressed: () {
                 if (_formGlobalKey.currentState!.validate()) {
                   _formGlobalKey.currentState!.save();
+
                   if (!widget.isUpdate) {
                     context.read<BlogProvider>().createBlog(
                       _title.trim(),
@@ -112,9 +113,10 @@ class _BlogFormState extends State<BlogForm> {
                       context.read<AuthProvider>().userId!,
                     );
 
-                    Navigator.push(
+                    Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(builder: (context) => HomeScreen()),
+                      (route) => false,
                     );
 
                     ScaffoldMessenger.of(context).showSnackBar(
