@@ -30,6 +30,7 @@ class UpdateBlogScreen extends StatelessWidget {
                   id: blog.id,
                   oldTitle: blog.title,
                   oldBody: blog.body,
+                  oldImagePath: blog.imagePath,
                 ),
               ),
             ],

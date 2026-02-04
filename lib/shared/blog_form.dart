@@ -41,6 +41,7 @@ class _BlogFormState extends State<BlogForm> {
 
   String _title = '';
   String _body = '';
+  String? _imagePath;
   File? _image;
 
   String _generateSlug() {
@@ -90,6 +91,14 @@ class _BlogFormState extends State<BlogForm> {
   }
 
   @override
+  void initState() {
+    if (widget.oldImagePath != null) {
+      _imagePath = widget.oldImagePath;
+    }
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Form(
       key: _formGlobalKey,
@@ -117,15 +126,22 @@ class _BlogFormState extends State<BlogForm> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _image == null
+              _image == null && _imagePath == null
                   ? StyledText('Add an image')
-                  : Image.file(
+                  : _imagePath == null
+                  ? Image.file(
                       _image!,
                       height: 100,
                       width: 100,
                       fit: BoxFit.cover,
+                    )
+                  : Image.network(
+                      BlogStorageService.getImageUrl(_imagePath!),
+                      height: 100,
+                      width: 100,
+                      fit: BoxFit.cover,
                     ),
-              _image == null
+              _image == null && _imagePath == null
                   ? OutlinedButton(
                       onPressed: () {
                         pickImage();
@@ -142,6 +158,7 @@ class _BlogFormState extends State<BlogForm> {
                       onPressed: () {
                         setState(() {
                           _image = null;
+                          _imagePath = null;
                         });
                       },
                       style: OutlinedButton.styleFrom(
