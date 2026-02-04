@@ -35,7 +35,7 @@ class Comment {
       body: body ?? this.body,
       user: user ?? this.user,
       userId: userId ?? this.userId,
-      imagePath: imagePath ?? this.imagePath,
+      imagePath: imagePath,
     );
   }
 

@@ -43,10 +43,7 @@ class CommentService extends DatabaseService {
     try {
       final data = await DatabaseService.supabase
           .from('comments')
-          .update({
-            'body': body,
-            if (imagePath != null) 'image_path': imagePath,
-          })
+          .update({'body': body, 'image_path': imagePath})
           .eq('id', id)
           .select();
 

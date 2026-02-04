@@ -156,6 +156,21 @@ class _CommentEditFormState extends State<CommentEditForm> {
                     if (_image != null) {
                       imagePath = _generateImagePath();
                       await CommentStorageService.addImage(imagePath, _image!);
+
+                      if (widget.oldImagePath != null) {
+                        await CommentStorageService.deleteImage(
+                          widget.oldImagePath!,
+                        );
+                      }
+                    }
+
+                    if (_image == null &&
+                        _imagePath == null &&
+                        widget.oldImagePath != null) {
+                      imagePath = null;
+                      await CommentStorageService.deleteImage(
+                        widget.oldImagePath!,
+                      );
                     }
 
                     await commentProvider.updateComment(

@@ -22,4 +22,11 @@ class CommentStorageService extends DatabaseService {
           fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
         );
   }
+
+  // delete one image
+  static Future<void> deleteImage(String filePath) async {
+    await DatabaseService.supabase.storage.from('comment-images').remove([
+      filePath.trim(),
+    ]);
+  }
 }
