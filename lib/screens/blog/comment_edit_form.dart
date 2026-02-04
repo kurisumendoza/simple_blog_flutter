@@ -15,13 +15,15 @@ class CommentEditForm extends StatefulWidget {
   const CommentEditForm({
     super.key,
     required this.id,
-    required this.body,
+    required this.oldBody,
     required this.onEditEnd,
+    this.oldImagePath,
   });
 
   final int id;
-  final String body;
+  final String oldBody;
   final void Function() onEditEnd;
+  final String? oldImagePath;
 
   @override
   State<CommentEditForm> createState() => _CommentEditFormState();
@@ -30,7 +32,8 @@ class CommentEditForm extends StatefulWidget {
 class _CommentEditFormState extends State<CommentEditForm> {
   final _formGlobalKey = GlobalKey<FormState>();
 
-  String _newBody = '';
+  String _body = '';
+  String? _imagePath;
   File? _image;
 
   String _generateImagePath() {
@@ -66,6 +69,14 @@ class _CommentEditFormState extends State<CommentEditForm> {
   }
 
   @override
+  void initState() {
+    if (widget.oldImagePath != null) {
+      _imagePath = widget.oldImagePath;
+    }
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Form(
       key: _formGlobalKey,
@@ -75,24 +86,31 @@ class _CommentEditFormState extends State<CommentEditForm> {
           StyledFormField(
             label: 'Update',
             isUpdate: true,
-            initialValue: widget.body,
-            onSaved: (value) => _newBody = value!,
+            initialValue: widget.oldBody,
+            onSaved: (value) => _body = value!,
             maxLength: 100,
             lines: 3,
           ),
           SizedBox(height: 10),
           Row(
             children: [
-              _image == null
+              _image == null && _imagePath == null
                   ? StyledText('Add an image')
-                  : Image.file(
+                  : _imagePath == null
+                  ? Image.file(
                       _image!,
+                      height: 100,
+                      width: 100,
+                      fit: BoxFit.cover,
+                    )
+                  : Image.network(
+                      CommentStorageService.getImageUrl(_imagePath!),
                       height: 100,
                       width: 100,
                       fit: BoxFit.cover,
                     ),
               SizedBox(width: 10),
-              _image == null
+              _image == null && _imagePath == null
                   ? OutlinedButton(
                       onPressed: () {
                         pickImage();
@@ -109,6 +127,7 @@ class _CommentEditFormState extends State<CommentEditForm> {
                       onPressed: () {
                         setState(() {
                           _image = null;
+                          _imagePath = null;
                         });
                       },
                       style: OutlinedButton.styleFrom(
@@ -141,7 +160,7 @@ class _CommentEditFormState extends State<CommentEditForm> {
 
                     await commentProvider.updateComment(
                       id: widget.id,
-                      body: _newBody,
+                      body: _body,
                       imagePath: imagePath,
                     );
 
