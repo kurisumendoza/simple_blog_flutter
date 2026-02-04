@@ -12,14 +12,18 @@ class BlogProvider extends ChangeNotifier {
   bool _isLoading = true;
   bool get isLoading => _isLoading;
 
+  int _lastStart = 0;
+  int _lastEnd = 4;
+
   Future<void> getBlogs(int start, int end) async {
     _isLoading = true;
+    _lastStart = start;
+    _lastEnd = end;
 
     List<Blog> blogs = await BlogService.getBlogs(start, end);
 
     int count = await BlogService.getBlogsCount();
 
-    _blogs.clear();
     _blogs = blogs;
     _count = count;
 
@@ -50,10 +54,18 @@ class BlogProvider extends ChangeNotifier {
   Future<void> updateBlog(int id, String title, String body) async {
     await BlogService.updateBlog(id, title, body);
 
-    final blog = _blogs.firstWhere((c) => c.id == id);
+    final blog = _blogs.firstWhere((b) => b.id == id);
     final int i = _blogs.indexOf(blog);
 
     _blogs[i] = _blogs[i].copyWith(title: title, body: body);
+    notifyListeners();
+  }
+
+  Future<void> deleteBlog(int id) async {
+    await BlogService.deleteBlog(id);
+
+    await getBlogs(_lastStart, _lastEnd);
+
     notifyListeners();
   }
 }

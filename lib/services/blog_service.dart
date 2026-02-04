@@ -71,4 +71,12 @@ class BlogService {
       rethrow;
     }
   }
+
+  static Future<void> deleteBlog(int id) async {
+    try {
+      await DatabaseService.supabase.from('blogs').delete().eq('id', id);
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

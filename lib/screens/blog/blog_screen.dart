@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_blog_flutter/models/blog.dart';
 import 'package:simple_blog_flutter/screens/blog/comment_section.dart';
+import 'package:simple_blog_flutter/screens/home/home_screen.dart';
 import 'package:simple_blog_flutter/screens/update/update_blog_screen.dart';
 import 'package:simple_blog_flutter/services/blog_provider.dart';
 import 'package:simple_blog_flutter/services/blog_storage_service.dart';
@@ -54,7 +55,11 @@ class BlogScreen extends StatelessWidget {
                             content: StyledText(
                               'Are you sure you want to delete this blog?',
                             ),
-                            mainAction: () {},
+                            mainAction: () {
+                              context.read<BlogProvider>().deleteBlog(blog.id);
+                              Navigator.pop(context);
+                              Navigator.pop(context);
+                            },
                             mainActionLabel: 'Delete',
                             mainActionColor: Colors.red[400],
                           ),

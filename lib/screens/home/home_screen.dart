@@ -21,7 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final int _blogsPerPage = 5;
   int _totalPages = 1;
   int _currentPage = 1;
-  int _count = 0;
+  // int _count = 0;
   int _start = 0;
   int _end = 4;
 
@@ -34,14 +34,15 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _loadBlogCount() async {
     await context.read<BlogProvider>().getBlogs(_start, _end);
 
-    setState(() {
-      _count = context.read<BlogProvider>().count;
-    });
+    // setState(() {
+    //   _count = context.read<BlogProvider>().count;
+    // });
   }
 
   @override
   Widget build(BuildContext context) {
-    _totalPages = (_count / _blogsPerPage).ceil();
+    final int count = context.watch<BlogProvider>().count;
+    _totalPages = (count / _blogsPerPage).ceil();
 
     return Scaffold(
       appBar: AppBar(title: StyledTitle('Blogs'), centerTitle: true),
