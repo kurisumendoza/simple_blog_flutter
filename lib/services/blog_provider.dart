@@ -6,6 +6,9 @@ class BlogProvider extends ChangeNotifier {
   List<Blog> _blogs = [];
   List<Blog> get blogs => _blogs;
 
+  List<Blog> _userBlogs = [];
+  List<Blog> get userBlogs => _userBlogs;
+
   int _count = 0;
   int get count => _count;
 
@@ -26,6 +29,17 @@ class BlogProvider extends ChangeNotifier {
 
     _blogs = blogs;
     _count = count;
+
+    _isLoading = false;
+    notifyListeners();
+  }
+
+  Future<void> getUserBlogs() async {
+    _isLoading = true;
+
+    List<Blog> blogs = await BlogService.getUserBlogs();
+
+    _userBlogs = blogs;
 
     _isLoading = false;
     notifyListeners();

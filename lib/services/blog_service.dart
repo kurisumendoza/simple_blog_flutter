@@ -17,6 +17,21 @@ class BlogService {
     }
   }
 
+  // get recent blogs by user
+  static Future<List<Blog>> getUserBlogs() async {
+    try {
+      final data = await DatabaseService.supabase
+          .from('blogs')
+          .select()
+          .order('created_at')
+          .range(0, 4);
+
+      return data.map<Blog>((d) => Blog.fromSupabase(d)).toList();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   // get blogs total count
   static Future<int> getBlogsCount() async {
     try {

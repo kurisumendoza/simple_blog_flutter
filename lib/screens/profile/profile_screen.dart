@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:simple_blog_flutter/screens/home/blog_card.dart';
 import 'package:simple_blog_flutter/screens/profile_edit/edit_profile_screen.dart';
 import 'package:simple_blog_flutter/services/auth_provider.dart';
+import 'package:simple_blog_flutter/services/blog_provider.dart';
 import 'package:simple_blog_flutter/services/profile_provider.dart';
 import 'package:simple_blog_flutter/shared/styled_button.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
@@ -25,8 +27,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<void> _loadProfile() async {
     _userId = context.read<AuthProvider>().userId;
+    final profileProvider = context.read<ProfileProvider>();
+    final blogProvider = context.read<BlogProvider>();
+
     if (_userId != null) {
-      await context.read<ProfileProvider>().getUser(_userId!.trim());
+      await profileProvider.getUser(_userId!.trim());
+      await blogProvider.getUserBlogs();
       setState(() {});
     }
   }
@@ -39,87 +45,104 @@ class _ProfileScreenState extends State<ProfileScreen> {
       appBar: AppBar(title: StyledTitle('Profile'), centerTitle: true),
       body: Container(
         padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: 150,
-                  height: 150,
-                  color: AppColors.primary,
-                  child: Icon(Icons.person, size: 150),
-                ),
-                SizedBox(width: 20),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(Icons.person, color: AppColors.accent),
-                        SizedBox(width: 10),
-                        StyledHeading(profile!.user),
-                      ],
-                    ),
-                    SizedBox(height: 10),
-                    Row(
-                      children: [
-                        Icon(Icons.cake, color: AppColors.accent),
-                        SizedBox(width: 10),
-                        StyledHeading(profile.formattedDate),
-                      ],
-                    ),
-                    SizedBox(height: 10),
-                    Row(
-                      children: [
-                        Icon(Icons.pin_drop, color: AppColors.accent),
-                        SizedBox(width: 10),
-                        StyledHeading(profile.location ?? 'Not set'),
-                      ],
-                    ),
-                    SizedBox(height: 10),
-                    StyledFilledButton(
-                      'Edit Profile',
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => EditProfileScreen(),
+        child: profile == null
+            ? Center(child: CircularProgressIndicator())
+            : Column(
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: 150,
+                        height: 150,
+                        color: AppColors.primary,
+                        child: Icon(Icons.person, size: 150),
+                      ),
+                      SizedBox(width: 20),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(Icons.person, color: AppColors.accent),
+                              SizedBox(width: 10),
+                              StyledHeading(profile.user),
+                            ],
                           ),
-                        );
-                      },
+                          SizedBox(height: 10),
+                          Row(
+                            children: [
+                              Icon(Icons.cake, color: AppColors.accent),
+                              SizedBox(width: 10),
+                              StyledHeading(profile.formattedDate),
+                            ],
+                          ),
+                          SizedBox(height: 10),
+                          Row(
+                            children: [
+                              Icon(Icons.pin_drop, color: AppColors.accent),
+                              SizedBox(width: 10),
+                              StyledHeading(profile.location ?? 'Not set'),
+                            ],
+                          ),
+                          SizedBox(height: 10),
+                          StyledFilledButton(
+                            'Edit Profile',
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => EditProfileScreen(),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  Container(
+                    padding: EdgeInsets.all(20),
+                    color: AppColors.secondary.withAlpha(150),
+                    height: 180,
+                    width: double.maxFinite,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        StyledHeading('Bio'),
+                        SizedBox(height: 10),
+                        StyledText(profile.bio ?? 'Not set'),
+                      ],
                     ),
-                  ],
-                ),
-              ],
-            ),
-            SizedBox(height: 20),
-            Container(
-              padding: EdgeInsets.all(20),
-              color: AppColors.secondary.withAlpha(150),
-              height: 180,
-              width: double.maxFinite,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  StyledHeading('Bio'),
-                  SizedBox(height: 10),
-                  StyledText(profile.bio ?? 'Not set'),
-                ],
-              ),
-            ),
-            SizedBox(height: 16),
+                  ),
+                  SizedBox(height: 16),
 
-            Expanded(
-              child: Column(
-                children: [
-                  StyledTitle('Recent Posts'), SizedBox(height: 16),
-                  // TODO: add blog posts here
+                  Expanded(
+                    child: Column(
+                      children: [
+                        StyledTitle('Recent Posts'),
+                        SizedBox(height: 16),
+                        Expanded(
+                          child: ListView.builder(
+                            itemCount: context
+                                .read<BlogProvider>()
+                                .userBlogs
+                                .length,
+                            itemBuilder: ((context, index) {
+                              return BlogCard(
+                                blog: context
+                                    .read<BlogProvider>()
+                                    .userBlogs[index],
+                              );
+                            }),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
-            ),
-          ],
-        ),
       ),
     );
   }
