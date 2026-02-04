@@ -51,13 +51,27 @@ class BlogProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateBlog(int id, String title, String body) async {
-    await BlogService.updateBlog(id, title, body);
+  Future<void> updateBlog({
+    required int id,
+    required String title,
+    required String body,
+    String? imagePath,
+  }) async {
+    await BlogService.updateBlog(
+      id: id,
+      title: title,
+      body: body,
+      imagePath: imagePath,
+    );
 
     final blog = _blogs.firstWhere((b) => b.id == id);
     final int i = _blogs.indexOf(blog);
 
-    _blogs[i] = _blogs[i].copyWith(title: title, body: body);
+    _blogs[i] = _blogs[i].copyWith(
+      title: title,
+      body: body,
+      imagePath: imagePath,
+    );
     notifyListeners();
   }
 

@@ -167,14 +167,14 @@ class _BlogFormState extends State<BlogForm> {
                   final navigator = Navigator.of(context);
                   final messenger = ScaffoldMessenger.of(context);
 
+                  String? imagePath;
+
+                  if (_image != null) {
+                    imagePath = _generateImagePath();
+                    await BlogStorageService.addImage(imagePath, _image!);
+                  }
+
                   if (!widget.isUpdate) {
-                    String? imagePath;
-
-                    if (_image != null) {
-                      imagePath = _generateImagePath();
-                      await BlogStorageService.addImage(imagePath, _image!);
-                    }
-
                     await blogProvider.createBlog(
                       title: _title.trim(),
                       slug: _generateSlug(),
@@ -196,9 +196,10 @@ class _BlogFormState extends State<BlogForm> {
 
                   if (widget.isUpdate) {
                     await blogProvider.updateBlog(
-                      widget.id!,
-                      _title.trim(),
-                      _body.trim(),
+                      id: widget.id!,
+                      title: _title.trim(),
+                      body: _body.trim(),
+                      imagePath: imagePath,
                     );
 
                     navigator.pushReplacement(

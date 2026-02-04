@@ -54,15 +54,20 @@ class BlogService {
     }
   }
 
-  static Future<List<Blog>> updateBlog(
-    int id,
-    String title,
-    String body,
-  ) async {
+  static Future<List<Blog>> updateBlog({
+    required int id,
+    required String title,
+    required String body,
+    String? imagePath,
+  }) async {
     try {
       final data = await DatabaseService.supabase
           .from('blogs')
-          .update({'title': title, 'body': body})
+          .update({
+            'title': title,
+            'body': body,
+            if (imagePath != null) 'image_path': imagePath,
+          })
           .eq('id', id)
           .select();
 
