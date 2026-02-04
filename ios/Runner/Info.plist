@@ -45,5 +45,8 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
-</dict>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Choose an image from your gallery</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Upload an image using your camera</string>
 </plist>
