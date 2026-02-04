@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_blog_flutter/models/blog.dart';
 import 'package:simple_blog_flutter/screens/blog/comment_section.dart';
-import 'package:simple_blog_flutter/screens/home/home_screen.dart';
 import 'package:simple_blog_flutter/screens/update/update_blog_screen.dart';
 import 'package:simple_blog_flutter/services/blog_provider.dart';
 import 'package:simple_blog_flutter/services/blog_storage_service.dart';

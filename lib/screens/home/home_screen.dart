@@ -21,22 +21,17 @@ class _HomeScreenState extends State<HomeScreen> {
   final int _blogsPerPage = 5;
   int _totalPages = 1;
   int _currentPage = 1;
-  // int _count = 0;
   int _start = 0;
   int _end = 4;
 
   @override
   void initState() {
-    _loadBlogCount();
+    _loadBlogs();
     super.initState();
   }
 
-  Future<void> _loadBlogCount() async {
+  Future<void> _loadBlogs() async {
     await context.read<BlogProvider>().getBlogs(_start, _end);
-
-    // setState(() {
-    //   _count = context.read<BlogProvider>().count;
-    // });
   }
 
   @override
