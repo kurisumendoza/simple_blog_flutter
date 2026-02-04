@@ -1,14 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:simple_blog_flutter/screens/profile_edit/edit_profile_screen.dart';
+import 'package:simple_blog_flutter/services/auth_provider.dart';
+import 'package:simple_blog_flutter/services/profile_provider.dart';
 import 'package:simple_blog_flutter/shared/styled_button.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
 import 'package:simple_blog_flutter/theme.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
   @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  String? _userId;
+
+  @override
+  void initState() {
+    _loadProfile();
+    super.initState();
+  }
+
+  Future<void> _loadProfile() async {
+    _userId = context.read<AuthProvider>().userId;
+    if (_userId != null) {
+      await context.read<ProfileProvider>().getUser(_userId!.trim());
+      setState(() {});
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final profile = context.watch<ProfileProvider>().profile;
+
     return Scaffold(
       appBar: AppBar(title: StyledTitle('Profile'), centerTitle: true),
       body: Container(
@@ -32,7 +58,7 @@ class ProfileScreen extends StatelessWidget {
                       children: [
                         Icon(Icons.person, color: AppColors.accent),
                         SizedBox(width: 10),
-                        StyledHeading('Maki'),
+                        StyledHeading(profile!.user),
                       ],
                     ),
                     SizedBox(height: 10),
@@ -40,7 +66,7 @@ class ProfileScreen extends StatelessWidget {
                       children: [
                         Icon(Icons.cake, color: AppColors.accent),
                         SizedBox(width: 10),
-                        StyledHeading('Yesterday'),
+                        StyledHeading(profile.formattedDate),
                       ],
                     ),
                     SizedBox(height: 10),
@@ -48,7 +74,7 @@ class ProfileScreen extends StatelessWidget {
                       children: [
                         Icon(Icons.pin_drop, color: AppColors.accent),
                         SizedBox(width: 10),
-                        StyledHeading('Bulacan'),
+                        StyledHeading(profile.location ?? 'Not set'),
                       ],
                     ),
                     SizedBox(height: 10),
@@ -78,7 +104,7 @@ class ProfileScreen extends StatelessWidget {
                 children: [
                   StyledHeading('Bio'),
                   SizedBox(height: 10),
-                  StyledText('Hello, world!'),
+                  StyledText(profile.bio ?? 'Not set'),
                 ],
               ),
             ),
@@ -88,7 +114,7 @@ class ProfileScreen extends StatelessWidget {
               child: Column(
                 children: [
                   StyledTitle('Recent Posts'), SizedBox(height: 16),
-                  // add blog posts here
+                  // TODO: add blog posts here
                 ],
               ),
             ),
