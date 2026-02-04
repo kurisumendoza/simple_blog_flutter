@@ -31,21 +31,21 @@ class BlogProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> createBlog(
-    String title,
-    String slug,
-    String body,
-    String user,
-    String userId,
-    // String? imagePath,
-  ) async {
+  Future<void> createBlog({
+    required String title,
+    required String slug,
+    required String body,
+    required String user,
+    required String userId,
+    String? imagePath,
+  }) async {
     await BlogService.createBlog(
-      title,
-      slug,
-      body,
-      user,
-      userId,
-      // imagePath ?? 'image_path' : imagePath,
+      title: title,
+      slug: slug,
+      body: body,
+      user: user,
+      userId: userId,
+      imagePath: imagePath,
     );
 
     notifyListeners();

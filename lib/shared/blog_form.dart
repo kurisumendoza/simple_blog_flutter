@@ -1,11 +1,13 @@
+import 'dart:io';
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:simple_blog_flutter/screens/blog/blog_screen.dart';
 import 'package:simple_blog_flutter/screens/home/home_screen.dart';
 import 'package:simple_blog_flutter/services/auth_provider.dart';
 import 'package:simple_blog_flutter/services/blog_provider.dart';
+import 'package:simple_blog_flutter/services/blog_storage_service.dart';
 import 'package:simple_blog_flutter/shared/styled_button.dart';
 import 'package:simple_blog_flutter/shared/styled_form_field.dart';
 import 'package:simple_blog_flutter/shared/styled_snack_bar.dart';
@@ -39,7 +41,7 @@ class _BlogFormState extends State<BlogForm> {
 
   String _title = '';
   String _body = '';
-  // String _imagePath = '';
+  File? _image;
 
   String _generateSlug() {
     int end = min(_title.length, 30);
@@ -53,6 +55,38 @@ class _BlogFormState extends State<BlogForm> {
         .join('-');
 
     return '$slug + $suffix';
+  }
+
+  String _generateImagePath() {
+    String ext = _image!.path.split('.').last;
+    String pathName = Random().nextInt(1000000).toRadixString(36);
+
+    return 'public/$pathName.$ext';
+  }
+
+  Future<void> pickImage() async {
+    final picker = ImagePicker();
+    final pickedImage = await picker.pickImage(source: ImageSource.gallery);
+
+    if (!mounted) return;
+
+    if (pickedImage != null) {
+      String ext = pickedImage.path.split('.').last.toLowerCase();
+
+      if (ext != 'jpg' && ext != 'jpeg' && ext != 'png') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          styledSnackBar(
+            isError: true,
+            message: 'Please pick a PNG or JPG image!',
+          ),
+        );
+        return;
+      }
+
+      setState(() {
+        _image = File(pickedImage.path);
+      });
+    }
   }
 
   @override
@@ -81,66 +115,99 @@ class _BlogFormState extends State<BlogForm> {
           ),
           SizedBox(height: 15),
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              StyledText('Add an image'),
-              SizedBox(width: 10),
-              OutlinedButton(
-                onPressed: () {},
-                style: OutlinedButton.styleFrom(
-                  side: BorderSide(color: AppColors.primary),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                child: StyledText('Choose File'),
-              ),
+              _image == null
+                  ? StyledText('Add an image')
+                  : Image.file(
+                      _image!,
+                      height: 100,
+                      width: 100,
+                      fit: BoxFit.cover,
+                    ),
+              _image == null
+                  ? OutlinedButton(
+                      onPressed: () {
+                        pickImage();
+                      },
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(color: AppColors.primary),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: StyledText('Choose File'),
+                    )
+                  : OutlinedButton(
+                      onPressed: () {
+                        setState(() {
+                          _image = null;
+                        });
+                      },
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(color: Colors.red.shade400),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: StyledText('Remove Image', color: Colors.red[200]),
+                    ),
             ],
           ),
           SizedBox(height: 30),
           Center(
             child: StyledFilledButton(
               widget.buttonText,
-              onPressed: () {
+              onPressed: () async {
                 if (_formGlobalKey.currentState!.validate()) {
                   _formGlobalKey.currentState!.save();
 
+                  final authProvider = context.read<AuthProvider>();
+                  final blogProvider = context.read<BlogProvider>();
+                  final navigator = Navigator.of(context);
+                  final messenger = ScaffoldMessenger.of(context);
+
                   if (!widget.isUpdate) {
-                    context.read<BlogProvider>().createBlog(
-                      _title.trim(),
-                      _generateSlug(),
-                      _body.trim(),
-                      context.read<AuthProvider>().username!,
-                      context.read<AuthProvider>().userId!,
+                    String? imagePath;
+
+                    if (_image != null) {
+                      imagePath = _generateImagePath();
+                      await BlogStorageService.addImage(imagePath, _image!);
+                    }
+
+                    await blogProvider.createBlog(
+                      title: _title.trim(),
+                      slug: _generateSlug(),
+                      body: _body.trim(),
+                      user: authProvider.username!,
+                      userId: authProvider.userId!,
+                      imagePath: imagePath,
                     );
 
-                    Navigator.pushAndRemoveUntil(
-                      context,
+                    navigator.pushAndRemoveUntil(
                       MaterialPageRoute(builder: (context) => HomeScreen()),
                       (route) => false,
                     );
 
-                    ScaffoldMessenger.of(context).showSnackBar(
+                    messenger.showSnackBar(
                       styledSnackBar(message: 'Blog posted successfully!'),
                     );
                   }
 
                   if (widget.isUpdate) {
-                    context.read<BlogProvider>().updateBlog(
+                    await blogProvider.updateBlog(
                       widget.id!,
                       _title.trim(),
                       _body.trim(),
                     );
 
-                    // Navigator.pop(context);
-
-                    Navigator.pushReplacement(
-                      context,
+                    navigator.pushReplacement(
                       MaterialPageRoute(
                         builder: (context) => BlogScreen(id: widget.id),
                       ),
                     );
 
-                    ScaffoldMessenger.of(context).showSnackBar(
+                    messenger.showSnackBar(
                       styledSnackBar(message: 'Blog updated successfully!'),
                     );
                   }

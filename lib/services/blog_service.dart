@@ -32,14 +32,14 @@ class BlogService {
   }
 
   // create new blog
-  static Future<void> createBlog(
-    String title,
-    String slug,
-    String body,
-    String user,
-    String userId,
-    // String? imagePath,
-  ) async {
+  static Future<void> createBlog({
+    required String title,
+    required String slug,
+    required String body,
+    required String user,
+    required String userId,
+    String? imagePath,
+  }) async {
     try {
       await DatabaseService.supabase.from('blogs').insert({
         'title': title,
@@ -47,7 +47,7 @@ class BlogService {
         'body': body,
         'user': user,
         'user_id': userId,
-        // imagePath ?? 'image_path' : imagePath,
+        if (imagePath != null) 'image_path': imagePath,
       });
     } catch (e) {
       rethrow;
