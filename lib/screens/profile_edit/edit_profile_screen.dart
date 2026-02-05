@@ -25,8 +25,8 @@ class EditProfileScreen extends StatefulWidget {
 class _EditProfileScreenState extends State<EditProfileScreen> {
   final _formGlobalKey = GlobalKey<FormState>();
 
-  String _location = '';
-  String _bio = '';
+  String? _location;
+  String? _bio;
   String? _imagePath;
   File? _image;
   bool _isSubmitting = false;
@@ -146,7 +146,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   label: 'General Location',
                   initialValue: widget.profile.location,
                   isOptional: true,
-                  onSaved: (value) => _location = value!,
+                  onSaved: (value) =>
+                      _location = (value != null && value.trim().isNotEmpty)
+                      ? value.trim()
+                      : null,
                   maxLength: 15,
                   minLength: 0,
                 ),
@@ -155,7 +158,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   label: 'Update your bio',
                   initialValue: widget.profile.bio,
                   isOptional: true,
-                  onSaved: (value) => _bio = value!,
+                  onSaved: (value) =>
+                      _bio = (value != null && value.trim().isNotEmpty)
+                      ? value.trim()
+                      : null,
                   maxLength: 100,
                   minLength: 0,
                   lines: 5,
@@ -207,8 +213,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
                             await commentProvider.updateProfile(
                               id: widget.profile.id,
-                              location: _location.trim(),
-                              bio: _bio.trim(),
+                              location: _location,
+                              bio: _bio,
                               imagePath: imagePath,
                             );
 
