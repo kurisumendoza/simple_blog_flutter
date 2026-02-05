@@ -5,6 +5,8 @@ import 'package:simple_blog_flutter/screens/blog/comment_card_actions.dart';
 import 'package:simple_blog_flutter/screens/blog/comment_edit_form.dart';
 import 'package:simple_blog_flutter/services/comment_storage_service.dart';
 import 'package:simple_blog_flutter/services/auth_provider.dart';
+import 'package:simple_blog_flutter/services/profile_provider.dart';
+import 'package:simple_blog_flutter/services/profile_storage_service.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
 import 'package:simple_blog_flutter/theme.dart';
 
@@ -18,7 +20,24 @@ class CommentCard extends StatefulWidget {
 }
 
 class _CommentCardState extends State<CommentCard> {
-  bool isEditing = false;
+  bool _isEditing = false;
+  String? _userImage;
+
+  @override
+  void initState() {
+    _fetchUserImage();
+    super.initState();
+  }
+
+  Future<void> _fetchUserImage() async {
+    final userImage = await context.read<ProfileProvider>().getUserImage(
+      widget.comment.userId.trim(),
+    );
+
+    setState(() {
+      _userImage = userImage;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,14 +51,19 @@ class _CommentCardState extends State<CommentCard> {
             children: [
               Row(
                 children: [
-                  SizedBox(
-                    height: 30,
-                    width: 30,
-                    child: Container(
-                      color: AppColors.primary,
-                      child: Icon(Icons.person),
-                    ),
-                  ),
+                  _userImage == null
+                      ? Container(
+                          height: 30,
+                          width: 30,
+                          color: AppColors.primary,
+                          child: Icon(Icons.person),
+                        )
+                      : Image.network(
+                          ProfileStorageService.getImageUrl(_userImage!),
+                          height: 30,
+                          width: 30,
+                          fit: BoxFit.cover,
+                        ),
                   SizedBox(width: 5),
                   StyledText(widget.comment.user, color: AppColors.accent),
                 ],
@@ -52,7 +76,7 @@ class _CommentCardState extends State<CommentCard> {
             ],
           ),
           SizedBox(height: 8),
-          isEditing &&
+          _isEditing &&
                   (widget.comment.userId ==
                       context.watch<AuthProvider>().user!.id)
               ? CommentEditForm(
@@ -61,7 +85,7 @@ class _CommentCardState extends State<CommentCard> {
                   oldImagePath: widget.comment.imagePath,
                   onEditEnd: () {
                     setState(() {
-                      isEditing = false;
+                      _isEditing = false;
                     });
                   },
                 )
@@ -81,13 +105,13 @@ class _CommentCardState extends State<CommentCard> {
                       ),
                   ],
                 ),
-          if (!isEditing &&
+          if (!_isEditing &&
               context.watch<AuthProvider>().isLoggedIn &&
               context.read<AuthProvider>().username == widget.comment.user)
             CommentCardActions(
               onEditStart: () {
                 setState(() {
-                  isEditing = true;
+                  _isEditing = true;
                 });
               },
               id: widget.comment.id,

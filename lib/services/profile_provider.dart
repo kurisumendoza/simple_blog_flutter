@@ -6,10 +6,19 @@ class ProfileProvider extends ChangeNotifier {
   Profile? _profile;
   Profile? get profile => _profile;
 
+  String? _profileImage;
+  String? profileImage(String userId) => _profileImage;
+
   Future<void> getUser(String userId) async {
     final profile = await ProfileService.getUser(userId);
 
     _profile = profile[0];
+  }
+
+  Future<String?> getUserImage(String userId) async {
+    final profile = await ProfileService.getUser(userId);
+
+    return profile[0].imagePath;
   }
 
   Future<void> createProfile({
