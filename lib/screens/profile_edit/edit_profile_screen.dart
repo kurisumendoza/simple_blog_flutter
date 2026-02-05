@@ -27,6 +27,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   String _location = '';
   String _bio = '';
+  String? _imagePath;
   File? _image;
 
   String _generateImagePath() {
@@ -62,6 +63,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   @override
+  void initState() {
+    if (widget.profile.imagePath != null) {
+      _imagePath = widget.profile.imagePath;
+    }
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: StyledTitle('Edit Profile'), centerTitle: true),
@@ -80,18 +89,25 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _image != null
+                    _image == null && _imagePath == null
+                        ? Container(
+                            width: 150,
+                            height: 150,
+                            color: AppColors.primary,
+                            child: Icon(Icons.person, size: 150),
+                          )
+                        : _imagePath == null
                         ? Image.file(
                             _image!,
                             height: 150,
                             width: 150,
                             fit: BoxFit.cover,
                           )
-                        : Container(
-                            width: 150,
+                        : Image.network(
+                            ProfileStorageService.getImageUrl(_imagePath!),
                             height: 150,
-                            color: AppColors.primary,
-                            child: Icon(Icons.person, size: 150),
+                            width: 150,
+                            fit: BoxFit.cover,
                           ),
                     SizedBox(width: 16),
                     Column(
@@ -103,21 +119,22 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         StyledText('join date:'),
                         StyledHeading(widget.profile.formattedDate),
                         SizedBox(height: 8),
-                        _image != null
+                        _image == null && _imagePath == null
                             ? StyledFilledButton(
-                                'Remove photo',
-                                onPressed: () {
-                                  setState(() {
-                                    _image = null;
-                                  });
-                                },
-                                color: Colors.red[400],
-                              )
-                            : StyledFilledButton(
                                 'Upload a photo',
                                 onPressed: () {
                                   pickImage();
                                 },
+                              )
+                            : StyledFilledButton(
+                                'Remove photo',
+                                onPressed: () {
+                                  setState(() {
+                                    _image = null;
+                                    _imagePath = null;
+                                  });
+                                },
+                                color: Colors.red[400],
                               ),
                       ],
                     ),
