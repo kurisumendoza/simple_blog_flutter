@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:simple_blog_flutter/services/database_service.dart';
 
-class BlogStorageService extends DatabaseService {
+class BlogStorageService {
   // get image URL
   static String getImageUrl(String imagePath) {
     final String publicUrl = DatabaseService.supabase.storage
