@@ -70,7 +70,26 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
             SizedBox(height: 20),
-            PageIndicator(currentPage: _currentPage, lastPage: _totalPages),
+            PageIndicator(
+              currentPage: _currentPage,
+              lastPage: _totalPages,
+              onPrevious: () {
+                if (_currentPage > 1) {
+                  _controller.previousPage(
+                    duration: Duration(milliseconds: 300),
+                    curve: Curves.linear,
+                  );
+                }
+              },
+              onNext: () {
+                if (_currentPage < _totalPages) {
+                  _controller.nextPage(
+                    duration: Duration(milliseconds: 300),
+                    curve: Curves.linear,
+                  );
+                }
+              },
+            ),
             SizedBox(height: 30),
           ],
         ),
