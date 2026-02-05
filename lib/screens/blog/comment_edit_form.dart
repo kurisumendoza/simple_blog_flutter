@@ -35,6 +35,7 @@ class _CommentEditFormState extends State<CommentEditForm> {
   String _body = '';
   String? _imagePath;
   File? _image;
+  bool _isSubmitting = false;
 
   String _generateImagePath() {
     String ext = _image!.path.split('.').last;
@@ -145,47 +146,63 @@ class _CommentEditFormState extends State<CommentEditForm> {
             children: [
               StyledFilledButton(
                 'Update',
-                onPressed: () async {
-                  if (_formGlobalKey.currentState!.validate()) {
-                    _formGlobalKey.currentState!.save();
-
-                    final commentProvider = context.read<CommentProvider>();
-                    final messenger = ScaffoldMessenger.of(context);
-
-                    String? imagePath = widget.oldImagePath;
-
-                    if (_image != null) {
-                      imagePath = _generateImagePath();
-                      await CommentStorageService.addImage(imagePath, _image!);
-
-                      if (widget.oldImagePath != null) {
-                        await CommentStorageService.deleteImage(
-                          widget.oldImagePath!,
-                        );
+                onPressed: _isSubmitting
+                    ? () {
+                        if (_isSubmitting) return;
                       }
-                    }
+                    : () async {
+                        if (_formGlobalKey.currentState!.validate()) {
+                          _formGlobalKey.currentState!.save();
 
-                    if (_image == null &&
-                        _imagePath == null &&
-                        widget.oldImagePath != null) {
-                      imagePath = null;
-                      await CommentStorageService.deleteImage(
-                        widget.oldImagePath!,
-                      );
-                    }
+                          setState(() {
+                            _isSubmitting = true;
+                          });
 
-                    await commentProvider.updateComment(
-                      id: widget.id,
-                      body: _body,
-                      imagePath: imagePath,
-                    );
+                          final commentProvider = context
+                              .read<CommentProvider>();
+                          final messenger = ScaffoldMessenger.of(context);
 
-                    widget.onEditEnd();
-                    messenger.showSnackBar(
-                      styledSnackBar(message: 'Comment updated!'),
-                    );
-                  }
-                },
+                          String? imagePath = widget.oldImagePath;
+
+                          if (_image != null) {
+                            imagePath = _generateImagePath();
+                            await CommentStorageService.addImage(
+                              imagePath,
+                              _image!,
+                            );
+
+                            if (widget.oldImagePath != null) {
+                              await CommentStorageService.deleteImage(
+                                widget.oldImagePath!,
+                              );
+                            }
+                          }
+
+                          if (_image == null &&
+                              _imagePath == null &&
+                              widget.oldImagePath != null) {
+                            imagePath = null;
+                            await CommentStorageService.deleteImage(
+                              widget.oldImagePath!,
+                            );
+                          }
+
+                          await commentProvider.updateComment(
+                            id: widget.id,
+                            body: _body,
+                            imagePath: imagePath,
+                          );
+
+                          setState(() {
+                            _isSubmitting = false;
+                          });
+
+                          widget.onEditEnd();
+                          messenger.showSnackBar(
+                            styledSnackBar(message: 'Comment updated!'),
+                          );
+                        }
+                      },
               ),
               SizedBox(width: 10),
               StyledFilledButton(
