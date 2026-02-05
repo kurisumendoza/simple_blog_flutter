@@ -45,7 +45,7 @@ class AuthProvider extends ChangeNotifier {
 
       return (true, 'Welcome, $username!');
     } on AuthApiException catch (e) {
-      return (false, '${e.message}. Use a different email.');
+      return (false, e.message);
     } catch (e) {
       return (false, 'Failed to register! Check your internet connection');
     }
