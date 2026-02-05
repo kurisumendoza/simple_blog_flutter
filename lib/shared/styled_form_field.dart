@@ -16,6 +16,7 @@ class StyledFormField extends StatelessWidget {
     this.minLength = 5,
     this.lines = 1,
     this.isUpdate = false,
+    this.isOptional = false,
     this.initialValue,
   });
 
@@ -29,6 +30,7 @@ class StyledFormField extends StatelessWidget {
   final int minLength;
   final int lines;
   final bool isUpdate;
+  final bool isOptional;
   final String? initialValue;
 
   final _emailRe = RegExp(
@@ -62,14 +64,17 @@ class StyledFormField extends StatelessWidget {
       validator:
           validator ??
           (value) {
-            if (value == null || value.isEmpty) {
-              return '$label is required';
-            }
-            if (value.length < (minLength)) {
-              return '$label should be at least $minLength characters';
-            }
-            if (isEmail && !_emailRe.hasMatch(value)) {
-              return 'Enter a valid email address';
+            if (!isOptional) {
+              if (value == null || value.isEmpty) {
+                return '$label is required';
+              }
+
+              if (value.length < (minLength)) {
+                return '$label should be at least $minLength characters';
+              }
+              if (isEmail && !_emailRe.hasMatch(value)) {
+                return 'Enter a valid email address';
+              }
             }
 
             return null;

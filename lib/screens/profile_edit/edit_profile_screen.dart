@@ -2,7 +2,11 @@ import 'dart:io';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:simple_blog_flutter/models/profile.dart';
+import 'package:simple_blog_flutter/screens/profile/profile_screen.dart';
+import 'package:simple_blog_flutter/services/profile_provider.dart';
+import 'package:simple_blog_flutter/services/profile_storage_service.dart';
 import 'package:simple_blog_flutter/shared/styled_button.dart';
 import 'package:simple_blog_flutter/shared/styled_form_field.dart';
 import 'package:simple_blog_flutter/shared/styled_snack_bar.dart';
@@ -123,23 +127,64 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 StyledFormField(
                   label: 'General Location',
                   initialValue: widget.profile.location,
+                  isOptional: true,
                   onSaved: (value) => _location = value!,
                   maxLength: 30,
-                  minLength: 5,
+                  minLength: 0,
                 ),
                 SizedBox(height: 20),
                 StyledFormField(
                   label: 'Update your bio',
                   initialValue: widget.profile.bio,
+                  isOptional: true,
                   onSaved: (value) => _bio = value!,
                   maxLength: 100,
-                  minLength: 5,
+                  minLength: 0,
                   lines: 5,
                 ),
                 SizedBox(height: 20),
                 StyledFilledButton(
                   'Save',
-                  onPressed: () {},
+                  onPressed: () async {
+                    if (_formGlobalKey.currentState!.validate()) {
+                      _formGlobalKey.currentState!.save();
+
+                      final commentProvider = context.read<ProfileProvider>();
+                      final navigator = Navigator.of(context);
+                      final messenger = ScaffoldMessenger.of(context);
+
+                      String? imagePath;
+
+                      if (_image != null) {
+                        imagePath = _generateImagePath();
+                        await ProfileStorageService.addImage(
+                          imagePath,
+                          _image!,
+                        );
+                      }
+
+                      await commentProvider.updateProfile(
+                        id: widget.profile.id,
+                        location: _location.trim(),
+                        bio: _bio.trim(),
+                        imagePath: imagePath,
+                      );
+
+                      setState(() {
+                        _image = null;
+                      });
+
+                      navigator.pushReplacement(
+                        MaterialPageRoute(
+                          builder: (context) => ProfileScreen(),
+                        ),
+                      );
+
+                      messenger.showSnackBar(
+                        styledSnackBar(message: 'Profile updated!'),
+                      );
+                    }
+                  },
                   color: AppColors.accent,
                 ),
               ],

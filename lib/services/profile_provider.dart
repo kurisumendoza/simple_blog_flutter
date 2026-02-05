@@ -18,4 +18,18 @@ class ProfileProvider extends ChangeNotifier {
   }) async {
     await ProfileService.createProfile(username: username, userId: userId);
   }
+
+  Future<void> updateProfile({
+    required int id,
+    String? location,
+    String? bio,
+    String? imagePath,
+  }) async {
+    await ProfileService.updateProfile(
+      id: id,
+      location: location,
+      bio: bio,
+      imagePath: imagePath,
+    );
+  }
 }
