@@ -46,7 +46,10 @@ class _CommentListState extends State<CommentList> {
           separatorBuilder: (BuildContext context, int index) =>
               const Divider(),
           itemBuilder: ((context, index) {
-            return CommentCard(comment: value.comments[index]);
+            return CommentCard(
+              key: ValueKey(value.comments[index].id),
+              comment: value.comments[index],
+            );
           }),
         );
       },
