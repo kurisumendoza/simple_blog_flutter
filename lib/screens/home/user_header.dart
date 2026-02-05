@@ -42,7 +42,7 @@ class _UserHeaderState extends State<UserHeader> {
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            value.username != null
+            (value.isLoggedIn && value.username != null)
                 ? GestureDetector(
                     onTap: () {
                       Navigator.push(

@@ -1,3 +1,4 @@
+import 'package:simple_blog_flutter/services/profile_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:simple_blog_flutter/services/database_service.dart';
 
@@ -35,6 +36,10 @@ class AuthService {
     String username,
   ) async {
     try {
+      if (await ProfileService.userExists(username)) {
+        throw AuthApiException('Username already taken');
+      }
+
       await DatabaseService.supabase.auth.signUp(
         email: email,
         password: password,

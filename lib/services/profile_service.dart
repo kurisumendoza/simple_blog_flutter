@@ -48,4 +48,18 @@ class ProfileService {
       rethrow;
     }
   }
+
+  // check if username already exists
+  static Future<bool> userExists(String username) async {
+    try {
+      final user = await DatabaseService.supabase
+          .from('profile')
+          .select('id')
+          .eq('user', username);
+
+      return user.isNotEmpty;
+    } catch (e) {
+      rethrow;
+    }
+  }
 }
