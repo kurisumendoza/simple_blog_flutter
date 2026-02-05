@@ -14,8 +14,10 @@ class AuthProvider extends ChangeNotifier {
       notifyListeners();
 
       return (true, 'Welcome, $username!');
+    } on AuthApiException catch (e) {
+      return (false, e.message);
     } catch (e) {
-      return (false, 'Failed to login!');
+      return (false, 'Failed to login! Check your internet connection');
     }
   }
 
@@ -25,8 +27,10 @@ class AuthProvider extends ChangeNotifier {
       notifyListeners();
 
       return (true, 'Successfully logged out.');
+    } on AuthApiException catch (e) {
+      return (false, e.message);
     } catch (e) {
-      return (false, 'Failed to logout!');
+      return (false, 'Failed to logout! Check your internet connection');
     }
   }
 
@@ -40,8 +44,10 @@ class AuthProvider extends ChangeNotifier {
       notifyListeners();
 
       return (true, 'Welcome, $username!');
+    } on AuthApiException catch (e) {
+      return (false, e.message);
     } catch (e) {
-      return (false, 'Failed to register!');
+      return (false, 'Failed to register! Check your internet connection');
     }
   }
 }
