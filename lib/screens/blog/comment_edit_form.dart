@@ -1,5 +1,5 @@
-import 'dart:io';
 import 'dart:math';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -34,26 +34,29 @@ class _CommentEditFormState extends State<CommentEditForm> {
 
   String _body = '';
   String? _imagePath;
-  File? _image;
+  Uint8List? _image;
+  String? _ext;
   bool _isSubmitting = false;
 
   String _generateImagePath() {
-    String ext = _image!.path.split('.').last;
     String pathName = Random().nextInt(1000000).toRadixString(36);
 
-    return 'public/$pathName.$ext';
+    return 'public/$pathName.$_ext';
   }
 
   Future<void> pickImage() async {
     final picker = ImagePicker();
     final pickedImage = await picker.pickImage(source: ImageSource.gallery);
 
-    if (!mounted) return;
-
     if (pickedImage != null) {
-      String ext = pickedImage.path.split('.').last.toLowerCase();
+      _ext = pickedImage.name.split('.').last.toLowerCase();
 
-      if (ext != 'jpg' && ext != 'jpeg' && ext != 'png') {
+      XFile? imageFile = XFile(pickedImage.path);
+      _image = await imageFile.readAsBytes();
+
+      if (!mounted) return;
+
+      if (_ext != 'jpg' && _ext != 'jpeg' && _ext != 'png') {
         ScaffoldMessenger.of(context).showSnackBar(
           styledSnackBar(
             isError: true,
@@ -63,9 +66,7 @@ class _CommentEditFormState extends State<CommentEditForm> {
         return;
       }
 
-      setState(() {
-        _image = File(pickedImage.path);
-      });
+      setState(() {});
     }
   }
 
@@ -98,7 +99,7 @@ class _CommentEditFormState extends State<CommentEditForm> {
               _image == null && _imagePath == null
                   ? StyledText('Add an image')
                   : _imagePath == null
-                  ? Image.file(
+                  ? Image.memory(
                       _image!,
                       height: 100,
                       width: 100,

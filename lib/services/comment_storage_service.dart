@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:typed_data';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:simple_blog_flutter/services/database_service.dart';
 
@@ -13,10 +13,10 @@ class CommentStorageService {
   }
 
   // insert new image
-  static Future<void> addImage(String fileName, File file) async {
+  static Future<void> addImage(String fileName, Uint8List file) async {
     await DatabaseService.supabase.storage
         .from('comment-images')
-        .upload(
+        .uploadBinary(
           fileName,
           file,
           fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
