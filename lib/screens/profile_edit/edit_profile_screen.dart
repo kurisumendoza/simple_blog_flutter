@@ -29,6 +29,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   String _bio = '';
   String? _imagePath;
   File? _image;
+  bool _isSubmitting = false;
 
   String _generateImagePath() {
     String ext = _image!.path.split('.').last;
@@ -146,7 +147,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   initialValue: widget.profile.location,
                   isOptional: true,
                   onSaved: (value) => _location = value!,
-                  maxLength: 30,
+                  maxLength: 15,
                   minLength: 0,
                 ),
                 SizedBox(height: 20),
@@ -162,46 +163,71 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 SizedBox(height: 20),
                 StyledFilledButton(
                   'Save',
-                  onPressed: () async {
-                    if (_formGlobalKey.currentState!.validate()) {
-                      _formGlobalKey.currentState!.save();
+                  onPressed: _isSubmitting
+                      ? () {
+                          if (_isSubmitting) return;
+                        }
+                      : () async {
+                          if (_formGlobalKey.currentState!.validate()) {
+                            _formGlobalKey.currentState!.save();
 
-                      final commentProvider = context.read<ProfileProvider>();
-                      final navigator = Navigator.of(context);
-                      final messenger = ScaffoldMessenger.of(context);
+                            setState(() {
+                              _isSubmitting = true;
+                            });
 
-                      String? imagePath;
+                            final commentProvider = context
+                                .read<ProfileProvider>();
+                            final navigator = Navigator.of(context);
+                            final messenger = ScaffoldMessenger.of(context);
 
-                      if (_image != null) {
-                        imagePath = _generateImagePath();
-                        await ProfileStorageService.addImage(
-                          imagePath,
-                          _image!,
-                        );
-                      }
+                            String? imagePath;
 
-                      await commentProvider.updateProfile(
-                        id: widget.profile.id,
-                        location: _location.trim(),
-                        bio: _bio.trim(),
-                        imagePath: imagePath,
-                      );
+                            if (_image != null) {
+                              imagePath = _generateImagePath();
+                              await ProfileStorageService.addImage(
+                                imagePath,
+                                _image!,
+                              );
 
-                      setState(() {
-                        _image = null;
-                      });
+                              if (widget.profile.imagePath != null) {
+                                await ProfileStorageService.deleteImage(
+                                  widget.profile.imagePath!,
+                                );
+                              }
+                            }
 
-                      navigator.pushReplacement(
-                        MaterialPageRoute(
-                          builder: (context) => ProfileScreen(),
-                        ),
-                      );
+                            if (_image == null &&
+                                _imagePath == null &&
+                                widget.profile.imagePath != null) {
+                              imagePath = null;
+                              await ProfileStorageService.deleteImage(
+                                widget.profile.imagePath!,
+                              );
+                            }
 
-                      messenger.showSnackBar(
-                        styledSnackBar(message: 'Profile updated!'),
-                      );
-                    }
-                  },
+                            await commentProvider.updateProfile(
+                              id: widget.profile.id,
+                              location: _location.trim(),
+                              bio: _bio.trim(),
+                              imagePath: imagePath,
+                            );
+
+                            setState(() {
+                              _image = null;
+                              _isSubmitting = false;
+                            });
+
+                            navigator.pushReplacement(
+                              MaterialPageRoute(
+                                builder: (context) => ProfileScreen(),
+                              ),
+                            );
+
+                            messenger.showSnackBar(
+                              styledSnackBar(message: 'Profile updated!'),
+                            );
+                          }
+                        },
                   color: AppColors.accent,
                 ),
               ],

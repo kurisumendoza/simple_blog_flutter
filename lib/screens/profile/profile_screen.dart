@@ -5,6 +5,7 @@ import 'package:simple_blog_flutter/screens/profile_edit/edit_profile_screen.dar
 import 'package:simple_blog_flutter/services/auth_provider.dart';
 import 'package:simple_blog_flutter/services/blog_provider.dart';
 import 'package:simple_blog_flutter/services/profile_provider.dart';
+import 'package:simple_blog_flutter/services/profile_storage_service.dart';
 import 'package:simple_blog_flutter/shared/styled_button.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
 import 'package:simple_blog_flutter/theme.dart';
@@ -52,12 +53,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        width: 150,
-                        height: 150,
-                        color: AppColors.primary,
-                        child: Icon(Icons.person, size: 150),
-                      ),
+                      profile.imagePath != null
+                          ? Image.network(
+                              ProfileStorageService.getImageUrl(
+                                profile.imagePath!,
+                              ),
+                              height: 150,
+                              width: 150,
+                              fit: BoxFit.cover,
+                            )
+                          : Container(
+                              width: 150,
+                              height: 150,
+                              color: AppColors.primary,
+                              child: Icon(Icons.person, size: 150),
+                            ),
                       SizedBox(width: 20),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -89,7 +99,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           StyledFilledButton(
                             'Edit Profile',
                             onPressed: () {
-                              Navigator.push(
+                              Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
