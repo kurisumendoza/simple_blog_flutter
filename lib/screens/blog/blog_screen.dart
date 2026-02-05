@@ -24,111 +24,119 @@ class BlogScreen extends StatelessWidget {
         ? context.read<Blog>()
         : context.watch<BlogProvider>().blogs.firstWhere((b) => b.id == id);
 
-    return Scaffold(
-      appBar: AppBar(title: StyledTitle(blog.title), centerTitle: true),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (context.watch<AuthProvider>().isLoggedIn &&
-                context.read<AuthProvider>().username == blog.user)
-              Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      StyledEditIconButton(
-                        onPressed: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => UpdateBlogScreen(blog),
-                            ),
-                          );
-                        },
-                        size: 28,
-                      ),
-                      StyledDeleteIconButton(
-                        onPressed: () => showDialog(
-                          context: context,
-                          builder: (context) => StyledAlertDialog(
-                            title: 'Delete Blog',
-                            content: StyledText(
-                              'Are you sure you want to delete this blog?',
-                            ),
-                            mainAction: () async {
-                              final blogProvider = context.read<BlogProvider>();
-                              final commentProvider = context
-                                  .read<CommentProvider>();
-                              final navigator = Navigator.of(context);
-                              final messenger = ScaffoldMessenger.of(context);
-
-                              await blogProvider.deleteBlog(blog.id);
-
-                              final data = await commentProvider
-                                  .deleteAllComments(blog.id);
-
-                              for (final comment in data) {
-                                final path = comment['image_path'];
-                                if (path != null) {
-                                  await CommentStorageService.deleteImage(path);
-                                }
-                              }
-
-                              if (blog.imagePath != null) {
-                                BlogStorageService.deleteImage(blog.imagePath!);
-                              }
-
-                              navigator.pop();
-                              navigator.pop();
-
-                              messenger.showSnackBar(
-                                styledSnackBar(
-                                  message: 'Blog successfully deleted!',
-                                ),
-                              );
-                            },
-                            mainActionLabel: 'Delete',
-                            mainActionColor: Colors.red[400],
-                          ),
+    return Provider.value(
+      value: blog,
+      child: Scaffold(
+        appBar: AppBar(title: StyledTitle(blog.title), centerTitle: true),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (context.watch<AuthProvider>().isLoggedIn &&
+                  context.read<AuthProvider>().username == blog.user)
+                Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        StyledEditIconButton(
+                          onPressed: () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => UpdateBlogScreen(blog),
+                              ),
+                            );
+                          },
+                          size: 28,
                         ),
-                        size: 30,
-                      ),
-                    ],
+                        StyledDeleteIconButton(
+                          onPressed: () => showDialog(
+                            context: context,
+                            builder: (context) => StyledAlertDialog(
+                              title: 'Delete Blog',
+                              content: StyledText(
+                                'Are you sure you want to delete this blog?',
+                              ),
+                              mainAction: () async {
+                                final blogProvider = context
+                                    .read<BlogProvider>();
+                                final commentProvider = context
+                                    .read<CommentProvider>();
+                                final navigator = Navigator.of(context);
+                                final messenger = ScaffoldMessenger.of(context);
+
+                                await blogProvider.deleteBlog(blog.id);
+
+                                final data = await commentProvider
+                                    .deleteAllComments(blog.id);
+
+                                for (final comment in data) {
+                                  final path = comment['image_path'];
+                                  if (path != null) {
+                                    await CommentStorageService.deleteImage(
+                                      path,
+                                    );
+                                  }
+                                }
+
+                                if (blog.imagePath != null) {
+                                  BlogStorageService.deleteImage(
+                                    blog.imagePath!,
+                                  );
+                                }
+
+                                navigator.pop();
+                                navigator.pop();
+
+                                messenger.showSnackBar(
+                                  styledSnackBar(
+                                    message: 'Blog successfully deleted!',
+                                  ),
+                                );
+                              },
+                              mainActionLabel: 'Delete',
+                              mainActionColor: Colors.red[400],
+                            ),
+                          ),
+                          size: 30,
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 10),
+                  ],
+                ),
+              if (blog.imagePath != null)
+                Hero(
+                  tag: blog.id,
+                  child: Image.network(
+                    BlogStorageService.getImageUrl(blog.imagePath!),
+                    height: 350,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
                   ),
-                  SizedBox(height: 10),
+                ),
+              SizedBox(height: 10),
+              StyledHeading(blog.title, fontSize: 20, maxLines: 3),
+              SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  StyledRichText(blog.user, fontSize: 16),
+                  StyledText(
+                    '${blog.formattedDate} ${blog.formattedTime}',
+                    fontSize: 14,
+                    fontStyle: FontStyle.italic,
+                  ),
                 ],
               ),
-            if (blog.imagePath != null)
-              Hero(
-                tag: blog.id,
-                child: Image.network(
-                  BlogStorageService.getImageUrl(blog.imagePath!),
-                  height: 350,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            SizedBox(height: 10),
-            StyledHeading(blog.title, fontSize: 20, maxLines: 3),
-            SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                StyledRichText(blog.user, fontSize: 16),
-                StyledText(
-                  '${blog.formattedDate} ${blog.formattedTime}',
-                  fontSize: 14,
-                  fontStyle: FontStyle.italic,
-                ),
-              ],
-            ),
-            SizedBox(height: 15),
-            StyledText(blog.body),
-            SizedBox(height: 30),
-            CommentSection(),
-          ],
+              SizedBox(height: 15),
+              StyledText(blog.body),
+              SizedBox(height: 30),
+              CommentSection(),
+            ],
+          ),
         ),
       ),
     );
