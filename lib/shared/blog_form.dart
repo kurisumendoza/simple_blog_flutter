@@ -193,7 +193,7 @@ class _BlogFormState extends State<BlogForm> {
                         final navigator = Navigator.of(context);
                         final messenger = ScaffoldMessenger.of(context);
 
-                        String? imagePath;
+                        String? imagePath = widget.oldImagePath;
 
                         if (_image != null) {
                           imagePath = _generateImagePath();

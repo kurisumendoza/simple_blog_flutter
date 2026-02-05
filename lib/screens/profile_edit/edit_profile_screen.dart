@@ -180,7 +180,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             final navigator = Navigator.of(context);
                             final messenger = ScaffoldMessenger.of(context);
 
-                            String? imagePath;
+                            String? imagePath = widget.profile.imagePath;
 
                             if (_image != null) {
                               imagePath = _generateImagePath();

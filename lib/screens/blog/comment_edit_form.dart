@@ -152,7 +152,7 @@ class _CommentEditFormState extends State<CommentEditForm> {
                     final commentProvider = context.read<CommentProvider>();
                     final messenger = ScaffoldMessenger.of(context);
 
-                    String? imagePath;
+                    String? imagePath = widget.oldImagePath;
 
                     if (_image != null) {
                       imagePath = _generateImagePath();
