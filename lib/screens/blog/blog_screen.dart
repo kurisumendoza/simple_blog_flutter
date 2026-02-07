@@ -33,88 +33,25 @@ class BlogScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (context.watch<AuthProvider>().isLoggedIn &&
-                  context.read<AuthProvider>().username == blog.user)
-                Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        StyledEditIconButton(
-                          onPressed: () {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => UpdateBlogScreen(blog),
-                              ),
-                            );
-                          },
-                          size: 28,
-                        ),
-                        StyledDeleteIconButton(
-                          onPressed: () => showDialog(
-                            context: context,
-                            builder: (context) => StyledAlertDialog(
-                              title: 'Delete Blog',
-                              content: StyledText(
-                                'Are you sure you want to delete this blog?',
-                              ),
-                              mainAction: () async {
-                                final blogProvider = context
-                                    .read<BlogProvider>();
-                                final commentProvider = context
-                                    .read<CommentProvider>();
-                                final navigator = Navigator.of(context);
-                                final messenger = ScaffoldMessenger.of(context);
-
-                                await blogProvider.deleteBlog(blog.id);
-
-                                final data = await commentProvider
-                                    .deleteAllComments(blog.id);
-
-                                for (final comment in data) {
-                                  final path = comment['image_path'];
-                                  if (path != null) {
-                                    await CommentStorageService.deleteImage(
-                                      path,
-                                    );
-                                  }
-                                }
-
-                                if (blog.imagePath != null) {
-                                  BlogStorageService.deleteImage(
-                                    blog.imagePath!,
-                                  );
-                                }
-
-                                navigator.pop();
-                                navigator.pop();
-
-                                messenger.showSnackBar(
-                                  styledSnackBar(
-                                    message: 'Blog successfully deleted!',
-                                  ),
-                                );
-                              },
-                              mainActionLabel: 'Delete',
-                              mainActionColor: Colors.red[400],
-                            ),
-                          ),
-                          size: 30,
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 10),
-                  ],
-                ),
               if (blog.imagePath != null)
-                Hero(
-                  tag: blog.id,
-                  child: Image.network(
-                    BlogStorageService.getImageUrl(blog.imagePath!),
-                    height: 350,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
+                Center(
+                  child: Hero(
+                    tag: blog.id,
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        final maxWidth = 500.0;
+                        final size = constraints.maxWidth > maxWidth
+                            ? maxWidth
+                            : constraints.maxWidth;
+
+                        return Image.network(
+                          BlogStorageService.getImageUrl(blog.imagePath!),
+                          width: size,
+                          height: size,
+                          fit: BoxFit.cover,
+                        );
+                      },
+                    ),
                   ),
                 ),
               SizedBox(height: 10),
@@ -131,7 +68,83 @@ class BlogScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(height: 15),
+              context.watch<AuthProvider>().isLoggedIn &&
+                      context.read<AuthProvider>().username == blog.user
+                  ? Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            StyledEditIconButton(
+                              onPressed: () {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        UpdateBlogScreen(blog),
+                                  ),
+                                );
+                              },
+                              size: 28,
+                            ),
+                            StyledDeleteIconButton(
+                              onPressed: () => showDialog(
+                                context: context,
+                                builder: (context) => StyledAlertDialog(
+                                  title: 'Delete Blog',
+                                  content: StyledText(
+                                    'Are you sure you want to delete this blog?',
+                                  ),
+                                  mainAction: () async {
+                                    final blogProvider = context
+                                        .read<BlogProvider>();
+                                    final commentProvider = context
+                                        .read<CommentProvider>();
+                                    final navigator = Navigator.of(context);
+                                    final messenger = ScaffoldMessenger.of(
+                                      context,
+                                    );
+
+                                    await blogProvider.deleteBlog(blog.id);
+
+                                    final data = await commentProvider
+                                        .deleteAllComments(blog.id);
+
+                                    for (final comment in data) {
+                                      final path = comment['image_path'];
+                                      if (path != null) {
+                                        await CommentStorageService.deleteImage(
+                                          path,
+                                        );
+                                      }
+                                    }
+
+                                    if (blog.imagePath != null) {
+                                      BlogStorageService.deleteImage(
+                                        blog.imagePath!,
+                                      );
+                                    }
+
+                                    navigator.pop();
+                                    navigator.pop();
+
+                                    messenger.showSnackBar(
+                                      styledSnackBar(
+                                        message: 'Blog successfully deleted!',
+                                      ),
+                                    );
+                                  },
+                                  mainActionLabel: 'Delete',
+                                  mainActionColor: Colors.red[400],
+                                ),
+                              ),
+                              size: 30,
+                            ),
+                          ],
+                        ),
+                      ],
+                    )
+                  : SizedBox(height: 16),
               StyledText(blog.body),
               SizedBox(height: 30),
               CommentSection(),
