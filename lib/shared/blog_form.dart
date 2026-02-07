@@ -248,10 +248,11 @@ class _BlogFormState extends State<BlogForm> {
                             imagePath: imagePath,
                           );
 
-                          navigator.pushReplacement(
+                          navigator.pushAndRemoveUntil(
                             MaterialPageRoute(
                               builder: (context) => BlogScreen(id: widget.id),
                             ),
+                            (route) => route.isFirst,
                           );
 
                           setState(() {

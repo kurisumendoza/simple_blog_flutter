@@ -77,7 +77,7 @@ class BlogScreen extends StatelessWidget {
                           children: [
                             StyledEditIconButton(
                               onPressed: () {
-                                Navigator.pushReplacement(
+                                Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) =>
