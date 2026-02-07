@@ -12,7 +12,7 @@ class UpdateBlogScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: StyledTitle('Update Blog'), centerTitle: true),
+      appBar: AppBar(title: StyledHeading('Update Blog')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Container(

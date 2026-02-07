@@ -43,7 +43,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final profile = context.watch<ProfileProvider>().profile;
 
     return Scaffold(
-      appBar: AppBar(title: StyledTitle('Profile'), centerTitle: true),
+      appBar: AppBar(title: StyledHeading('Profile')),
       body: Container(
         padding: const EdgeInsets.all(20),
         child: profile == null

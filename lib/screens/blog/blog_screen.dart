@@ -27,7 +27,10 @@ class BlogScreen extends StatelessWidget {
     return Provider.value(
       value: blog,
       child: Scaffold(
-        appBar: AppBar(title: StyledTitle(blog.title), centerTitle: true),
+        appBar: AppBar(
+          title: StyledHeading(blog.title),
+          actions: [SizedBox(width: kToolbarHeight)],
+        ),
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
           child: Column(

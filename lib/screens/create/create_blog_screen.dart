@@ -9,7 +9,7 @@ class CreateBlogScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: StyledTitle('Create Blog'), centerTitle: true),
+      appBar: AppBar(title: StyledHeading('Create Blog')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Container(

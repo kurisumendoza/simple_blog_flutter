@@ -10,7 +10,7 @@ class RegisterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: StyledTitle('Register'), centerTitle: true),
+      appBar: AppBar(title: StyledHeading('Register')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Container(

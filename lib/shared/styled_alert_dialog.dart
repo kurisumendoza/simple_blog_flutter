@@ -27,7 +27,7 @@ class _StyledAlertDialogState extends State<StyledAlertDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: StyledTitle(widget.title),
+      title: StyledHeading(widget.title),
       content: widget.content,
       actions: [
         StyledFilledButton(

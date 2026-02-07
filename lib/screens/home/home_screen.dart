@@ -40,7 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _totalPages = (count / _blogsPerPage).ceil();
 
     return Scaffold(
-      appBar: AppBar(title: StyledTitle('Blogs'), centerTitle: true),
+      appBar: AppBar(title: StyledHeading('Blogs')),
       body: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: Column(
