@@ -43,6 +43,7 @@ class _BlogFormState extends State<BlogForm> {
   String _title = '';
   String _body = '';
   bool _isSubmitting = false;
+  BlogImage? _coverImage;
   final List<BlogImage> _images = [];
   final List<String> _exts = [];
 
@@ -104,6 +105,7 @@ class _BlogFormState extends State<BlogForm> {
       setState(() {
         _images.addAll(images.map((file) => BlogImage(file: file)));
         _exts.addAll(exts);
+        _coverImage = _images[0];
       });
     }
   }
@@ -112,6 +114,7 @@ class _BlogFormState extends State<BlogForm> {
   void initState() {
     if (widget.oldImagePaths.isNotEmpty) {
       _images.addAll(widget.oldImagePaths.map((path) => BlogImage(path: path)));
+      _coverImage ??= _coverImage = _images[0];
     }
     super.initState();
   }
@@ -146,30 +149,47 @@ class _BlogFormState extends State<BlogForm> {
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              crossAxisSpacing: 12,
-              mainAxisSpacing: 12,
+              crossAxisCount: 4,
+              crossAxisSpacing: 6,
+              mainAxisSpacing: 10,
             ),
             itemCount: _images.length,
             itemBuilder: (context, index) {
               return Stack(
+                clipBehavior: Clip.none,
                 children: [
-                  _images[index].isRemote
-                      ? Image.network(
-                          BlogStorageService.getImageUrl(_images[index].path!),
-                          width: double.infinity,
-                          height: double.infinity,
-                          fit: BoxFit.cover,
-                        )
-                      : Image.memory(
-                          _images[index].file!,
-                          width: double.infinity,
-                          height: double.infinity,
-                          fit: BoxFit.cover,
-                        ),
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _coverImage = _images[index];
+                      });
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: _coverImage == _images[index]
+                            ? Border.all(color: AppColors.accent, width: 4)
+                            : Border.all(color: Colors.transparent, width: 4),
+                      ),
+                      child: _images[index].isRemote
+                          ? Image.network(
+                              BlogStorageService.getImageUrl(
+                                _images[index].path!,
+                              ),
+                              width: double.infinity,
+                              height: double.infinity,
+                              fit: BoxFit.cover,
+                            )
+                          : Image.memory(
+                              _images[index].file!,
+                              width: double.infinity,
+                              height: double.infinity,
+                              fit: BoxFit.cover,
+                            ),
+                    ),
+                  ),
                   Positioned(
-                    top: 2,
-                    right: 2,
+                    top: -3,
+                    right: -3,
                     child: FilledButton(
                       onPressed: () {
                         setState(() {
@@ -179,8 +199,8 @@ class _BlogFormState extends State<BlogForm> {
                       style: FilledButton.styleFrom(
                         elevation: 5,
                         shape: const CircleBorder(),
-                        padding: EdgeInsets.all(8),
-                        minimumSize: const Size(26, 26),
+                        padding: EdgeInsets.all(5),
+                        minimumSize: const Size(20, 20),
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         backgroundColor: Colors.red[400],
                       ),
@@ -192,6 +212,7 @@ class _BlogFormState extends State<BlogForm> {
             },
           ),
 
+          SizedBox(height: 15),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -229,12 +250,15 @@ class _BlogFormState extends State<BlogForm> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      child: StyledText('Choose Files'),
+                      child: StyledText('Choose Images'),
                     ),
             ],
           ),
           SizedBox(height: 15),
-          StyledText('You can add up to 10 PNG/JPG/JPEG images.', fontSize: 12),
+          StyledText(
+            'You can add up to 10 PNG/JPG/JPEG images. Tap an image to make it the cover image.',
+            fontSize: 12,
+          ),
           SizedBox(height: 30),
 
           Center(
