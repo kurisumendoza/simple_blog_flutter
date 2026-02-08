@@ -129,7 +129,7 @@ class _BlogFormState extends State<BlogForm> {
             onSaved: (value) => _title = value!,
             maxLength: 60,
             minLength: 5,
-            lines: 1,
+            lines: 2,
           ),
           SizedBox(height: 15),
           StyledFormField(
@@ -138,7 +138,7 @@ class _BlogFormState extends State<BlogForm> {
             onSaved: (value) => _body = value!,
             maxLength: 1000,
             minLength: 50,
-            lines: 10,
+            lines: 12,
           ),
           SizedBox(height: 15),
 
@@ -146,21 +146,45 @@ class _BlogFormState extends State<BlogForm> {
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 5,
-              crossAxisSpacing: 8,
-              mainAxisSpacing: 8,
+              crossAxisCount: 3,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
             ),
             itemCount: _imagePaths.length + _images.length,
             itemBuilder: (context, index) {
-              return _imagePaths.length > index
-                  ? Image.network(
-                      BlogStorageService.getImageUrl(_imagePaths[index]),
-                      fit: BoxFit.cover,
-                    )
-                  : Image.memory(
-                      _images[index - _imagePaths.length],
-                      fit: BoxFit.cover,
-                    );
+              return Stack(
+                children: [
+                  _imagePaths.length > index
+                      ? Image.network(
+                          BlogStorageService.getImageUrl(_imagePaths[index]),
+                          width: double.infinity,
+                          height: double.infinity,
+                          fit: BoxFit.cover,
+                        )
+                      : Image.memory(
+                          _images[index - _imagePaths.length],
+                          width: double.infinity,
+                          height: double.infinity,
+                          fit: BoxFit.cover,
+                        ),
+                  Positioned(
+                    top: 2,
+                    right: 2,
+                    child: FilledButton(
+                      onPressed: () {},
+                      style: FilledButton.styleFrom(
+                        elevation: 5,
+                        shape: const CircleBorder(),
+                        padding: EdgeInsets.all(8),
+                        minimumSize: const Size(26, 26),
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        backgroundColor: Colors.red[400],
+                      ),
+                      child: Icon(Icons.close, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
+              );
             },
           ),
 
@@ -207,8 +231,7 @@ class _BlogFormState extends State<BlogForm> {
             ],
           ),
           SizedBox(height: 15),
-          StyledText('You can add up to 10 images.', fontSize: 12),
-          StyledText('Only PNG and JPEG allowed!', fontSize: 12),
+          StyledText('You can add up to 10 PNG/JPG/JPEG images.', fontSize: 12),
           SizedBox(height: 30),
 
           Center(
