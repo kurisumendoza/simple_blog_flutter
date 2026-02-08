@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:simple_blog_flutter/models/blog_image.dart';
 import 'package:simple_blog_flutter/screens/blog/blog_screen.dart';
 import 'package:simple_blog_flutter/screens/home/home_screen.dart';
 import 'package:simple_blog_flutter/services/auth_provider.dart';
@@ -42,8 +43,7 @@ class _BlogFormState extends State<BlogForm> {
   String _title = '';
   String _body = '';
   bool _isSubmitting = false;
-  final List<String> _imagePaths = [];
-  final List<Uint8List> _images = [];
+  final List<BlogImage> _images = [];
   final List<String> _exts = [];
 
   String _generateSlug() {
@@ -75,7 +75,7 @@ class _BlogFormState extends State<BlogForm> {
       List<String> exts = [];
       List<String> invalidFiles = [];
 
-      final limit = 10 - (_imagePaths.length + _images.length);
+      final limit = 10 - (_images.length);
 
       for (var pickedImage in pickedImages.take(limit)) {
         final ext = pickedImage.name.split('.').last.toLowerCase();
@@ -102,7 +102,7 @@ class _BlogFormState extends State<BlogForm> {
       }
 
       setState(() {
-        _images.addAll(images);
+        _images.addAll(images.map((file) => BlogImage(file: file)));
         _exts.addAll(exts);
       });
     }
@@ -111,7 +111,7 @@ class _BlogFormState extends State<BlogForm> {
   @override
   void initState() {
     if (widget.oldImagePaths.isNotEmpty) {
-      _imagePaths.addAll(widget.oldImagePaths);
+      _images.addAll(widget.oldImagePaths.map((path) => BlogImage(path: path)));
     }
     super.initState();
   }
@@ -150,19 +150,19 @@ class _BlogFormState extends State<BlogForm> {
               crossAxisSpacing: 12,
               mainAxisSpacing: 12,
             ),
-            itemCount: _imagePaths.length + _images.length,
+            itemCount: _images.length,
             itemBuilder: (context, index) {
               return Stack(
                 children: [
-                  _imagePaths.length > index
+                  _images[index].isRemote
                       ? Image.network(
-                          BlogStorageService.getImageUrl(_imagePaths[index]),
+                          BlogStorageService.getImageUrl(_images[index].path!),
                           width: double.infinity,
                           height: double.infinity,
                           fit: BoxFit.cover,
                         )
                       : Image.memory(
-                          _images[index - _imagePaths.length],
+                          _images[index].file!,
                           width: double.infinity,
                           height: double.infinity,
                           fit: BoxFit.cover,
@@ -191,18 +191,17 @@ class _BlogFormState extends State<BlogForm> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _images.isEmpty && _imagePaths.isEmpty
+              _images.isEmpty
                   ? StyledText('Add images')
-                  : (_images.length + _imagePaths.length) < 10
+                  : _images.length < 10
                   ? StyledText('Add more')
                   : StyledText('Remove all'),
 
-              (_images.length + _imagePaths.length) >= 10
+              _images.length >= 10
                   ? OutlinedButton(
                       onPressed: () {
                         setState(() {
                           _images.clear();
-                          _imagePaths.clear();
                         });
                       },
                       style: OutlinedButton.styleFrom(
@@ -256,11 +255,11 @@ class _BlogFormState extends State<BlogForm> {
 
                         String? imagePath = widget.oldImagePaths[0];
 
-                        // if (_images.isNotEmpty) {
+                        // if (_localImages.isNotEmpty) {
                         //   imagePath = _generateImagePath();
                         //   await BlogStorageService.addImage(
                         //     imagePath,
-                        //     _images[0],
+                        //     _localImages[0],
                         //   );
 
                         //   if (widget.oldImagePaths.isNotEmpty) {
@@ -271,7 +270,6 @@ class _BlogFormState extends State<BlogForm> {
                         // }
 
                         if (_images.isEmpty &&
-                            _imagePaths.isEmpty &&
                             widget.oldImagePaths.isNotEmpty) {
                           imagePath = null;
                           await BlogStorageService.deleteImage(
