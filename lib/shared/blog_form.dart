@@ -61,11 +61,11 @@ class _BlogFormState extends State<BlogForm> {
     return '$slug + $suffix';
   }
 
-  // String _generateImagePath(String ext) {
-  //   String pathName = Random().nextInt(1000000).toRadixString(36);
+  String _generateImagePath(String ext) {
+    String pathName = Random().nextInt(1000000).toRadixString(36);
 
-  //   return 'public/$pathName.$ext';
-  // }
+    return 'public/$pathName.$ext';
+  }
 
   Future<void> _pickImages() async {
     final picker = ImagePicker();
@@ -105,7 +105,7 @@ class _BlogFormState extends State<BlogForm> {
       setState(() {
         _images.addAll(images.map((file) => BlogImage(file: file)));
         _exts.addAll(exts);
-        _coverImage = _images[0];
+        _coverImage ??= _coverImage = _images[0];
       });
     }
   }
@@ -114,7 +114,7 @@ class _BlogFormState extends State<BlogForm> {
   void initState() {
     if (widget.oldImagePaths.isNotEmpty) {
       _images.addAll(widget.oldImagePaths.map((path) => BlogImage(path: path)));
-      _coverImage ??= _coverImage = _images[0];
+      _coverImage = _images[0];
     }
     super.initState();
   }
@@ -194,6 +194,9 @@ class _BlogFormState extends State<BlogForm> {
                       onPressed: () {
                         setState(() {
                           _images.removeAt(index);
+                          _images.isEmpty
+                              ? _coverImage = null
+                              : _coverImage = _images[0];
                         });
                       },
                       style: FilledButton.styleFrom(
@@ -281,78 +284,102 @@ class _BlogFormState extends State<BlogForm> {
                         final navigator = Navigator.of(context);
                         final messenger = ScaffoldMessenger.of(context);
 
-                        String? imagePath = widget.oldImagePaths[0];
+                        List<String> imagePaths = [];
+                        // no _exts entry for remote images
+                        int remoteImages = 0;
 
-                        // if (_localImages.isNotEmpty) {
-                        //   imagePath = _generateImagePath();
-                        //   await BlogStorageService.addImage(
-                        //     imagePath,
-                        //     _localImages[0],
-                        //   );
+                        if (_images.isNotEmpty) {
+                          for (var i = 0; i < _images.length; i++) {
+                            String path;
 
-                        //   if (widget.oldImagePaths.isNotEmpty) {
-                        //     await BlogStorageService.deleteImage(
-                        //       widget.oldImagePaths[0],
-                        //     );
-                        //   }
-                        // }
+                            if (_images[i].isRemote) {
+                              path = _images[i].path!;
+                              remoteImages++;
+                            } else {
+                              path = _generateImagePath(
+                                _exts[i - (remoteImages)],
+                              );
+                              await BlogStorageService.addImage(
+                                path,
+                                _images[i].file!,
+                              );
+                            }
 
-                        if (_images.isEmpty &&
-                            widget.oldImagePaths.isNotEmpty) {
-                          imagePath = null;
-                          await BlogStorageService.deleteImage(
-                            widget.oldImagePaths[0],
-                          );
-                        }
+                            if (_images[i] == _coverImage) {
+                              imagePaths.insert(0, path);
+                            } else {
+                              imagePaths.add(path);
+                            }
+                          }
 
-                        if (!widget.isUpdate) {
-                          await blogProvider.createBlog(
-                            title: _title.trim(),
-                            slug: _generateSlug(),
-                            body: _body.trim(),
-                            user: authProvider.username!,
-                            userId: authProvider.userId!,
-                            imagePaths: [imagePath!],
-                          );
+                          if (widget.oldImagePaths.isNotEmpty) {
+                            for (var oldPath in widget.oldImagePaths) {
+                              bool isKept = _images.any(
+                                (img) => img.isRemote && img.path == oldPath,
+                              );
 
-                          navigator.pushAndRemoveUntil(
-                            MaterialPageRoute(
-                              builder: (context) => HomeScreen(),
-                            ),
-                            (route) => false,
-                          );
+                              if (!isKept) {
+                                await BlogStorageService.deleteImage(oldPath);
+                              }
+                            }
+                          }
 
-                          messenger.showSnackBar(
-                            styledSnackBar(
-                              message: 'Blog posted successfully!',
-                            ),
-                          );
-                        }
+                          if (_images.isEmpty &&
+                              widget.oldImagePaths.isNotEmpty) {
+                            for (var oldPath in widget.oldImagePaths) {
+                              await BlogStorageService.deleteImage(oldPath);
+                            }
+                          }
 
-                        if (widget.isUpdate) {
-                          await blogProvider.updateBlog(
-                            id: widget.id!,
-                            title: _title.trim(),
-                            body: _body.trim(),
-                            imagePaths: [imagePath!],
-                          );
+                          if (!widget.isUpdate) {
+                            await blogProvider.createBlog(
+                              title: _title.trim(),
+                              slug: _generateSlug(),
+                              body: _body.trim(),
+                              user: authProvider.username!,
+                              userId: authProvider.userId!,
+                              imagePaths: imagePaths,
+                            );
 
-                          navigator.pushAndRemoveUntil(
-                            MaterialPageRoute(
-                              builder: (context) => BlogScreen(id: widget.id),
-                            ),
-                            (route) => route.isFirst,
-                          );
+                            navigator.pushAndRemoveUntil(
+                              MaterialPageRoute(
+                                builder: (context) => HomeScreen(),
+                              ),
+                              (route) => false,
+                            );
 
-                          setState(() {
-                            _isSubmitting = false;
-                          });
+                            messenger.showSnackBar(
+                              styledSnackBar(
+                                message: 'Blog posted successfully!',
+                              ),
+                            );
+                          }
 
-                          messenger.showSnackBar(
-                            styledSnackBar(
-                              message: 'Blog updated successfully!',
-                            ),
-                          );
+                          if (widget.isUpdate) {
+                            await blogProvider.updateBlog(
+                              id: widget.id!,
+                              title: _title.trim(),
+                              body: _body.trim(),
+                              imagePaths: imagePaths,
+                            );
+
+                            navigator.pushAndRemoveUntil(
+                              MaterialPageRoute(
+                                builder: (context) => BlogScreen(id: widget.id),
+                              ),
+                              (route) => route.isFirst,
+                            );
+
+                            setState(() {
+                              _isSubmitting = false;
+                            });
+
+                            messenger.showSnackBar(
+                              styledSnackBar(
+                                message: 'Blog updated successfully!',
+                              ),
+                            );
+                          }
                         }
                       }
                     },
