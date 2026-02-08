@@ -42,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(title: StyledHeading('Blogs')),
       body: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             UserHeader(),
@@ -105,7 +105,6 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Icon(Icons.add, color: AppColors.accent, size: 40),
             )
           : null,
-      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
     );
   }
 }
