@@ -18,19 +18,19 @@ class BlogForm extends StatefulWidget {
   const BlogForm({
     super.key,
     required this.buttonText,
+    required this.oldImagePaths,
     this.isUpdate = false,
     this.id,
     this.oldTitle,
     this.oldBody,
-    this.oldImagePath,
   });
 
   final String buttonText;
+  final List<String> oldImagePaths;
   final bool isUpdate;
   final int? id;
   final String? oldTitle;
   final String? oldBody;
-  final List<String>? oldImagePath;
 
   @override
   State<BlogForm> createState() => _BlogFormState();
@@ -41,10 +41,10 @@ class _BlogFormState extends State<BlogForm> {
 
   String _title = '';
   String _body = '';
-  List<String>? _imagePath;
-  Uint8List? _image;
-  String? _ext;
   bool _isSubmitting = false;
+  final List<String> _imagePaths = [];
+  final List<Uint8List> _images = [];
+  final List<String> _exts = [];
 
   String _generateSlug() {
     int end = min(_title.length, 30);
@@ -60,42 +60,58 @@ class _BlogFormState extends State<BlogForm> {
     return '$slug + $suffix';
   }
 
-  String _generateImagePath() {
-    String pathName = Random().nextInt(1000000).toRadixString(36);
+  // String _generateImagePath(String ext) {
+  //   String pathName = Random().nextInt(1000000).toRadixString(36);
 
-    return 'public/$pathName.$_ext';
-  }
+  //   return 'public/$pathName.$ext';
+  // }
 
-  Future<void> pickImage() async {
+  Future<void> _pickImages() async {
     final picker = ImagePicker();
-    final pickedImage = await picker.pickImage(source: ImageSource.gallery);
+    final pickedImages = await picker.pickMultiImage(limit: 2);
 
-    if (pickedImage != null) {
-      _ext = pickedImage.name.split('.').last.toLowerCase();
+    if (pickedImages.isNotEmpty) {
+      List<Uint8List> images = [];
+      List<String> exts = [];
+      List<String> invalidFiles = [];
 
-      XFile? imageFile = XFile(pickedImage.path);
-      _image = await imageFile.readAsBytes();
+      final limit = 10 - (_imagePaths.length + _images.length);
+
+      for (var pickedImage in pickedImages.take(limit)) {
+        final ext = pickedImage.name.split('.').last.toLowerCase();
+        if (ext != 'jpg' && ext != 'jpeg' && ext != 'png') {
+          invalidFiles.add(pickedImage.name);
+          continue;
+        }
+
+        XFile imageFile = XFile(pickedImage.path);
+        final imageBytes = await imageFile.readAsBytes();
+        images.add(imageBytes);
+        exts.add(ext);
+      }
 
       if (!mounted) return;
 
-      if (_ext != 'jpg' && _ext != 'jpeg' && _ext != 'png') {
+      if (invalidFiles.isNotEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           styledSnackBar(
             isError: true,
-            message: 'Please pick a PNG or JPG image!',
+            message: 'Some images are not supported (only PNG/JPG allowed)',
           ),
         );
-        return;
       }
 
-      setState(() {});
+      setState(() {
+        _images.addAll(images);
+        _exts.addAll(exts);
+      });
     }
   }
 
   @override
   void initState() {
-    if (widget.oldImagePath != null) {
-      _imagePath = widget.oldImagePath;
+    if (widget.oldImagePaths.isNotEmpty) {
+      _imagePaths.addAll(widget.oldImagePaths);
     }
     super.initState();
   }
@@ -113,7 +129,7 @@ class _BlogFormState extends State<BlogForm> {
             onSaved: (value) => _title = value!,
             maxLength: 60,
             minLength: 5,
-            lines: 2,
+            lines: 1,
           ),
           SizedBox(height: 15),
           StyledFormField(
@@ -122,45 +138,47 @@ class _BlogFormState extends State<BlogForm> {
             onSaved: (value) => _body = value!,
             maxLength: 1000,
             minLength: 50,
-            lines: 16,
+            lines: 10,
           ),
           SizedBox(height: 15),
+
+          GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 5,
+              crossAxisSpacing: 8,
+              mainAxisSpacing: 8,
+            ),
+            itemCount: _imagePaths.length + _images.length,
+            itemBuilder: (context, index) {
+              return _imagePaths.length > index
+                  ? Image.network(
+                      BlogStorageService.getImageUrl(_imagePaths[index]),
+                      fit: BoxFit.cover,
+                    )
+                  : Image.memory(
+                      _images[index - _imagePaths.length],
+                      fit: BoxFit.cover,
+                    );
+            },
+          ),
+
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _image == null && _imagePath == null
-                  ? StyledText('Add an image')
-                  : _imagePath == null
-                  ? Image.memory(
-                      _image!,
-                      height: 100,
-                      width: 100,
-                      fit: BoxFit.cover,
-                    )
-                  : Image.network(
-                      BlogStorageService.getImageUrl(_imagePath![0]),
-                      height: 100,
-                      width: 100,
-                      fit: BoxFit.cover,
-                    ),
-              _image == null && _imagePath == null
+              _images.isEmpty && _imagePaths.isEmpty
+                  ? StyledText('Add images')
+                  : (_images.length + _imagePaths.length) < 10
+                  ? StyledText('Add more')
+                  : StyledText('Remove all'),
+
+              (_images.length + _imagePaths.length) >= 10
                   ? OutlinedButton(
                       onPressed: () {
-                        pickImage();
-                      },
-                      style: OutlinedButton.styleFrom(
-                        side: BorderSide(color: AppColors.primary),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      child: StyledText('Choose File'),
-                    )
-                  : OutlinedButton(
-                      onPressed: () {
                         setState(() {
-                          _image = null;
-                          _imagePath = null;
+                          _images.clear();
+                          _imagePaths.clear();
                         });
                       },
                       style: OutlinedButton.styleFrom(
@@ -169,11 +187,30 @@ class _BlogFormState extends State<BlogForm> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      child: StyledText('Remove Image', color: Colors.red[200]),
+                      child: StyledText(
+                        'Remove Images',
+                        color: Colors.red[200],
+                      ),
+                    )
+                  : OutlinedButton(
+                      onPressed: () {
+                        _pickImages();
+                      },
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(color: AppColors.primary),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: StyledText('Choose Files'),
                     ),
             ],
           ),
+          SizedBox(height: 15),
+          StyledText('You can add up to 10 images.', fontSize: 12),
+          StyledText('Only PNG and JPEG allowed!', fontSize: 12),
           SizedBox(height: 30),
+
           Center(
             child: StyledFilledButton(
               widget.buttonText,
@@ -194,25 +231,28 @@ class _BlogFormState extends State<BlogForm> {
                         final navigator = Navigator.of(context);
                         final messenger = ScaffoldMessenger.of(context);
 
-                        String? imagePath = widget.oldImagePath![0];
+                        String? imagePath = widget.oldImagePaths[0];
 
-                        if (_image != null) {
-                          imagePath = _generateImagePath();
-                          await BlogStorageService.addImage(imagePath, _image!);
+                        // if (_images.isNotEmpty) {
+                        //   imagePath = _generateImagePath();
+                        //   await BlogStorageService.addImage(
+                        //     imagePath,
+                        //     _images[0],
+                        //   );
 
-                          if (widget.oldImagePath != null) {
-                            await BlogStorageService.deleteImage(
-                              widget.oldImagePath![0],
-                            );
-                          }
-                        }
+                        //   if (widget.oldImagePaths.isNotEmpty) {
+                        //     await BlogStorageService.deleteImage(
+                        //       widget.oldImagePaths[0],
+                        //     );
+                        //   }
+                        // }
 
-                        if (_image == null &&
-                            _imagePath == null &&
-                            widget.oldImagePath != null) {
+                        if (_images.isEmpty &&
+                            _imagePaths.isEmpty &&
+                            widget.oldImagePaths.isNotEmpty) {
                           imagePath = null;
                           await BlogStorageService.deleteImage(
-                            widget.oldImagePath![0],
+                            widget.oldImagePaths[0],
                           );
                         }
 
