@@ -8,6 +8,7 @@ class Blog {
   final String body;
   final String user;
   final String userId;
+  final List<String> imagePaths;
   final String? imagePath;
 
   const Blog({
@@ -18,6 +19,7 @@ class Blog {
     required this.body,
     required this.user,
     required this.userId,
+    required this.imagePaths,
     this.imagePath,
   });
 
@@ -30,6 +32,7 @@ class Blog {
     String? user,
     String? userId,
     String? imagePath,
+    List<String>? imagePaths,
   }) {
     return Blog(
       id: id ?? this.id,
@@ -39,6 +42,7 @@ class Blog {
       body: body ?? this.body,
       user: user ?? this.user,
       userId: userId ?? this.userId,
+      imagePaths: imagePaths ?? this.imagePaths,
       imagePath: imagePath,
     );
   }
@@ -51,6 +55,7 @@ class Blog {
       'user': user,
       'user_id': userId,
       'image_path': imagePath,
+      'image_paths': imagePaths,
     };
   }
 
@@ -63,6 +68,9 @@ class Blog {
       body: data['body'] as String,
       user: data['user'] as String,
       userId: data['user_id'] as String,
+      imagePaths: (data['image_paths'] as List)
+          .map((e) => e as String)
+          .toList(),
       imagePath: data['image_path'],
     );
   }
