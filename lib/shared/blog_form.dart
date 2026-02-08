@@ -171,7 +171,11 @@ class _BlogFormState extends State<BlogForm> {
                     top: 2,
                     right: 2,
                     child: FilledButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        setState(() {
+                          _images.removeAt(index);
+                        });
+                      },
                       style: FilledButton.styleFrom(
                         elevation: 5,
                         shape: const CircleBorder(),
