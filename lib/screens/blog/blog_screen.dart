@@ -8,6 +8,7 @@ import 'package:simple_blog_flutter/services/blog_storage_service.dart';
 import 'package:simple_blog_flutter/services/auth_provider.dart';
 import 'package:simple_blog_flutter/services/comment_provider.dart';
 import 'package:simple_blog_flutter/services/comment_storage_service.dart';
+import 'package:simple_blog_flutter/shared/owner_label.dart';
 import 'package:simple_blog_flutter/shared/styled_alert_dialog.dart';
 import 'package:simple_blog_flutter/shared/styled_button.dart';
 import 'package:simple_blog_flutter/shared/styled_snack_bar.dart';
@@ -63,7 +64,11 @@ class BlogScreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  StyledRichText(blog.user, fontSize: 16),
+                  OwnerLabel(
+                    username: blog.user,
+                    userId: blog.userId,
+                    fontSize: 16,
+                  ),
                   StyledText(
                     '${blog.formattedDate} ${blog.formattedTime}',
                     fontSize: 14,

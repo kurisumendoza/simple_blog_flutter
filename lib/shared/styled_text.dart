@@ -48,39 +48,6 @@ class StyledPreviewText extends StatelessWidget {
   }
 }
 
-// for blog ownership
-class StyledRichText extends StatelessWidget {
-  const StyledRichText(this.text, {super.key, this.fontSize});
-
-  final String text;
-  final double? fontSize;
-
-  @override
-  Widget build(BuildContext context) {
-    return RichText(
-      text: TextSpan(
-        text: 'by ',
-        style: GoogleFonts.poppins(
-          textStyle: Theme.of(context).textTheme.bodyMedium,
-          fontStyle: FontStyle.italic,
-          fontSize: (fontSize ?? 14) - 3,
-        ),
-        children: <TextSpan>[
-          TextSpan(
-            text: text,
-            style: GoogleFonts.poppins(
-              textStyle: Theme.of(context).textTheme.bodyMedium,
-              fontWeight: FontWeight.bold,
-              fontStyle: FontStyle.normal,
-              fontSize: fontSize ?? 14,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class StyledHeading extends StatelessWidget {
   const StyledHeading(
     this.text, {

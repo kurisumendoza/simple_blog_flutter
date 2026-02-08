@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:simple_blog_flutter/models/blog.dart';
 import 'package:simple_blog_flutter/screens/blog/blog_screen.dart';
 import 'package:simple_blog_flutter/services/blog_storage_service.dart';
+import 'package:simple_blog_flutter/shared/owner_label.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
 import 'package:simple_blog_flutter/theme.dart';
 
@@ -20,11 +21,11 @@ class BlogCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             StyledHeading(blog.title, maxLines: 1),
-            SizedBox(height: 5),
+            SizedBox(height: 6),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                StyledRichText(blog.user),
+                OwnerLabel(username: blog.user, userId: blog.userId),
                 StyledText(
                   '${blog.formattedDate} ${blog.formattedTime}',
                   fontSize: 12,
@@ -32,7 +33,7 @@ class BlogCard extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 6),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
