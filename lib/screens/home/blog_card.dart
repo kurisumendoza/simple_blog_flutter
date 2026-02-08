@@ -37,11 +37,11 @@ class BlogCard extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (blog.imagePath != null) ...[
+                if (blog.imagePaths.isNotEmpty) ...[
                   Hero(
                     tag: blog.id,
                     child: Image.network(
-                      BlogStorageService.getImageUrl(blog.imagePath!),
+                      BlogStorageService.getImageUrl(blog.imagePaths[0]),
                       height: 100,
                       width: 100,
                       fit: BoxFit.cover,

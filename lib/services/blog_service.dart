@@ -54,7 +54,7 @@ class BlogService {
     required String body,
     required String user,
     required String userId,
-    String? imagePath,
+    required List<String> imagePaths,
   }) async {
     try {
       await DatabaseService.supabase.from('blogs').insert({
@@ -63,7 +63,7 @@ class BlogService {
         'body': body,
         'user': user,
         'user_id': userId,
-        if (imagePath != null) 'image_path': imagePath,
+        'image_paths': imagePaths,
       });
     } catch (e) {
       rethrow;
@@ -74,12 +74,12 @@ class BlogService {
     required int id,
     required String title,
     required String body,
-    String? imagePath,
+    required List<String> imagePaths,
   }) async {
     try {
       final data = await DatabaseService.supabase
           .from('blogs')
-          .update({'title': title, 'body': body, 'image_path': imagePath})
+          .update({'title': title, 'body': body, 'image_paths': imagePaths})
           .eq('id', id)
           .select();
 

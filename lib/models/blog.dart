@@ -9,7 +9,6 @@ class Blog {
   final String user;
   final String userId;
   final List<String> imagePaths;
-  final String? imagePath;
 
   const Blog({
     required this.id,
@@ -20,7 +19,6 @@ class Blog {
     required this.user,
     required this.userId,
     required this.imagePaths,
-    this.imagePath,
   });
 
   Blog copyWith({
@@ -31,7 +29,6 @@ class Blog {
     String? body,
     String? user,
     String? userId,
-    String? imagePath,
     List<String>? imagePaths,
   }) {
     return Blog(
@@ -43,7 +40,6 @@ class Blog {
       user: user ?? this.user,
       userId: userId ?? this.userId,
       imagePaths: imagePaths ?? this.imagePaths,
-      imagePath: imagePath,
     );
   }
 
@@ -54,7 +50,6 @@ class Blog {
       'body': body,
       'user': user,
       'user_id': userId,
-      'image_path': imagePath,
       'image_paths': imagePaths,
     };
   }
@@ -71,7 +66,6 @@ class Blog {
       imagePaths: (data['image_paths'] as List)
           .map((e) => e as String)
           .toList(),
-      imagePath: data['image_path'],
     );
   }
 

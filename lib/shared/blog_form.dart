@@ -30,7 +30,7 @@ class BlogForm extends StatefulWidget {
   final int? id;
   final String? oldTitle;
   final String? oldBody;
-  final String? oldImagePath;
+  final List<String>? oldImagePath;
 
   @override
   State<BlogForm> createState() => _BlogFormState();
@@ -41,7 +41,7 @@ class _BlogFormState extends State<BlogForm> {
 
   String _title = '';
   String _body = '';
-  String? _imagePath;
+  List<String>? _imagePath;
   Uint8List? _image;
   String? _ext;
   bool _isSubmitting = false;
@@ -138,7 +138,7 @@ class _BlogFormState extends State<BlogForm> {
                       fit: BoxFit.cover,
                     )
                   : Image.network(
-                      BlogStorageService.getImageUrl(_imagePath!),
+                      BlogStorageService.getImageUrl(_imagePath![0]),
                       height: 100,
                       width: 100,
                       fit: BoxFit.cover,
@@ -194,7 +194,7 @@ class _BlogFormState extends State<BlogForm> {
                         final navigator = Navigator.of(context);
                         final messenger = ScaffoldMessenger.of(context);
 
-                        String? imagePath = widget.oldImagePath;
+                        String? imagePath = widget.oldImagePath![0];
 
                         if (_image != null) {
                           imagePath = _generateImagePath();
@@ -202,7 +202,7 @@ class _BlogFormState extends State<BlogForm> {
 
                           if (widget.oldImagePath != null) {
                             await BlogStorageService.deleteImage(
-                              widget.oldImagePath!,
+                              widget.oldImagePath![0],
                             );
                           }
                         }
@@ -212,7 +212,7 @@ class _BlogFormState extends State<BlogForm> {
                             widget.oldImagePath != null) {
                           imagePath = null;
                           await BlogStorageService.deleteImage(
-                            widget.oldImagePath!,
+                            widget.oldImagePath![0],
                           );
                         }
 
@@ -223,7 +223,7 @@ class _BlogFormState extends State<BlogForm> {
                             body: _body.trim(),
                             user: authProvider.username!,
                             userId: authProvider.userId!,
-                            imagePath: imagePath,
+                            imagePaths: [imagePath!],
                           );
 
                           navigator.pushAndRemoveUntil(
@@ -245,7 +245,7 @@ class _BlogFormState extends State<BlogForm> {
                             id: widget.id!,
                             title: _title.trim(),
                             body: _body.trim(),
-                            imagePath: imagePath,
+                            imagePaths: [imagePath!],
                           );
 
                           navigator.pushAndRemoveUntil(

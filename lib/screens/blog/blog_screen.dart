@@ -37,7 +37,7 @@ class BlogScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (blog.imagePath != null)
+              if (blog.imagePaths.isNotEmpty)
                 Center(
                   child: Hero(
                     tag: blog.id,
@@ -49,7 +49,7 @@ class BlogScreen extends StatelessWidget {
                             : constraints.maxWidth;
 
                         return Image.network(
-                          BlogStorageService.getImageUrl(blog.imagePath!),
+                          BlogStorageService.getImageUrl(blog.imagePaths[0]),
                           width: size,
                           height: size,
                           fit: BoxFit.cover,
@@ -127,9 +127,9 @@ class BlogScreen extends StatelessWidget {
                                       }
                                     }
 
-                                    if (blog.imagePath != null) {
+                                    if (blog.imagePaths.isEmpty) {
                                       BlogStorageService.deleteImage(
-                                        blog.imagePath!,
+                                        blog.imagePaths[0],
                                       );
                                     }
 

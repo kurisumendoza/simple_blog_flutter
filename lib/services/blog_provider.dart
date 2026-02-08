@@ -51,7 +51,7 @@ class BlogProvider extends ChangeNotifier {
     required String body,
     required String user,
     required String userId,
-    String? imagePath,
+    required List<String> imagePaths,
   }) async {
     await BlogService.createBlog(
       title: title,
@@ -59,7 +59,7 @@ class BlogProvider extends ChangeNotifier {
       body: body,
       user: user,
       userId: userId,
-      imagePath: imagePath,
+      imagePaths: imagePaths,
     );
 
     notifyListeners();
@@ -69,13 +69,13 @@ class BlogProvider extends ChangeNotifier {
     required int id,
     required String title,
     required String body,
-    String? imagePath,
+    required List<String> imagePaths,
   }) async {
     await BlogService.updateBlog(
       id: id,
       title: title,
       body: body,
-      imagePath: imagePath,
+      imagePaths: imagePaths,
     );
 
     final blog = _blogs.firstWhere((b) => b.id == id);
@@ -84,7 +84,7 @@ class BlogProvider extends ChangeNotifier {
     _blogs[i] = _blogs[i].copyWith(
       title: title,
       body: body,
-      imagePath: imagePath,
+      imagePaths: imagePaths,
     );
     notifyListeners();
   }
