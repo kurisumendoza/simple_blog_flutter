@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:simple_blog_flutter/shared/blog_form.dart';
+import 'package:simple_blog_flutter/screens/features/blog_form.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
 import 'package:simple_blog_flutter/theme.dart';
 
