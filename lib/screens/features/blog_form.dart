@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:simple_blog_flutter/models/blog_image.dart';
 import 'package:simple_blog_flutter/screens/blog/blog_screen.dart';
+import 'package:simple_blog_flutter/screens/features/image_upload_grid.dart';
 import 'package:simple_blog_flutter/screens/home/home_screen.dart';
 import 'package:simple_blog_flutter/services/auth_provider.dart';
 import 'package:simple_blog_flutter/services/blog_provider.dart';
@@ -69,7 +70,7 @@ class _BlogFormState extends State<BlogForm> {
 
   Future<void> _pickImages() async {
     final picker = ImagePicker();
-    final pickedImages = await picker.pickMultiImage(limit: 2);
+    final pickedImages = await picker.pickMultiImage();
 
     if (pickedImages.isNotEmpty) {
       List<Uint8List> images = [];
@@ -145,73 +146,26 @@ class _BlogFormState extends State<BlogForm> {
           ),
           SizedBox(height: 15),
 
-          GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 4,
-              crossAxisSpacing: 6,
-              mainAxisSpacing: 10,
-            ),
-            itemCount: _images.length,
-            itemBuilder: (context, index) {
-              return Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _coverImage = _images[index];
-                      });
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: _coverImage == _images[index]
-                            ? Border.all(color: AppColors.accent, width: 4)
-                            : Border.all(color: Colors.transparent, width: 4),
-                      ),
-                      child: _images[index].isRemote
-                          ? Image.network(
-                              BlogStorageService.getImageUrl(
-                                _images[index].path!,
-                              ),
-                              width: double.infinity,
-                              height: double.infinity,
-                              fit: BoxFit.cover,
-                            )
-                          : Image.memory(
-                              _images[index].file!,
-                              width: double.infinity,
-                              height: double.infinity,
-                              fit: BoxFit.cover,
-                            ),
-                    ),
-                  ),
-                  Positioned(
-                    top: -3,
-                    right: -3,
-                    child: FilledButton(
-                      onPressed: () {
-                        setState(() {
-                          _images.removeAt(index);
-                          _images.isEmpty
-                              ? _coverImage = null
-                              : _coverImage = _images[0];
-                        });
-                      },
-                      style: FilledButton.styleFrom(
-                        elevation: 5,
-                        shape: const CircleBorder(),
-                        padding: EdgeInsets.all(5),
-                        minimumSize: const Size(20, 20),
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        backgroundColor: Colors.red[400],
-                      ),
-                      child: Icon(Icons.close, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ],
-              );
+          ImageUploadGrid(
+            coverImage: _coverImage,
+            imagesList: _images,
+            onImageTap: (index) {
+              setState(() {
+                _coverImage = _images[index];
+              });
+            },
+            onImageRemove: (index) {
+              setState(() {
+                if (_images.length == 1) {
+                  _images.removeAt(index);
+                  _coverImage = null;
+                } else if (_coverImage == _images[index]) {
+                  _images.removeAt(index);
+                  _coverImage = _images[0];
+                } else {
+                  _images.removeAt(index);
+                }
+              });
             },
           ),
 
