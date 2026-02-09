@@ -89,6 +89,21 @@ class BlogService {
     }
   }
 
+  static Future<void> updateBlogsUser({
+    required String userId,
+    required String user,
+  }) async {
+    try {
+      await DatabaseService.supabase
+          .from('blogs')
+          .update({'user': user})
+          .eq('user_id', userId)
+          .select();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   static Future<void> deleteBlog(int id) async {
     try {
       await DatabaseService.supabase.from('blogs').delete().eq('id', id);

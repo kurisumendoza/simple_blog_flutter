@@ -34,6 +34,7 @@ class ProfileService {
   // update profile details
   static Future<void> updateProfile({
     required int id,
+    required String username,
     String? location,
     String? bio,
     String? imagePath,
@@ -41,7 +42,12 @@ class ProfileService {
     try {
       await DatabaseService.supabase
           .from('profile')
-          .update({'location': location, 'bio': bio, 'image_path': imagePath})
+          .update({
+            'user': username,
+            'location': location,
+            'bio': bio,
+            'image_path': imagePath,
+          })
           .eq('id', id)
           .select();
     } catch (e) {

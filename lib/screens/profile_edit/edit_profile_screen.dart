@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_blog_flutter/models/profile.dart';
-import 'package:simple_blog_flutter/screens/profile/profile_screen.dart';
+import 'package:simple_blog_flutter/services/auth_provider.dart';
+import 'package:simple_blog_flutter/services/blog_provider.dart';
+import 'package:simple_blog_flutter/services/comment_provider.dart';
 import 'package:simple_blog_flutter/services/profile_provider.dart';
 import 'package:simple_blog_flutter/services/profile_storage_service.dart';
 import 'package:simple_blog_flutter/shared/styled_button.dart';
@@ -25,6 +27,7 @@ class EditProfileScreen extends StatefulWidget {
 class _EditProfileScreenState extends State<EditProfileScreen> {
   final _formGlobalKey = GlobalKey<FormState>();
 
+  String? _username;
   String? _location;
   String? _bio;
   String? _imagePath;
@@ -138,6 +141,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 ),
                 SizedBox(height: 20),
                 StyledFormField(
+                  label: 'Username',
+                  initialValue: widget.profile.user,
+                  onSaved: (value) =>
+                      _username = (value != null && value.trim().isNotEmpty)
+                      ? value.trim()
+                      : widget.profile.user,
+                  maxLength: 15,
+                  minLength: 3,
+                ),
+                SizedBox(height: 20),
+                StyledFormField(
                   label: 'General Location',
                   initialValue: widget.profile.location,
                   isOptional: true,
@@ -176,10 +190,30 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               _isSubmitting = true;
                             });
 
-                            final commentProvider = context
+                            final authProvider = context.read<AuthProvider>();
+                            final profileProvider = context
                                 .read<ProfileProvider>();
+                            final blogProvider = context.read<BlogProvider>();
+                            final commentProvider = context
+                                .read<CommentProvider>();
                             final navigator = Navigator.of(context);
                             final messenger = ScaffoldMessenger.of(context);
+
+                            if (_username != widget.profile.user &&
+                                await profileProvider.userExists(_username!)) {
+                              messenger.showSnackBar(
+                                styledSnackBar(
+                                  message: 'Username already exists!',
+                                  isError: true,
+                                ),
+                              );
+
+                              setState(() {
+                                _isSubmitting = false;
+                              });
+
+                              return;
+                            }
 
                             String? imagePath = widget.profile.imagePath;
 
@@ -206,11 +240,25 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               );
                             }
 
-                            await commentProvider.updateProfile(
+                            String username = _username != null
+                                ? _username!
+                                : widget.profile.user;
+
+                            await authProvider.updateUser(username);
+                            await profileProvider.updateProfile(
                               id: widget.profile.id,
+                              username: username,
                               location: _location,
                               bio: _bio,
                               imagePath: imagePath,
+                            );
+                            await blogProvider.updateBlogsUser(
+                              userId: widget.profile.userId,
+                              user: username,
+                            );
+                            await commentProvider.updateCommentsUser(
+                              userId: widget.profile.userId,
+                              user: username,
                             );
 
                             setState(() {
@@ -218,11 +266,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               _isSubmitting = false;
                             });
 
-                            navigator.pushReplacement(
-                              MaterialPageRoute(
-                                builder: (context) => ProfileScreen(),
-                              ),
-                            );
+                            navigator.pop();
 
                             messenger.showSnackBar(
                               styledSnackBar(message: 'Profile updated!'),

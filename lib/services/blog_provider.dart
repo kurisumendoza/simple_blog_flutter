@@ -89,6 +89,13 @@ class BlogProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> updateBlogsUser({
+    required String userId,
+    required String user,
+  }) async {
+    BlogService.updateBlogsUser(userId: userId, user: user);
+  }
+
   Future<void> deleteBlog(int id) async {
     await BlogService.deleteBlog(id);
 

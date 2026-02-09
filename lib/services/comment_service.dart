@@ -53,6 +53,21 @@ class CommentService extends DatabaseService {
     }
   }
 
+  static Future<void> updateCommentsUser({
+    required String userId,
+    required String user,
+  }) async {
+    try {
+      await DatabaseService.supabase
+          .from('comments')
+          .update({'user': user})
+          .eq('user_id', userId)
+          .select();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   static Future<void> deleteComment(int id) async {
     try {
       await DatabaseService.supabase.from('comments').delete().eq('id', id);

@@ -31,7 +31,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _loadProfile() async {
-    if (widget.userId == null) {
+    if (widget.userId == null ||
+        widget.userId == context.read<AuthProvider>().userId) {
       _userId = context.read<AuthProvider>().userId;
     } else {
       _userId = widget.userId;
@@ -52,6 +53,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final profileProvider = context.read<ProfileProvider>();
     final profile = context.watch<ProfileProvider>().profile;
     final blogs = context.read<BlogProvider>().userBlogs;
 
@@ -119,14 +121,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 if (_isOwner)
                                   StyledFilledButton(
                                     'Edit Profile',
-                                    onPressed: () {
-                                      Navigator.pushReplacement(
+                                    onPressed: () async {
+                                      await Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
                                               EditProfileScreen(profile),
                                         ),
                                       );
+
+                                      await profileProvider.getUser(_userId!);
                                     },
                                   ),
                               ],
@@ -150,7 +154,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         SizedBox(height: 16),
 
-                        Expanded(
+                        Flexible(
                           child: Column(
                             children: [
                               StyledTitle('Recent Posts'),

@@ -57,6 +57,13 @@ class CommentProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> updateCommentsUser({
+    required String userId,
+    required String user,
+  }) async {
+    CommentService.updateCommentsUser(userId: userId, user: user);
+  }
+
   Future<void> deleteComment(int id) async {
     await CommentService.deleteComment(id);
 

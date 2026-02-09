@@ -49,4 +49,19 @@ class AuthService {
       rethrow;
     }
   }
+
+  // update user metadata
+  static Future<void> updateUser(String username) async {
+    try {
+      if (await ProfileService.userExists(username)) {
+        throw AuthApiException('Username already taken');
+      }
+
+      await DatabaseService.supabase.auth.updateUser(
+        UserAttributes(data: {'user': username}),
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

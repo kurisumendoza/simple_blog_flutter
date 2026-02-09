@@ -50,4 +50,17 @@ class AuthProvider extends ChangeNotifier {
       return (false, 'Failed to register! Check your internet connection');
     }
   }
+
+  Future<(bool, String)> updateUser(String username) async {
+    try {
+      await AuthService.updateUser(username);
+      notifyListeners();
+
+      return (true, 'User updated.');
+    } on AuthApiException catch (e) {
+      return (false, e.message);
+    } catch (e) {
+      return (false, 'Failed to update user!');
+    }
+  }
 }

@@ -13,6 +13,7 @@ class ProfileProvider extends ChangeNotifier {
     final profile = await ProfileService.getUser(userId);
 
     _profile = profile[0];
+    notifyListeners();
   }
 
   Future<String?> getUserImage(String userId) async {
@@ -30,15 +31,21 @@ class ProfileProvider extends ChangeNotifier {
 
   Future<void> updateProfile({
     required int id,
+    required String username,
     String? location,
     String? bio,
     String? imagePath,
   }) async {
     await ProfileService.updateProfile(
       id: id,
+      username: username,
       location: location,
       bio: bio,
       imagePath: imagePath,
     );
+  }
+
+  Future<bool> userExists(String username) async {
+    return await ProfileService.userExists(username);
   }
 }
