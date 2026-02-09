@@ -21,6 +21,7 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   String? _userId;
+  bool _isOwner = true;
   bool _isLoading = true;
 
   @override
@@ -34,6 +35,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       _userId = context.read<AuthProvider>().userId;
     } else {
       _userId = widget.userId;
+      _isOwner = false;
     }
 
     final profileProvider = context.read<ProfileProvider>();
@@ -51,6 +53,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final profile = context.watch<ProfileProvider>().profile;
+    final blogs = context.read<BlogProvider>().userBlogs;
 
     return Scaffold(
       appBar: AppBar(title: StyledHeading('Profile')),
@@ -113,18 +116,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   ],
                                 ),
                                 SizedBox(height: 10),
-                                StyledFilledButton(
-                                  'Edit Profile',
-                                  onPressed: () {
-                                    Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            EditProfileScreen(profile),
-                                      ),
-                                    );
-                                  },
-                                ),
+                                if (_isOwner)
+                                  StyledFilledButton(
+                                    'Edit Profile',
+                                    onPressed: () {
+                                      Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              EditProfileScreen(profile),
+                                        ),
+                                      );
+                                    },
+                                  ),
                               ],
                             ),
                           ],
@@ -152,28 +156,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               StyledTitle('Recent Posts'),
                               SizedBox(height: 16),
                               Expanded(
-                                child:
-                                    context
-                                        .read<BlogProvider>()
-                                        .userBlogs
-                                        .isEmpty
+                                child: blogs.isEmpty
                                     ? StyledText('No post yet')
                                     : ListView.builder(
-                                        itemCount: context
-                                            .read<BlogProvider>()
-                                            .userBlogs
-                                            .length,
+                                        itemCount: blogs.length,
                                         itemBuilder: ((context, index) {
                                           return BlogCard(
-                                            key: ValueKey(
-                                              context
-                                                  .read<BlogProvider>()
-                                                  .userBlogs[index]
-                                                  .id,
-                                            ),
-                                            blog: context
-                                                .read<BlogProvider>()
-                                                .userBlogs[index],
+                                            key: ValueKey(blogs[index].id),
+                                            blog: blogs[index],
                                           );
                                         }),
                                       ),
