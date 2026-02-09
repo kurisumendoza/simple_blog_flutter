@@ -1,8 +1,6 @@
 import 'dart:math';
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:simple_blog_flutter/models/blog_image.dart';
 import 'package:simple_blog_flutter/screens/blog/blog_screen.dart';
 import 'package:simple_blog_flutter/screens/features/image_upload_grid.dart';
@@ -16,6 +14,7 @@ import 'package:simple_blog_flutter/shared/styled_snack_bar.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
 import 'package:simple_blog_flutter/theme.dart';
 import 'package:simple_blog_flutter/utils/generate_image_path.dart';
+import 'package:simple_blog_flutter/utils/pick_multiple_images.dart';
 
 class BlogForm extends StatefulWidget {
   const BlogForm({
@@ -61,49 +60,6 @@ class _BlogFormState extends State<BlogForm> {
         .join('-');
 
     return '$slug + $suffix';
-  }
-
-  Future<void> _pickImages() async {
-    final picker = ImagePicker();
-    final pickedImages = await picker.pickMultiImage();
-
-    if (pickedImages.isNotEmpty) {
-      List<Uint8List> images = [];
-      List<String> exts = [];
-      List<String> invalidFiles = [];
-
-      final limit = 10 - (_images.length);
-
-      for (var pickedImage in pickedImages.take(limit)) {
-        final ext = pickedImage.name.split('.').last.toLowerCase();
-        if (ext != 'jpg' && ext != 'jpeg' && ext != 'png') {
-          invalidFiles.add(pickedImage.name);
-          continue;
-        }
-
-        XFile imageFile = XFile(pickedImage.path);
-        final imageBytes = await imageFile.readAsBytes();
-        images.add(imageBytes);
-        exts.add(ext);
-      }
-
-      if (!mounted) return;
-
-      if (invalidFiles.isNotEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          styledSnackBar(
-            isError: true,
-            message: 'Some images are not supported (only PNG/JPG allowed)',
-          ),
-        );
-      }
-
-      setState(() {
-        _images.addAll(images.map((file) => BlogImage(file: file)));
-        _exts.addAll(exts);
-        _coverImage ??= _coverImage = _images[0];
-      });
-    }
   }
 
   @override
@@ -193,8 +149,27 @@ class _BlogFormState extends State<BlogForm> {
                       ),
                     )
                   : OutlinedButton(
-                      onPressed: () {
-                        _pickImages();
+                      onPressed: () async {
+                        final messenger = ScaffoldMessenger.of(context);
+                        final result = await pickMultipleImages(
+                          existingCount: _images.length,
+                        );
+
+                        if (result.withInvalid) {
+                          messenger.showSnackBar(
+                            styledSnackBar(
+                              isError: true,
+                              message:
+                                  'Some images are not supported (only PNG/JPG allowed).',
+                            ),
+                          );
+                        }
+
+                        setState(() {
+                          _images.addAll(result.images);
+                          _exts.addAll(result.exts);
+                          _coverImage ??= _images[0];
+                        });
                       },
                       style: OutlinedButton.styleFrom(
                         side: BorderSide(color: AppColors.primary),
