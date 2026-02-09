@@ -15,9 +15,10 @@ import 'package:simple_blog_flutter/shared/styled_snack_bar.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
 
 class BlogScreen extends StatelessWidget {
-  const BlogScreen({super.key, this.id});
+  BlogScreen({super.key, this.id});
 
   final int? id;
+  final _controller = PageController();
 
   @override
   Widget build(BuildContext context) {
@@ -39,25 +40,56 @@ class BlogScreen extends StatelessWidget {
             children: [
               if (blog.imagePaths.isNotEmpty)
                 Center(
-                  child: Hero(
-                    tag: blog.id,
-                    child: LayoutBuilder(
-                      builder: (context, constraints) {
-                        final maxWidth = 500.0;
-                        final size = constraints.maxWidth > maxWidth
-                            ? maxWidth
-                            : constraints.maxWidth;
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      final maxWidth = 500.0;
+                      final size = constraints.maxWidth > maxWidth
+                          ? maxWidth
+                          : constraints.maxWidth;
 
-                        return Image.network(
-                          BlogStorageService.getImageUrl(blog.imagePaths[0]),
-                          width: size,
-                          height: size,
-                          fit: BoxFit.cover,
-                        );
-                      },
-                    ),
+                      return SizedBox(
+                        width: size,
+                        height: size,
+                        child: PageView.builder(
+                          itemCount: blog.imagePaths.length,
+                          controller: _controller,
+                          itemBuilder: (context, index) {
+                            final imageUrl = BlogStorageService.getImageUrl(
+                              blog.imagePaths[index],
+                            );
+
+                            final image = Stack(
+                              children: [
+                                Image.network(
+                                  imageUrl,
+                                  width: size,
+                                  height: size,
+                                  fit: BoxFit.cover,
+                                  frameBuilder: (context, child, frame, _) {
+                                    if (frame == null) {
+                                      return Center(
+                                        child: CircularProgressIndicator(),
+                                      );
+                                    }
+
+                                    return child;
+                                  },
+                                ),
+                              ],
+                            );
+
+                            if (index == 0) {
+                              return Hero(tag: blog.id, child: image);
+                            } else {
+                              return image;
+                            }
+                          },
+                        ),
+                      );
+                    },
                   ),
                 ),
+
               SizedBox(height: 10),
               StyledHeading(blog.title, fontSize: 20, maxLines: 3),
               SizedBox(height: 10),
