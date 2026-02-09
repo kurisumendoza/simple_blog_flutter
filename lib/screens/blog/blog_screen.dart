@@ -225,10 +225,10 @@ class BlogScreen extends StatelessWidget {
                                       }
                                     }
 
-                                    if (blog.imagePaths.isEmpty) {
-                                      BlogStorageService.deleteImage(
-                                        blog.imagePaths[0],
-                                      );
+                                    if (blog.imagePaths.isNotEmpty) {
+                                      for (var path in blog.imagePaths) {
+                                        BlogStorageService.deleteImage(path);
+                                      }
                                     }
 
                                     navigator.pop();
