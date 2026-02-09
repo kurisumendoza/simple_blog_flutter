@@ -52,17 +52,17 @@ class BlogScreen extends StatelessWidget {
                       return SizedBox(
                         width: size,
                         height: size,
-                        child: PageView.builder(
-                          itemCount: blog.imagePaths.length,
-                          controller: _controller,
-                          itemBuilder: (context, index) {
-                            final imageUrl = BlogStorageService.getImageUrl(
-                              blog.imagePaths[index],
-                            );
+                        child: Stack(
+                          children: [
+                            PageView.builder(
+                              itemCount: blog.imagePaths.length,
+                              controller: _controller,
+                              itemBuilder: (context, index) {
+                                final imageUrl = BlogStorageService.getImageUrl(
+                                  blog.imagePaths[index],
+                                );
 
-                            final image = Stack(
-                              children: [
-                                Image.network(
+                                final image = Image.network(
                                   imageUrl,
                                   width: size,
                                   height: size,
@@ -76,34 +76,85 @@ class BlogScreen extends StatelessWidget {
 
                                     return child;
                                   },
-                                ),
-                              ],
-                            );
+                                );
 
-                            if (index == 0) {
-                              return Hero(tag: blog.id, child: image);
-                            } else {
-                              return image;
-                            }
-                          },
+                                if (index == 0) {
+                                  return Hero(tag: blog.id, child: image);
+                                } else {
+                                  return image;
+                                }
+                              },
+                            ),
+                            if (blog.imagePaths.length > 1)
+                              Positioned(
+                                left: 3,
+                                top: 0,
+                                bottom: 0,
+                                child: Center(
+                                  child: IconButton(
+                                    onPressed: () {
+                                      _controller.previousPage(
+                                        duration: Duration(milliseconds: 300),
+                                        curve: Curves.linear,
+                                      );
+                                    },
+                                    icon: Icon(
+                                      Icons.keyboard_arrow_left,
+                                      color: AppColors.accent,
+                                    ),
+                                    style: IconButton.styleFrom(
+                                      backgroundColor: AppColors.background
+                                          .withAlpha(120),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            if (blog.imagePaths.length > 1)
+                              Positioned(
+                                right: 3,
+                                top: 0,
+                                bottom: 0,
+                                child: Center(
+                                  child: IconButton(
+                                    onPressed: () {
+                                      _controller.nextPage(
+                                        duration: Duration(milliseconds: 300),
+                                        curve: Curves.linear,
+                                      );
+                                    },
+                                    icon: Icon(
+                                      Icons.keyboard_arrow_right,
+                                      color: AppColors.accent,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    style: IconButton.styleFrom(
+                                      backgroundColor: AppColors.background
+                                          .withAlpha(120),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                          ],
                         ),
                       );
                     },
                   ),
                 ),
               SizedBox(height: 10),
-              Center(
-                child: SmoothPageIndicator(
-                  controller: _controller,
-                  count: blog.imagePaths.length,
-                  effect: SlideEffect(
-                    activeDotColor: AppColors.accent,
-                    dotColor: AppColors.secondary,
-                    dotHeight: 12,
-                    dotWidth: 12,
+
+              if (blog.imagePaths.length > 1)
+                Center(
+                  child: SmoothPageIndicator(
+                    controller: _controller,
+                    count: blog.imagePaths.length,
+                    effect: SlideEffect(
+                      activeDotColor: AppColors.accent,
+                      dotColor: AppColors.secondary,
+                      dotHeight: 12,
+                      dotWidth: 12,
+                    ),
                   ),
                 ),
-              ),
 
               SizedBox(height: 12),
               StyledHeading(blog.title, fontSize: 20, maxLines: 3),
