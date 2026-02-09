@@ -17,7 +17,7 @@ class BlogList extends StatelessWidget {
     return ListView.builder(
       itemCount: blogs.length,
       itemBuilder: ((context, index) {
-        return BlogCard(blog: blogs[index]);
+        return BlogCard(key: ValueKey(blogs[index].id), blog: blogs[index]);
       }),
     );
   }

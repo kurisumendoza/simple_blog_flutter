@@ -11,7 +11,9 @@ import 'package:simple_blog_flutter/shared/styled_text.dart';
 import 'package:simple_blog_flutter/theme.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+  const ProfileScreen({super.key, this.userId});
+
+  final String? userId;
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -27,7 +29,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _loadProfile() async {
-    _userId = context.read<AuthProvider>().userId;
+    if (widget.userId == null) {
+      _userId = context.read<AuthProvider>().userId;
+    } else {
+      _userId = widget.userId;
+    }
+
     final profileProvider = context.read<ProfileProvider>();
     final blogProvider = context.read<BlogProvider>();
 
@@ -144,6 +151,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       .length,
                                   itemBuilder: ((context, index) {
                                     return BlogCard(
+                                      key: ValueKey(
+                                        context
+                                            .read<BlogProvider>()
+                                            .userBlogs[index]
+                                            .id,
+                                      ),
                                       blog: context
                                           .read<BlogProvider>()
                                           .userBlogs[index],
