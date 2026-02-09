@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -10,6 +9,7 @@ import 'package:simple_blog_flutter/shared/styled_form_field.dart';
 import 'package:simple_blog_flutter/shared/styled_snack_bar.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
 import 'package:simple_blog_flutter/theme.dart';
+import 'package:simple_blog_flutter/utils/generate_image_path.dart';
 
 class CommentEditForm extends StatefulWidget {
   const CommentEditForm({
@@ -37,12 +37,6 @@ class _CommentEditFormState extends State<CommentEditForm> {
   Uint8List? _image;
   String? _ext;
   bool _isSubmitting = false;
-
-  String _generateImagePath() {
-    String pathName = Random().nextInt(1000000).toRadixString(36);
-
-    return 'public/$pathName.$_ext';
-  }
 
   Future<void> pickImage() async {
     final picker = ImagePicker();
@@ -166,7 +160,7 @@ class _CommentEditFormState extends State<CommentEditForm> {
                           String? imagePath = widget.oldImagePath;
 
                           if (_image != null) {
-                            imagePath = _generateImagePath();
+                            imagePath = generateImagePath(_ext!);
                             await CommentStorageService.addImage(
                               imagePath,
                               _image!,

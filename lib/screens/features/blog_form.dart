@@ -15,6 +15,7 @@ import 'package:simple_blog_flutter/shared/styled_form_field.dart';
 import 'package:simple_blog_flutter/shared/styled_snack_bar.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
 import 'package:simple_blog_flutter/theme.dart';
+import 'package:simple_blog_flutter/utils/generate_image_path.dart';
 
 class BlogForm extends StatefulWidget {
   const BlogForm({
@@ -60,12 +61,6 @@ class _BlogFormState extends State<BlogForm> {
         .join('-');
 
     return '$slug + $suffix';
-  }
-
-  String _generateImagePath(String ext) {
-    String pathName = Random().nextInt(1000000).toRadixString(36);
-
-    return 'public/$pathName.$ext';
   }
 
   Future<void> _pickImages() async {
@@ -250,7 +245,7 @@ class _BlogFormState extends State<BlogForm> {
                               path = _images[i].path!;
                               remoteImages++;
                             } else {
-                              path = _generateImagePath(
+                              path = generateImagePath(
                                 _exts[i - (remoteImages)],
                               );
                               await BlogStorageService.addImage(

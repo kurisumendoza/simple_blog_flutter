@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -12,6 +11,7 @@ import 'package:simple_blog_flutter/shared/styled_form_field.dart';
 import 'package:simple_blog_flutter/shared/styled_snack_bar.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
 import 'package:simple_blog_flutter/theme.dart';
+import 'package:simple_blog_flutter/utils/generate_image_path.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen(this.profile, {super.key});
@@ -31,12 +31,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Uint8List? _image;
   String? _ext;
   bool _isSubmitting = false;
-
-  String _generateImagePath() {
-    String pathName = Random().nextInt(1000000).toRadixString(36);
-
-    return 'public/$pathName.$_ext';
-  }
 
   Future<void> pickImage() async {
     final picker = ImagePicker();
@@ -190,7 +184,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             String? imagePath = widget.profile.imagePath;
 
                             if (_image != null) {
-                              imagePath = _generateImagePath();
+                              imagePath = generateImagePath(_ext!);
                               await ProfileStorageService.addImage(
                                 imagePath,
                                 _image!,
