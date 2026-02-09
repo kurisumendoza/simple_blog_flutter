@@ -34,6 +34,8 @@ class _OwnerLabelState extends State<OwnerLabel> {
     final profileProvider = context.read<ProfileProvider>();
     final image = await profileProvider.getUserImage(widget.userId);
 
+    if (!mounted) return;
+
     setState(() {
       _ownerImage = image;
     });
