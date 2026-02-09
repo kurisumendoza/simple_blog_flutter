@@ -110,7 +110,7 @@ class _CommentFormState extends State<CommentForm> {
           ),
           SizedBox(height: 10),
           StyledFilledButton(
-            'Post Comment',
+            _isSubmitting ? 'Posting...' : 'Post Comment',
             onPressed: _isSubmitting
                 ? () {
                     if (_isSubmitting) return;

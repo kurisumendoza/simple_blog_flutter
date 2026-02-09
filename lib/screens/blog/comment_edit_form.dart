@@ -140,7 +140,7 @@ class _CommentEditFormState extends State<CommentEditForm> {
           Row(
             children: [
               StyledFilledButton(
-                'Update',
+                _isSubmitting ? 'Updating...' : 'Update',
                 onPressed: _isSubmitting
                     ? () {
                         if (_isSubmitting) return;

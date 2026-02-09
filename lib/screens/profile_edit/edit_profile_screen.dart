@@ -163,7 +163,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 ),
                 SizedBox(height: 20),
                 StyledFilledButton(
-                  'Save',
+                  _isSubmitting ? 'Saving...' : 'Save',
                   onPressed: _isSubmitting
                       ? () {
                           if (_isSubmitting) return;
