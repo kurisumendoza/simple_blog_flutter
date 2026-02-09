@@ -21,6 +21,7 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   String? _userId;
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -41,7 +42,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (_userId != null) {
       await profileProvider.getUser(_userId!.trim());
       await blogProvider.getUserBlogs(_userId!);
-      setState(() {});
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -51,125 +54,136 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     return Scaffold(
       appBar: AppBar(title: StyledHeading('Profile')),
-      body: Container(
-        padding: const EdgeInsets.all(20),
-        child: profile == null
-            ? Center(child: CircularProgressIndicator())
-            : Column(
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      profile.imagePath != null
-                          ? Image.network(
-                              ProfileStorageService.getImageUrl(
-                                profile.imagePath!,
-                              ),
-                              height: 150,
-                              width: 150,
-                              fit: BoxFit.cover,
-                            )
-                          : Container(
-                              width: 150,
-                              height: 150,
-                              color: AppColors.primary,
-                              child: Icon(Icons.person, size: 150),
-                            ),
-                      SizedBox(width: 20),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Icon(Icons.person, color: AppColors.accent),
-                              SizedBox(width: 10),
-                              StyledHeading(profile.user),
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                          Row(
-                            children: [
-                              Icon(Icons.cake, color: AppColors.accent),
-                              SizedBox(width: 10),
-                              StyledHeading(profile.formattedDate),
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                          Row(
-                            children: [
-                              Icon(Icons.pin_drop, color: AppColors.accent),
-                              SizedBox(width: 10),
-                              StyledHeading(profile.location ?? 'Not set'),
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                          StyledFilledButton(
-                            'Edit Profile',
-                            onPressed: () {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      EditProfileScreen(profile),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : Container(
+              padding: const EdgeInsets.all(20),
+              child: profile == null
+                  ? Center(child: CircularProgressIndicator())
+                  : Column(
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            profile.imagePath != null
+                                ? Image.network(
+                                    ProfileStorageService.getImageUrl(
+                                      profile.imagePath!,
+                                    ),
+                                    height: 150,
+                                    width: 150,
+                                    fit: BoxFit.cover,
+                                  )
+                                : Container(
+                                    width: 150,
+                                    height: 150,
+                                    color: AppColors.primary,
+                                    child: Icon(Icons.person, size: 150),
+                                  ),
+                            SizedBox(width: 20),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(Icons.person, color: AppColors.accent),
+                                    SizedBox(width: 10),
+                                    StyledHeading(profile.user),
+                                  ],
                                 ),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 20),
-                  Container(
-                    padding: EdgeInsets.all(20),
-                    color: AppColors.secondary.withAlpha(150),
-                    height: 180,
-                    width: double.maxFinite,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        StyledHeading('Bio'),
-                        SizedBox(height: 10),
-                        StyledText(profile.bio ?? 'Not set'),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 16),
-
-                  Expanded(
-                    child: Column(
-                      children: [
-                        StyledTitle('Recent Posts'),
-                        SizedBox(height: 16),
-                        Expanded(
-                          child: context.read<BlogProvider>().userBlogs.isEmpty
-                              ? StyledText('No post yet')
-                              : ListView.builder(
-                                  itemCount: context
-                                      .read<BlogProvider>()
-                                      .userBlogs
-                                      .length,
-                                  itemBuilder: ((context, index) {
-                                    return BlogCard(
-                                      key: ValueKey(
-                                        context
-                                            .read<BlogProvider>()
-                                            .userBlogs[index]
-                                            .id,
+                                SizedBox(height: 10),
+                                Row(
+                                  children: [
+                                    Icon(Icons.cake, color: AppColors.accent),
+                                    SizedBox(width: 10),
+                                    StyledHeading(profile.formattedDate),
+                                  ],
+                                ),
+                                SizedBox(height: 10),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.pin_drop,
+                                      color: AppColors.accent,
+                                    ),
+                                    SizedBox(width: 10),
+                                    StyledHeading(
+                                      profile.location ?? 'Not set',
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 10),
+                                StyledFilledButton(
+                                  'Edit Profile',
+                                  onPressed: () {
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            EditProfileScreen(profile),
                                       ),
-                                      blog: context
-                                          .read<BlogProvider>()
-                                          .userBlogs[index],
                                     );
-                                  }),
+                                  },
                                 ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 20),
+                        Container(
+                          padding: EdgeInsets.all(20),
+                          color: AppColors.secondary.withAlpha(150),
+                          height: 180,
+                          width: double.maxFinite,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              StyledHeading('Bio'),
+                              SizedBox(height: 10),
+                              StyledText(profile.bio ?? 'Not set'),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 16),
+
+                        Expanded(
+                          child: Column(
+                            children: [
+                              StyledTitle('Recent Posts'),
+                              SizedBox(height: 16),
+                              Expanded(
+                                child:
+                                    context
+                                        .read<BlogProvider>()
+                                        .userBlogs
+                                        .isEmpty
+                                    ? StyledText('No post yet')
+                                    : ListView.builder(
+                                        itemCount: context
+                                            .read<BlogProvider>()
+                                            .userBlogs
+                                            .length,
+                                        itemBuilder: ((context, index) {
+                                          return BlogCard(
+                                            key: ValueKey(
+                                              context
+                                                  .read<BlogProvider>()
+                                                  .userBlogs[index]
+                                                  .id,
+                                            ),
+                                            blog: context
+                                                .read<BlogProvider>()
+                                                .userBlogs[index],
+                                          );
+                                        }),
+                                      ),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
-                  ),
-                ],
-              ),
-      ),
+            ),
     );
   }
 }
