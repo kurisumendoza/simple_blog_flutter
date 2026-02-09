@@ -13,6 +13,8 @@ import 'package:simple_blog_flutter/shared/styled_alert_dialog.dart';
 import 'package:simple_blog_flutter/shared/styled_button.dart';
 import 'package:simple_blog_flutter/shared/styled_snack_bar.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
+import 'package:simple_blog_flutter/theme.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class BlogScreen extends StatelessWidget {
   BlogScreen({super.key, this.id});
@@ -89,8 +91,21 @@ class BlogScreen extends StatelessWidget {
                     },
                   ),
                 ),
-
               SizedBox(height: 10),
+              Center(
+                child: SmoothPageIndicator(
+                  controller: _controller,
+                  count: blog.imagePaths.length,
+                  effect: SlideEffect(
+                    activeDotColor: AppColors.accent,
+                    dotColor: AppColors.secondary,
+                    dotHeight: 12,
+                    dotWidth: 12,
+                  ),
+                ),
+              ),
+
+              SizedBox(height: 12),
               StyledHeading(blog.title, fontSize: 20, maxLines: 3),
               SizedBox(height: 10),
               Row(
