@@ -19,6 +19,8 @@ class _CommentListState extends State<CommentList> {
     super.initState();
   }
 
+  int? _editingCommentId;
+
   Future<void> _loadComments() async {
     int blogId = context.read<Blog>().id;
     await context.read<CommentProvider>().getComments(blogId);
@@ -49,6 +51,17 @@ class _CommentListState extends State<CommentList> {
             return CommentCard(
               key: ValueKey(value.comments[index].id),
               comment: value.comments[index],
+              isEditing: _editingCommentId == value.comments[index].id,
+              onEditStart: () {
+                setState(() {
+                  _editingCommentId = value.comments[index].id;
+                });
+              },
+              onEditEnd: () {
+                setState(() {
+                  _editingCommentId = null;
+                });
+              },
             );
           }),
         );

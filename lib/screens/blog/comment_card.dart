@@ -11,16 +11,24 @@ import 'package:simple_blog_flutter/shared/styled_text.dart';
 import 'package:simple_blog_flutter/theme.dart';
 
 class CommentCard extends StatefulWidget {
-  const CommentCard({super.key, required this.comment});
+  const CommentCard({
+    super.key,
+    required this.comment,
+    required this.isEditing,
+    required this.onEditStart,
+    required this.onEditEnd,
+  });
 
   final Comment comment;
+  final bool isEditing;
+  final void Function() onEditStart;
+  final void Function() onEditEnd;
 
   @override
   State<CommentCard> createState() => _CommentCardState();
 }
 
 class _CommentCardState extends State<CommentCard> {
-  bool _isEditing = false;
   String? _userImage;
 
   @override
@@ -76,18 +84,14 @@ class _CommentCardState extends State<CommentCard> {
             ],
           ),
           SizedBox(height: 8),
-          _isEditing &&
+          widget.isEditing &&
                   (widget.comment.userId ==
                       context.watch<AuthProvider>().user!.id)
               ? CommentEditForm(
                   id: widget.comment.id,
                   oldBody: widget.comment.body,
                   oldImagePath: widget.comment.imagePath,
-                  onEditEnd: () {
-                    setState(() {
-                      _isEditing = false;
-                    });
-                  },
+                  onEditEnd: widget.onEditEnd,
                 )
               : Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -105,15 +109,11 @@ class _CommentCardState extends State<CommentCard> {
                       ),
                   ],
                 ),
-          if (!_isEditing &&
+          if (!widget.isEditing &&
               context.watch<AuthProvider>().isLoggedIn &&
               context.read<AuthProvider>().username == widget.comment.user)
             CommentCardActions(
-              onEditStart: () {
-                setState(() {
-                  _isEditing = true;
-                });
-              },
+              onEditStart: widget.onEditStart,
               id: widget.comment.id,
               imagePath: widget.comment.imagePath,
             ),
