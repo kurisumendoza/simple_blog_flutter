@@ -29,26 +29,22 @@ class CommentCard extends StatefulWidget {
 }
 
 class _CommentCardState extends State<CommentCard> {
-  String? _userImage;
-
   @override
   void initState() {
-    _fetchUserImage();
+    _fetchUserProfile();
     super.initState();
   }
 
-  Future<void> _fetchUserImage() async {
-    final userImage = await context.read<ProfileProvider>().getUserImage(
-      widget.comment.userId.trim(),
-    );
-
-    setState(() {
-      _userImage = userImage;
-    });
+  Future<void> _fetchUserProfile() async {
+    await context.read<ProfileProvider>().getUser(widget.comment.userId);
   }
 
   @override
   Widget build(BuildContext context) {
+    final profileProvider = context.watch<ProfileProvider>();
+    final profile = profileProvider.getProfile(widget.comment.userId);
+    final userImage = profile?.imagePath;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 12),
       child: Column(
@@ -59,7 +55,7 @@ class _CommentCardState extends State<CommentCard> {
             children: [
               Row(
                 children: [
-                  _userImage == null
+                  userImage == null
                       ? Container(
                           height: 30,
                           width: 30,
@@ -67,7 +63,7 @@ class _CommentCardState extends State<CommentCard> {
                           child: Icon(Icons.person),
                         )
                       : Image.network(
-                          ProfileStorageService.getImageUrl(_userImage!),
+                          ProfileStorageService.getImageUrl(userImage),
                           height: 30,
                           width: 30,
                           fit: BoxFit.cover,
