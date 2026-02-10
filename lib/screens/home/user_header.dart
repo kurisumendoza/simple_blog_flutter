@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:simple_blog_flutter/models/profile.dart';
 import 'package:simple_blog_flutter/screens/login/login_screen.dart';
 import 'package:simple_blog_flutter/screens/profile/profile_screen.dart';
 import 'package:simple_blog_flutter/services/auth_provider.dart';
@@ -19,30 +18,14 @@ class UserHeader extends StatefulWidget {
 }
 
 class _UserHeaderState extends State<UserHeader> {
-  Profile? _profile;
-
-  @override
-  void initState() {
-    _loadProfile();
-    super.initState();
-  }
-
-  Future<void> _loadProfile() async {
-    final authProvider = context.read<AuthProvider>();
-    final profileProvider = context.read<ProfileProvider>();
-    final profile = await profileProvider.getUser(authProvider.userId!);
-
-    if (authProvider.isLoggedIn) {
-      setState(() {
-        _profile = profile;
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Consumer<AuthProvider>(
-      builder: (context, auth, child) {
+    return Consumer2<AuthProvider, ProfileProvider>(
+      builder: (context, auth, profile, child) {
+        if (auth.isLoggedIn) {
+          profile.getUser(auth.userId!);
+        }
+
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -58,7 +41,7 @@ class _UserHeaderState extends State<UserHeader> {
                     },
                     child: Row(
                       children: [
-                        _profile?.imagePath == null
+                        profile.getProfile(auth.userId!)?.imagePath == null
                             ? Container(
                                 height: 40,
                                 width: 40,
@@ -67,7 +50,7 @@ class _UserHeaderState extends State<UserHeader> {
                               )
                             : Image.network(
                                 ProfileStorageService.getImageUrl(
-                                  _profile!.imagePath!,
+                                  profile.getProfile(auth.userId!)!.imagePath!,
                                 ),
                                 height: 40,
                                 width: 40,

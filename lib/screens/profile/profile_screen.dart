@@ -46,10 +46,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
 
     if (_userId != null) {
-      final profile = await profileProvider.getUser(_userId!.trim());
+      await profileProvider.getUser(_userId!.trim());
       await blogProvider.getUserBlogs(_userId!);
       setState(() {
-        _profile = profile;
+        _profile = profileProvider.getProfile(_userId!);
         _isLoading = false;
       });
     }
