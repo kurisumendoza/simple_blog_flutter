@@ -18,32 +18,18 @@ class UserHeader extends StatefulWidget {
 }
 
 class _UserHeaderState extends State<UserHeader> {
-  String? _userImage;
-
-  Future<void> _fetchUserImage(String userId) async {
-    final userImage = await context.read<ProfileProvider>().getUserImage(
-      userId,
-    );
-
-    setState(() {
-      _userImage = userImage;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Consumer<AuthProvider>(
-      builder: (context, value, child) {
-        if (value.isLoggedIn && _userImage == null) {
-          _fetchUserImage(value.userId!);
-        } else if (!value.isLoggedIn && _userImage != null) {
-          _userImage = null;
+    return Consumer2<AuthProvider, ProfileProvider>(
+      builder: (context, auth, profile, child) {
+        if (auth.isLoggedIn) {
+          profile.getUser(auth.userId!);
         }
 
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            (value.isLoggedIn && value.username != null)
+            (auth.isLoggedIn && auth.username != null)
                 ? GestureDetector(
                     onTap: () {
                       Navigator.push(
@@ -55,7 +41,7 @@ class _UserHeaderState extends State<UserHeader> {
                     },
                     child: Row(
                       children: [
-                        _userImage == null
+                        profile.profile?.imagePath == null
                             ? Container(
                                 height: 40,
                                 width: 40,
@@ -63,18 +49,20 @@ class _UserHeaderState extends State<UserHeader> {
                                 child: Icon(Icons.person),
                               )
                             : Image.network(
-                                ProfileStorageService.getImageUrl(_userImage!),
+                                ProfileStorageService.getImageUrl(
+                                  profile.profile!.imagePath!,
+                                ),
                                 height: 40,
                                 width: 40,
                                 fit: BoxFit.cover,
                               ),
                         SizedBox(width: 10),
-                        StyledHeading('${value.username}'),
+                        StyledHeading('${auth.username}'),
                       ],
                     ),
                   )
                 : StyledHeading('Hi, Guest'),
-            value.isLoggedIn
+            auth.isLoggedIn
                 ? IconButton(
                     onPressed: () => showDialog(
                       context: context,
@@ -82,7 +70,7 @@ class _UserHeaderState extends State<UserHeader> {
                         title: 'Logout',
                         content: StyledText('Do you want to logout?'),
                         mainAction: () async {
-                          final (success, message) = await value.logoutUser();
+                          final (success, message) = await auth.logoutUser();
 
                           if (success) {
                             ScaffoldMessenger.of(
