@@ -25,27 +25,23 @@ class OwnerLabel extends StatefulWidget {
 }
 
 class _OwnerLabelState extends State<OwnerLabel> {
-  String? _ownerImage;
-
   @override
   void initState() {
-    _fetchOwnerImage();
+    _fetchUserProfile();
     super.initState();
   }
 
-  Future<void> _fetchOwnerImage() async {
-    final profileProvider = context.read<ProfileProvider>();
-    final image = await profileProvider.getUserImage(widget.userId);
-
-    if (!mounted) return;
-
-    setState(() {
-      _ownerImage = image;
-    });
+  Future<void> _fetchUserProfile() async {
+    await context.read<ProfileProvider>().getUser(widget.userId);
   }
 
   @override
   Widget build(BuildContext context) {
+    final profileProvider = context.watch<ProfileProvider>();
+    final profile = profileProvider.getProfile(widget.userId);
+    final ownerImage = profile?.imagePath;
+    final ownerUsername = profile?.user;
+
     return Row(
       children: [
         StyledText('by: ', fontSize: 12),
@@ -74,7 +70,7 @@ class _OwnerLabelState extends State<OwnerLabel> {
           },
           child: Row(
             children: [
-              _ownerImage == null
+              ownerImage == null
                   ? Container(
                       height: 25,
                       width: 25,
@@ -82,13 +78,13 @@ class _OwnerLabelState extends State<OwnerLabel> {
                       child: Icon(Icons.person),
                     )
                   : Image.network(
-                      ProfileStorageService.getImageUrl(_ownerImage!),
+                      ProfileStorageService.getImageUrl(ownerImage),
                       height: 25,
                       width: 25,
                       fit: BoxFit.cover,
                     ),
               SizedBox(width: 5),
-              StyledText(widget.username),
+              StyledText(ownerUsername ?? ''),
             ],
           ),
         ),
