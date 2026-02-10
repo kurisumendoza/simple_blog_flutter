@@ -3,10 +3,12 @@ import 'package:provider/provider.dart';
 import 'package:simple_blog_flutter/models/comment.dart';
 import 'package:simple_blog_flutter/screens/blog/comment_card_actions.dart';
 import 'package:simple_blog_flutter/screens/blog/comment_edit_form.dart';
+import 'package:simple_blog_flutter/screens/profile/profile_screen.dart';
 import 'package:simple_blog_flutter/services/comment_storage_service.dart';
 import 'package:simple_blog_flutter/services/auth_provider.dart';
 import 'package:simple_blog_flutter/services/profile_provider.dart';
 import 'package:simple_blog_flutter/services/profile_storage_service.dart';
+import 'package:simple_blog_flutter/shared/styled_snack_bar.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
 import 'package:simple_blog_flutter/theme.dart';
 
@@ -53,25 +55,46 @@ class _CommentCardState extends State<CommentCard> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  userImage == null
-                      ? Container(
-                          height: 30,
-                          width: 30,
-                          color: AppColors.primary,
-                          child: Icon(Icons.person),
-                        )
-                      : Image.network(
-                          ProfileStorageService.getImageUrl(userImage),
-                          height: 30,
-                          width: 30,
-                          fit: BoxFit.cover,
-                        ),
-                  SizedBox(width: 5),
-                  StyledText(widget.comment.user, color: AppColors.accent),
-                ],
+              GestureDetector(
+                onTap: () {
+                  if (context.read<AuthProvider>().isLoggedIn) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            ProfileScreen(userId: widget.comment.userId),
+                      ),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      styledSnackBar(
+                        message: 'You have to login to view profiles',
+                        isError: true,
+                      ),
+                    );
+                  }
+                },
+                child: Row(
+                  children: [
+                    userImage == null
+                        ? Container(
+                            height: 30,
+                            width: 30,
+                            color: AppColors.primary,
+                            child: Icon(Icons.person),
+                          )
+                        : Image.network(
+                            ProfileStorageService.getImageUrl(userImage),
+                            height: 30,
+                            width: 30,
+                            fit: BoxFit.cover,
+                          ),
+                    SizedBox(width: 5),
+                    StyledText(widget.comment.user, color: AppColors.accent),
+                  ],
+                ),
               ),
+
               StyledText(
                 '${widget.comment.formattedDate} ${widget.comment.formattedTime}',
                 fontSize: 12,
