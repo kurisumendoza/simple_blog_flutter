@@ -3,14 +3,11 @@ import 'package:simple_blog_flutter/models/profile.dart';
 import 'package:simple_blog_flutter/services/profile_service.dart';
 
 class ProfileProvider extends ChangeNotifier {
-  Profile? _profile;
-  Profile? get profile => _profile;
-
-  Future<void> getUser(String userId) async {
+  Future<Profile> getUser(String userId) async {
     final profile = await ProfileService.getUser(userId);
 
-    _profile = profile[0];
     notifyListeners();
+    return profile[0];
   }
 
   Future<String?> getUserImage(String userId) async {

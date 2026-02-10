@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:simple_blog_flutter/models/profile.dart';
 import 'package:simple_blog_flutter/screens/home/blog_card.dart';
 import 'package:simple_blog_flutter/screens/profile_edit/edit_profile_screen.dart';
 import 'package:simple_blog_flutter/services/auth_provider.dart';
@@ -23,6 +24,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String? _userId;
   bool _isOwner = true;
   bool _isLoading = true;
+  Profile? _profile;
 
   @override
   void initState() {
@@ -31,21 +33,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _loadProfile() async {
-    if (widget.userId == null ||
-        widget.userId == context.read<AuthProvider>().userId) {
-      _userId = context.read<AuthProvider>().userId;
-    } else {
-      _userId = widget.userId;
-      _isOwner = false;
-    }
-
+    final authProvider = context.read<AuthProvider>();
     final profileProvider = context.read<ProfileProvider>();
     final blogProvider = context.read<BlogProvider>();
 
+    _userId = widget.userId ?? authProvider.userId;
+    _isOwner = _userId == authProvider.userId;
+
+    setState(() {
+      _isLoading = true;
+      _profile = null;
+    });
+
     if (_userId != null) {
-      await profileProvider.getUser(_userId!.trim());
+      final profile = await profileProvider.getUser(_userId!.trim());
       await blogProvider.getUserBlogs(_userId!);
       setState(() {
+        _profile = profile;
         _isLoading = false;
       });
     }
@@ -53,7 +57,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final profile = context.watch<ProfileProvider>().profile;
     final blogs = context.read<BlogProvider>().userBlogs;
 
     return Scaffold(
@@ -62,17 +65,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ? const Center(child: CircularProgressIndicator())
           : Container(
               padding: const EdgeInsets.all(20),
-              child: profile == null
+              child: _profile == null
                   ? Center(child: CircularProgressIndicator())
                   : Column(
                       children: [
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            profile.imagePath != null
+                            _profile?.imagePath != null
                                 ? Image.network(
                                     ProfileStorageService.getImageUrl(
-                                      profile.imagePath!,
+                                      _profile!.imagePath!,
                                     ),
                                     height: 150,
                                     width: 150,
@@ -92,7 +95,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   children: [
                                     Icon(Icons.person, color: AppColors.accent),
                                     SizedBox(width: 10),
-                                    StyledHeading(profile.user),
+                                    StyledHeading(_profile!.user),
                                   ],
                                 ),
                                 SizedBox(height: 10),
@@ -100,7 +103,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   children: [
                                     Icon(Icons.cake, color: AppColors.accent),
                                     SizedBox(width: 10),
-                                    StyledHeading(profile.formattedDate),
+                                    StyledHeading(_profile!.formattedDate),
                                   ],
                                 ),
                                 SizedBox(height: 10),
@@ -112,7 +115,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     ),
                                     SizedBox(width: 10),
                                     StyledHeading(
-                                      profile.location ?? 'Not set',
+                                      _profile?.location ?? 'Not set',
                                     ),
                                   ],
                                 ),
@@ -125,7 +128,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
-                                              EditProfileScreen(profile),
+                                              EditProfileScreen(_profile!),
                                         ),
                                       );
 
@@ -153,12 +156,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             children: [
                               StyledHeading('Bio'),
                               SizedBox(height: 10),
-                              StyledText(profile.bio ?? 'Not set'),
+                              StyledText(_profile?.bio ?? 'Not set'),
                             ],
                           ),
                         ),
                         SizedBox(height: 16),
-
                         Flexible(
                           child: Column(
                             children: [
