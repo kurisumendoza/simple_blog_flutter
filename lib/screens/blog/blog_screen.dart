@@ -16,17 +16,26 @@ import 'package:simple_blog_flutter/shared/styled_text.dart';
 import 'package:simple_blog_flutter/theme.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-class BlogScreen extends StatelessWidget {
-  BlogScreen({super.key, this.id});
+class BlogScreen extends StatefulWidget {
+  const BlogScreen({super.key, this.id});
 
   final int? id;
+
+  @override
+  State<BlogScreen> createState() => _BlogScreenState();
+}
+
+class _BlogScreenState extends State<BlogScreen> {
   final _controller = PageController();
+  bool _isDeleting = false;
 
   @override
   Widget build(BuildContext context) {
-    final blog = id == null
+    final blog = widget.id == null
         ? context.read<Blog>()
-        : context.watch<BlogProvider>().blogs.firstWhere((b) => b.id == id);
+        : context.read<BlogProvider>().blogs.firstWhere(
+            (b) => b.id == widget.id,
+          );
 
     return Provider.value(
       value: blog,
@@ -202,6 +211,12 @@ class BlogScreen extends StatelessWidget {
                                     'Are you sure you want to delete this blog?',
                                   ),
                                   mainAction: () async {
+                                    if (_isDeleting) return;
+
+                                    setState(() {
+                                      _isDeleting = true;
+                                    });
+
                                     final blogProvider = context
                                         .read<BlogProvider>();
                                     final commentProvider = context
@@ -239,6 +254,10 @@ class BlogScreen extends StatelessWidget {
                                         message: 'Blog successfully deleted!',
                                       ),
                                     );
+
+                                    setState(() {
+                                      _isDeleting = false;
+                                    });
                                   },
                                   mainActionLabel: 'Delete',
                                   mainActionColor: Colors.red[400],
