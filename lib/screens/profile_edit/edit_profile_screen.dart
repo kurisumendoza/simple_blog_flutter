@@ -266,7 +266,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               _isSubmitting = false;
                             });
 
-                            navigator.pop();
+                            navigator.pop(true);
 
                             messenger.showSnackBar(
                               styledSnackBar(message: 'Profile updated!'),

@@ -53,7 +53,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final profileProvider = context.read<ProfileProvider>();
     final profile = context.watch<ProfileProvider>().profile;
     final blogs = context.read<BlogProvider>().userBlogs;
 
@@ -122,7 +121,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   StyledFilledButton(
                                     'Edit Profile',
                                     onPressed: () async {
-                                      await Navigator.push(
+                                      bool isChanged = await Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
@@ -130,7 +129,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         ),
                                       );
 
-                                      await profileProvider.getUser(_userId!);
+                                      if (isChanged) {
+                                        setState(() {
+                                          _isLoading = true;
+                                        });
+
+                                        _loadProfile();
+                                      }
                                     },
                                   ),
                               ],
