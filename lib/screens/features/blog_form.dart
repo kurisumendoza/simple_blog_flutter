@@ -195,7 +195,7 @@ class _BlogFormState extends State<BlogForm> {
 
           Center(
             child: StyledFilledButton(
-              _isSubmitting ? 'Submitting...' : widget.buttonText,
+              _isSubmitting ? 'Creating...' : widget.buttonText,
               onPressed: _isSubmitting
                   ? () {
                       if (_isSubmitting) return;
