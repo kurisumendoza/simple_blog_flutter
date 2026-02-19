@@ -82,7 +82,7 @@ class CommentService extends DatabaseService {
           .from('comments')
           .delete()
           .eq('blog_id', blogId)
-          .select('image_path');
+          .select('image_paths');
 
       return data;
     } catch (e) {

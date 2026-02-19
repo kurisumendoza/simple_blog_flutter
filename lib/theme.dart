@@ -46,6 +46,6 @@ ThemeData primaryTheme = ThemeData(
   ),
 
   scrollbarTheme: ScrollbarThemeData(
-    thumbColor: WidgetStateProperty.all(AppColors.accent.withAlpha(100)),
+    thumbColor: WidgetStateProperty.all(AppColors.accent.withAlpha(175)),
   ),
 );

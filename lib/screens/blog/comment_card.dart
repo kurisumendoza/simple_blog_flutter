@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:simple_blog_flutter/models/comment.dart';
 import 'package:simple_blog_flutter/screens/blog/comment_card_actions.dart';
 import 'package:simple_blog_flutter/screens/blog/comment_edit_form.dart';
+import 'package:simple_blog_flutter/screens/blog/image_carousel.dart';
 import 'package:simple_blog_flutter/screens/profile/profile_screen.dart';
 import 'package:simple_blog_flutter/services/comment_storage_service.dart';
 import 'package:simple_blog_flutter/services/auth_provider.dart';
@@ -109,23 +110,16 @@ class _CommentCardState extends State<CommentCard> {
               ? CommentEditForm(
                   id: widget.comment.id,
                   oldBody: widget.comment.body,
-                  oldImagePath: widget.comment.imagePath,
+                  oldImagePath: widget.comment.imagePaths[0],
                   onEditEnd: widget.onEditEnd,
                 )
-              : Row(
+              : Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    if (widget.comment.imagePaths.isNotEmpty)
+                      ImageCarousel(widget.comment.imagePaths),
+                    SizedBox(height: 6),
                     StyledText(widget.comment.body),
-                    if (widget.comment.imagePath != null)
-                      Image.network(
-                        CommentStorageService.getImageUrl(
-                          widget.comment.imagePath!,
-                        ),
-                        height: 75,
-                        width: 75,
-                        fit: BoxFit.cover,
-                      ),
                   ],
                 ),
           if (!widget.isEditing &&
@@ -134,7 +128,7 @@ class _CommentCardState extends State<CommentCard> {
             CommentCardActions(
               onEditStart: widget.onEditStart,
               id: widget.comment.id,
-              imagePath: widget.comment.imagePath,
+              imagePaths: widget.comment.imagePaths,
             ),
         ],
       ),
