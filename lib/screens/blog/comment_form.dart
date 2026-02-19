@@ -52,6 +52,7 @@ class _CommentFormState extends State<CommentForm> {
               onImageRemove: (index) {
                 setState(() {
                   _images.removeAt(index);
+                  _exts.removeAt(index);
                 });
               },
             ),
