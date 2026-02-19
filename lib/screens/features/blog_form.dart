@@ -153,6 +153,7 @@ class _BlogFormState extends State<BlogForm> {
                         final messenger = ScaffoldMessenger.of(context);
                         final result = await pickMultipleImages(
                           existingCount: _images.length,
+                          limit: 10,
                         );
 
                         if (result.withInvalid) {

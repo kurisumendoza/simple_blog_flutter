@@ -13,7 +13,10 @@ class PickedImages {
   });
 }
 
-Future<PickedImages> pickMultipleImages({required int existingCount}) async {
+Future<PickedImages> pickMultipleImages({
+  required int existingCount,
+  required int limit,
+}) async {
   final picker = ImagePicker();
   final pickedImages = await picker.pickMultiImage();
 
@@ -25,9 +28,9 @@ Future<PickedImages> pickMultipleImages({required int existingCount}) async {
   final List<String> exts = [];
   final List<String> invalidFiles = [];
 
-  final limit = 10 - (existingCount);
+  final pickedLimit = limit - (existingCount);
 
-  for (var pickedImage in pickedImages.take(limit)) {
+  for (var pickedImage in pickedImages.take(pickedLimit)) {
     final ext = pickedImage.name.split('.').last.toLowerCase();
     if (ext != 'jpg' && ext != 'jpeg' && ext != 'png') {
       invalidFiles.add(pickedImage.name);
