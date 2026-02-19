@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:simple_blog_flutter/models/comment_image.dart';
+import 'package:simple_blog_flutter/services/comment_storage_service.dart';
 
 class ImageUploadCarousel extends StatelessWidget {
   ImageUploadCarousel({
@@ -33,12 +34,21 @@ class ImageUploadCarousel extends StatelessWidget {
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(right: 12),
-                    child: Image.memory(
-                      imagesList[index].file!,
-                      width: 80,
-                      height: 80,
-                      fit: BoxFit.cover,
-                    ),
+                    child: imagesList[index].isRemote
+                        ? Image.network(
+                            CommentStorageService.getImageUrl(
+                              imagesList[index].path!,
+                            ),
+                            width: 80,
+                            height: 80,
+                            fit: BoxFit.cover,
+                          )
+                        : Image.memory(
+                            imagesList[index].file!,
+                            width: 80,
+                            height: 80,
+                            fit: BoxFit.cover,
+                          ),
                   ),
                   Positioned(
                     top: 0,
