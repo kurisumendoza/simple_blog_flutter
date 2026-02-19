@@ -107,6 +107,7 @@ class _CommentFormState extends State<CommentForm> {
                       onPressed: () {
                         setState(() {
                           _images.clear();
+                          _exts.clear();
                         });
                       },
                       style: OutlinedButton.styleFrom(

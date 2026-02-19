@@ -5,7 +5,6 @@ import 'package:simple_blog_flutter/screens/blog/comment_card_actions.dart';
 import 'package:simple_blog_flutter/screens/blog/comment_edit_form.dart';
 import 'package:simple_blog_flutter/screens/blog/image_carousel.dart';
 import 'package:simple_blog_flutter/screens/profile/profile_screen.dart';
-import 'package:simple_blog_flutter/services/comment_storage_service.dart';
 import 'package:simple_blog_flutter/services/auth_provider.dart';
 import 'package:simple_blog_flutter/services/profile_provider.dart';
 import 'package:simple_blog_flutter/services/profile_storage_service.dart';
@@ -110,7 +109,7 @@ class _CommentCardState extends State<CommentCard> {
               ? CommentEditForm(
                   id: widget.comment.id,
                   oldBody: widget.comment.body,
-                  oldImagePath: widget.comment.imagePaths[0],
+                  oldImagePaths: widget.comment.imagePaths,
                   onEditEnd: widget.onEditEnd,
                 )
               : Column(

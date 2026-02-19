@@ -1,6 +1,7 @@
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:simple_blog_flutter/models/comment_image.dart';
+import 'package:simple_blog_flutter/screens/blog/image_upload_carousel.dart';
 import 'package:simple_blog_flutter/services/comment_provider.dart';
 import 'package:simple_blog_flutter/services/comment_storage_service.dart';
 import 'package:simple_blog_flutter/shared/styled_button.dart';
@@ -17,13 +18,13 @@ class CommentEditForm extends StatefulWidget {
     required this.id,
     required this.oldBody,
     required this.onEditEnd,
-    this.oldImagePath,
+    required this.oldImagePaths,
   });
 
   final int id;
   final String oldBody;
   final void Function() onEditEnd;
-  final String? oldImagePath;
+  final List<String> oldImagePaths;
 
   @override
   State<CommentEditForm> createState() => _CommentEditFormState();
@@ -33,17 +34,19 @@ class _CommentEditFormState extends State<CommentEditForm> {
   final _formGlobalKey = GlobalKey<FormState>();
 
   String _body = '';
-  String? _imagePath;
-  Uint8List? _image;
-  String? _ext;
-  List<Uint8List> _images = [];
-  List<String> _exts = [];
+  final int _limit = 10;
+  final List<CommentImage> _images = [];
+  final List<String> _exts = [];
+  int _remoteImagesCount = 0;
   bool _isSubmitting = false;
 
   @override
   void initState() {
-    if (widget.oldImagePath != null) {
-      _imagePath = widget.oldImagePath;
+    if (widget.oldImagePaths.isNotEmpty) {
+      _images.addAll(
+        widget.oldImagePaths.map((path) => CommentImage(path: path)),
+      );
+      _remoteImagesCount = widget.oldImagePaths.length;
     }
     super.initState();
   }
@@ -64,30 +67,35 @@ class _CommentEditFormState extends State<CommentEditForm> {
             lines: 3,
           ),
           SizedBox(height: 10),
-          Row(
-            children: [
-              _image == null && _imagePath == null
-                  ? StyledText('Add images')
-                  : _imagePath == null
-                  ? Image.memory(
-                      _image!,
-                      height: 100,
-                      width: 100,
-                      fit: BoxFit.cover,
-                    )
-                  : Image.network(
-                      CommentStorageService.getImageUrl(_imagePath!),
-                      height: 100,
-                      width: 100,
-                      fit: BoxFit.cover,
-                    ),
-              SizedBox(width: 10),
-              _image == null && _imagePath == null
-                  ? OutlinedButton(
+
+          if (_images.isNotEmpty)
+            ImageUploadCarousel(
+              limit: _limit,
+              imagesList: _images,
+              onImageRemove: (index) {
+                setState(() {
+                  if (_images[index].isRemote) {
+                    _images.removeAt(index);
+                    _remoteImagesCount--;
+                  } else {
+                    _images.removeAt(index);
+                    _exts.removeAt(index - _remoteImagesCount);
+                  }
+                });
+              },
+            ),
+
+          _images.length < _limit
+              ? Row(
+                  children: [
+                    StyledText('Add images'),
+                    SizedBox(width: 10),
+                    OutlinedButton(
                       onPressed: () async {
                         final messenger = ScaffoldMessenger.of(context);
                         final result = await pickMultipleImages(
                           existingCount: _images.length,
+                          limit: 10,
                         );
 
                         if (result.withInvalid) {
@@ -101,7 +109,11 @@ class _CommentEditFormState extends State<CommentEditForm> {
                         }
 
                         setState(() {
-                          _images.addAll(result.images);
+                          _images.addAll(
+                            result.images
+                                .map((image) => CommentImage(file: image))
+                                .toList(),
+                          );
                           _exts.addAll(result.exts);
                         });
                       },
@@ -112,12 +124,19 @@ class _CommentEditFormState extends State<CommentEditForm> {
                         ),
                       ),
                       child: StyledText('Choose Files'),
-                    )
-                  : OutlinedButton(
+                    ),
+                  ],
+                )
+              : Row(
+                  children: [
+                    StyledText('Remove Images'),
+                    SizedBox(width: 10),
+                    OutlinedButton(
                       onPressed: () {
                         setState(() {
-                          _image = null;
-                          _imagePath = null;
+                          _images.clear();
+                          _exts.clear();
+                          _remoteImagesCount = 0;
                         });
                       },
                       style: OutlinedButton.styleFrom(
@@ -126,10 +145,11 @@ class _CommentEditFormState extends State<CommentEditForm> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      child: StyledText('Remove Image', color: Colors.red[200]),
+                      child: StyledText('Remove All', color: Colors.red[200]),
                     ),
-            ],
-          ),
+                  ],
+                ),
+
           SizedBox(height: 10),
           Row(
             children: [
@@ -151,35 +171,56 @@ class _CommentEditFormState extends State<CommentEditForm> {
                               .read<CommentProvider>();
                           final messenger = ScaffoldMessenger.of(context);
 
-                          String? imagePath = widget.oldImagePath;
+                          List<String> imagePaths = [];
+                          // no _exts (extension) entry for remote images
+                          int remoteImages = 0;
 
-                          if (_image != null) {
-                            imagePath = generateImagePath(_ext!);
-                            await CommentStorageService.addImage(
-                              imagePath,
-                              _image!,
-                            );
+                          if (_images.isNotEmpty) {
+                            for (var i = 0; i < _images.length; i++) {
+                              String path;
 
-                            if (widget.oldImagePath != null) {
-                              await CommentStorageService.deleteImage(
-                                widget.oldImagePath!,
-                              );
+                              if (_images[i].isRemote) {
+                                path = _images[i].path!;
+                                remoteImages++;
+                              } else {
+                                path = generateImagePath(
+                                  _exts[i - (remoteImages)],
+                                );
+                                await CommentStorageService.addImage(
+                                  path,
+                                  _images[i].file!,
+                                );
+                              }
+
+                              imagePaths.add(path);
                             }
                           }
 
-                          if (_image == null &&
-                              _imagePath == null &&
-                              widget.oldImagePath != null) {
-                            imagePath = null;
-                            await CommentStorageService.deleteImage(
-                              widget.oldImagePath!,
-                            );
+                          if (widget.oldImagePaths.isNotEmpty) {
+                            for (var oldPath in widget.oldImagePaths) {
+                              bool isKept = _images.any(
+                                (img) => img.isRemote && img.path == oldPath,
+                              );
+
+                              if (!isKept) {
+                                await CommentStorageService.deleteImage(
+                                  oldPath,
+                                );
+                              }
+                            }
+                          }
+
+                          if (_images.isEmpty &&
+                              widget.oldImagePaths.isNotEmpty) {
+                            for (var oldPath in widget.oldImagePaths) {
+                              await CommentStorageService.deleteImage(oldPath);
+                            }
                           }
 
                           await commentProvider.updateComment(
                             id: widget.id,
                             body: _body,
-                            imagePath: imagePath,
+                            imagePaths: imagePaths,
                           );
 
                           setState(() {
