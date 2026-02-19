@@ -2,6 +2,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_blog_flutter/models/blog.dart';
+import 'package:simple_blog_flutter/screens/blog/image_upload_carousel.dart';
 import 'package:simple_blog_flutter/services/auth_provider.dart';
 import 'package:simple_blog_flutter/services/comment_provider.dart';
 import 'package:simple_blog_flutter/services/comment_storage_service.dart';
@@ -26,6 +27,7 @@ class _CommentFormState extends State<CommentForm> {
   String _body = '';
   Uint8List? _image;
   String? _ext;
+  final int _limit = 2;
   List<Uint8List> _images = [];
   List<String> _exts = [];
   bool _isSubmitting = false;
@@ -44,23 +46,29 @@ class _CommentFormState extends State<CommentForm> {
             lines: 3,
           ),
           SizedBox(height: 10),
-          Row(
-            children: [
-              _image == null
-                  ? StyledText('Add images')
-                  : Image.memory(
-                      _image!,
-                      height: 100,
-                      width: 100,
-                      fit: BoxFit.cover,
-                    ),
-              SizedBox(width: 10),
-              _image == null
-                  ? OutlinedButton(
+
+          if (_images.isNotEmpty)
+            ImageUploadCarousel(
+              limit: _limit,
+              imagesList: _images,
+              onImageRemove: (index) {
+                setState(() {
+                  _images.removeAt(index);
+                });
+              },
+            ),
+
+          _images.length < _limit
+              ? Row(
+                  children: [
+                    StyledText('Add images'),
+                    SizedBox(width: 10),
+                    OutlinedButton(
                       onPressed: () async {
                         final messenger = ScaffoldMessenger.of(context);
                         final result = await pickMultipleImages(
                           existingCount: _images.length,
+                          limit: _limit,
                         );
 
                         if (result.withInvalid) {
@@ -85,11 +93,17 @@ class _CommentFormState extends State<CommentForm> {
                         ),
                       ),
                       child: StyledText('Choose Files'),
-                    )
-                  : OutlinedButton(
+                    ),
+                  ],
+                )
+              : Row(
+                  children: [
+                    StyledText('Remove Images'),
+                    SizedBox(width: 10),
+                    OutlinedButton(
                       onPressed: () {
                         setState(() {
-                          _image = null;
+                          _images.clear();
                         });
                       },
                       style: OutlinedButton.styleFrom(
@@ -98,10 +112,11 @@ class _CommentFormState extends State<CommentForm> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      child: StyledText('Remove Image', color: Colors.red[200]),
+                      child: StyledText('Remove All', color: Colors.red[200]),
                     ),
-            ],
-          ),
+                  ],
+                ),
+
           SizedBox(height: 10),
           StyledFilledButton(
             _isSubmitting ? 'Posting...' : 'Post Comment',
