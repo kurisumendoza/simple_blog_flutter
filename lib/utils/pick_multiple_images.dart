@@ -1,8 +1,8 @@
+import 'dart:typed_data';
 import 'package:image_picker/image_picker.dart';
-import 'package:simple_blog_flutter/models/blog_image.dart';
 
 class PickedImages {
-  final List<BlogImage> images;
+  final List<Uint8List> images;
   final List<String> exts;
   final bool withInvalid;
 
@@ -21,7 +21,7 @@ Future<PickedImages> pickMultipleImages({required int existingCount}) async {
     return PickedImages(images: [], exts: [], withInvalid: false);
   }
 
-  final List<BlogImage> images = [];
+  final List<Uint8List> images = [];
   final List<String> exts = [];
   final List<String> invalidFiles = [];
 
@@ -34,9 +34,8 @@ Future<PickedImages> pickMultipleImages({required int existingCount}) async {
       continue;
     }
 
-    XFile imageFile = XFile(pickedImage.path);
-    final imageBytes = await imageFile.readAsBytes();
-    images.add(BlogImage(file: imageBytes));
+    final imageBytes = await pickedImage.readAsBytes();
+    images.add(imageBytes);
     exts.add(ext);
   }
 

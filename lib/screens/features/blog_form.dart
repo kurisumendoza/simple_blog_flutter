@@ -166,7 +166,11 @@ class _BlogFormState extends State<BlogForm> {
                         }
 
                         setState(() {
-                          _images.addAll(result.images);
+                          _images.addAll(
+                            result.images
+                                .map((image) => BlogImage(file: image))
+                                .toList(),
+                          );
                           _exts.addAll(result.exts);
                           _coverImage ??= _images[0];
                         });
