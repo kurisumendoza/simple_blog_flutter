@@ -95,7 +95,7 @@ class _CommentEditFormState extends State<CommentEditForm> {
                         final messenger = ScaffoldMessenger.of(context);
                         final result = await pickMultipleImages(
                           existingCount: _images.length,
-                          limit: 10,
+                          limit: _limit,
                         );
 
                         if (result.withInvalid) {
