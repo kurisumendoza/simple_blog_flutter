@@ -7,7 +7,7 @@ class Comment {
   final String body;
   final String user;
   final String userId;
-  final String? imagePath;
+  final List<String> imagePaths;
 
   const Comment({
     required this.id,
@@ -16,7 +16,7 @@ class Comment {
     required this.body,
     required this.user,
     required this.userId,
-    this.imagePath,
+    required this.imagePaths,
   });
 
   Comment copyWith({
@@ -26,7 +26,7 @@ class Comment {
     String? body,
     String? user,
     String? userId,
-    String? imagePath,
+    List<String>? imagePaths,
   }) {
     return Comment(
       id: id ?? this.id,
@@ -35,7 +35,7 @@ class Comment {
       body: body ?? this.body,
       user: user ?? this.user,
       userId: userId ?? this.userId,
-      imagePath: imagePath,
+      imagePaths: imagePaths ?? this.imagePaths,
     );
   }
 
@@ -45,7 +45,7 @@ class Comment {
       'body': body,
       'user': user,
       'user_id': userId,
-      'image_path': imagePath,
+      'image_paths': imagePaths,
     };
   }
 
@@ -57,7 +57,9 @@ class Comment {
       body: data['body'] as String,
       user: data['user'] as String,
       userId: data['user_id'] as String,
-      imagePath: data['image_path'],
+      imagePaths: (data['image_paths'] as List)
+          .map((e) => e as String)
+          .toList(),
     );
   }
 
