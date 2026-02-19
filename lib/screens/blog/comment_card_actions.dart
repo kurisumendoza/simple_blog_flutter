@@ -12,12 +12,12 @@ class CommentCardActions extends StatelessWidget {
     super.key,
     required this.onEditStart,
     required this.id,
-    this.imagePath,
+    required this.imagePaths,
   });
 
   final void Function() onEditStart;
   final int id;
-  final String? imagePath;
+  final List<String> imagePaths;
 
   @override
   Widget build(BuildContext context) {
@@ -39,8 +39,10 @@ class CommentCardActions extends StatelessWidget {
                   mainAction: () {
                     context.read<CommentProvider>().deleteComment(id);
 
-                    if (imagePath != null) {
-                      CommentStorageService.deleteImage(imagePath!);
+                    if (imagePaths.isNotEmpty) {
+                      for (var path in imagePaths) {
+                        CommentStorageService.deleteImage(path);
+                      }
                     }
 
                     Navigator.pop(context);

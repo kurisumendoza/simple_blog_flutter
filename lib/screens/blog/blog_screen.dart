@@ -232,8 +232,8 @@ class _BlogScreenState extends State<BlogScreen> {
                                         .deleteAllComments(blog.id);
 
                                     for (final comment in data) {
-                                      final path = comment['image_path'];
-                                      if (path != null) {
+                                      final paths = comment['image_paths'];
+                                      for (var path in paths) {
                                         await CommentStorageService.deleteImage(
                                           path,
                                         );
