@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:simple_blog_flutter/models/comment_image.dart';
 import 'package:simple_blog_flutter/services/comment_storage_service.dart';
 
-class ImageUploadCarousel extends StatelessWidget {
-  ImageUploadCarousel({
+class ImageUploadCarousel extends StatefulWidget {
+  const ImageUploadCarousel({
     super.key,
     required this.limit,
     required this.imagesList,
@@ -12,8 +12,14 @@ class ImageUploadCarousel extends StatelessWidget {
 
   final int limit;
   final List<CommentImage> imagesList;
-  final ScrollController _scrollController = ScrollController();
   final void Function(int index) onImageRemove;
+
+  @override
+  State<ImageUploadCarousel> createState() => _ImageUploadCarouselState();
+}
+
+class _ImageUploadCarouselState extends State<ImageUploadCarousel> {
+  final ScrollController _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -27,24 +33,24 @@ class ImageUploadCarousel extends StatelessWidget {
           child: ListView.builder(
             controller: _scrollController,
             scrollDirection: Axis.horizontal,
-            itemCount: imagesList.length,
+            itemCount: widget.imagesList.length,
             itemBuilder: (context, index) {
               return Stack(
                 clipBehavior: Clip.none,
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(right: 12),
-                    child: imagesList[index].isRemote
+                    child: widget.imagesList[index].isRemote
                         ? Image.network(
                             CommentStorageService.getImageUrl(
-                              imagesList[index].path!,
+                              widget.imagesList[index].path!,
                             ),
                             width: 80,
                             height: 80,
                             fit: BoxFit.cover,
                           )
                         : Image.memory(
-                            imagesList[index].file!,
+                            widget.imagesList[index].file!,
                             width: 80,
                             height: 80,
                             fit: BoxFit.cover,
@@ -54,7 +60,7 @@ class ImageUploadCarousel extends StatelessWidget {
                     top: 0,
                     right: 0,
                     child: FilledButton(
-                      onPressed: () => onImageRemove(index),
+                      onPressed: () => widget.onImageRemove(index),
                       style: FilledButton.styleFrom(
                         elevation: 5,
                         shape: const CircleBorder(),
