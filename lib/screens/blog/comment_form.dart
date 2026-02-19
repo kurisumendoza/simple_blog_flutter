@@ -1,7 +1,7 @@
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_blog_flutter/models/blog.dart';
+import 'package:simple_blog_flutter/models/comment_image.dart';
 import 'package:simple_blog_flutter/screens/blog/image_upload_carousel.dart';
 import 'package:simple_blog_flutter/services/auth_provider.dart';
 import 'package:simple_blog_flutter/services/comment_provider.dart';
@@ -25,11 +25,9 @@ class _CommentFormState extends State<CommentForm> {
   final _formGlobalKey = GlobalKey<FormState>();
 
   String _body = '';
-  Uint8List? _image;
-  String? _ext;
-  final int _limit = 2;
-  List<Uint8List> _images = [];
-  List<String> _exts = [];
+  final int _limit = 10;
+  final List<CommentImage> _images = [];
+  final List<String> _exts = [];
   bool _isSubmitting = false;
 
   @override
@@ -82,7 +80,11 @@ class _CommentFormState extends State<CommentForm> {
                         }
 
                         setState(() {
-                          _images.addAll(result.images);
+                          _images.addAll(
+                            result.images
+                                .map((image) => CommentImage(file: image))
+                                .toList(),
+                          );
                           _exts.addAll(result.exts);
                         });
                       },
@@ -137,14 +139,19 @@ class _CommentFormState extends State<CommentForm> {
                       final blogContext = context.read<Blog>();
                       final messenger = ScaffoldMessenger.of(context);
 
-                      String? imagePath;
+                      List<String> imagePaths = [];
 
-                      if (_image != null) {
-                        imagePath = generateImagePath(_ext!);
-                        await CommentStorageService.addImage(
-                          imagePath,
-                          _image!,
-                        );
+                      if (_images.isNotEmpty) {
+                        for (var i = 0; i < _images.length; i++) {
+                          String path;
+
+                          path = generateImagePath(_exts[i]);
+                          await CommentStorageService.addImage(
+                            path,
+                            _images[i].file!,
+                          );
+                          imagePaths.add(path);
+                        }
                       }
 
                       await commentProvider.createComment(
@@ -152,12 +159,13 @@ class _CommentFormState extends State<CommentForm> {
                         user: authProvider.username!,
                         userId: authProvider.userId!,
                         blogId: blogContext.id,
-                        imagePath: imagePath,
+                        imagePaths: imagePaths,
                       );
 
                       _formGlobalKey.currentState!.reset();
                       setState(() {
-                        _image = null;
+                        _images.clear();
+                        _exts.clear();
                         _isSubmitting = false;
                       });
 

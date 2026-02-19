@@ -1,5 +1,5 @@
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:simple_blog_flutter/models/comment_image.dart';
 
 class ImageUploadCarousel extends StatelessWidget {
   ImageUploadCarousel({
@@ -10,7 +10,7 @@ class ImageUploadCarousel extends StatelessWidget {
   });
 
   final int limit;
-  final List<Uint8List> imagesList;
+  final List<CommentImage> imagesList;
   final ScrollController _scrollController = ScrollController();
   final void Function(int index) onImageRemove;
 
@@ -34,7 +34,7 @@ class ImageUploadCarousel extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(right: 12),
                     child: Image.memory(
-                      imagesList[index],
+                      imagesList[index].file!,
                       width: 80,
                       height: 80,
                       fit: BoxFit.cover,
