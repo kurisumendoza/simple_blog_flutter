@@ -1,6 +1,5 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_blog_flutter/services/comment_provider.dart';
 import 'package:simple_blog_flutter/services/comment_storage_service.dart';
@@ -10,6 +9,7 @@ import 'package:simple_blog_flutter/shared/styled_snack_bar.dart';
 import 'package:simple_blog_flutter/shared/styled_text.dart';
 import 'package:simple_blog_flutter/theme.dart';
 import 'package:simple_blog_flutter/utils/generate_image_path.dart';
+import 'package:simple_blog_flutter/utils/pick_multiple_images.dart';
 
 class CommentEditForm extends StatefulWidget {
   const CommentEditForm({
@@ -36,33 +36,9 @@ class _CommentEditFormState extends State<CommentEditForm> {
   String? _imagePath;
   Uint8List? _image;
   String? _ext;
+  List<Uint8List> _images = [];
+  List<String> _exts = [];
   bool _isSubmitting = false;
-
-  Future<void> pickImage() async {
-    final picker = ImagePicker();
-    final pickedImage = await picker.pickImage(source: ImageSource.gallery);
-
-    if (pickedImage != null) {
-      _ext = pickedImage.name.split('.').last.toLowerCase();
-
-      XFile? imageFile = XFile(pickedImage.path);
-      _image = await imageFile.readAsBytes();
-
-      if (!mounted) return;
-
-      if (_ext != 'jpg' && _ext != 'jpeg' && _ext != 'png') {
-        ScaffoldMessenger.of(context).showSnackBar(
-          styledSnackBar(
-            isError: true,
-            message: 'Please pick a PNG or JPG image!',
-          ),
-        );
-        return;
-      }
-
-      setState(() {});
-    }
-  }
 
   @override
   void initState() {
@@ -91,7 +67,7 @@ class _CommentEditFormState extends State<CommentEditForm> {
           Row(
             children: [
               _image == null && _imagePath == null
-                  ? StyledText('Add an image')
+                  ? StyledText('Add images')
                   : _imagePath == null
                   ? Image.memory(
                       _image!,
@@ -108,8 +84,26 @@ class _CommentEditFormState extends State<CommentEditForm> {
               SizedBox(width: 10),
               _image == null && _imagePath == null
                   ? OutlinedButton(
-                      onPressed: () {
-                        pickImage();
+                      onPressed: () async {
+                        final messenger = ScaffoldMessenger.of(context);
+                        final result = await pickMultipleImages(
+                          existingCount: _images.length,
+                        );
+
+                        if (result.withInvalid) {
+                          messenger.showSnackBar(
+                            styledSnackBar(
+                              isError: true,
+                              message:
+                                  'Some images are not supported (only PNG/JPG allowed).',
+                            ),
+                          );
+                        }
+
+                        setState(() {
+                          _images.addAll(result.images);
+                          _exts.addAll(result.exts);
+                        });
                       },
                       style: OutlinedButton.styleFrom(
                         side: BorderSide(color: AppColors.primary),
@@ -117,7 +111,7 @@ class _CommentEditFormState extends State<CommentEditForm> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      child: StyledText('Choose File'),
+                      child: StyledText('Choose Files'),
                     )
                   : OutlinedButton(
                       onPressed: () {
