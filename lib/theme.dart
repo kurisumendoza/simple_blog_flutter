@@ -44,4 +44,8 @@ ThemeData primaryTheme = ThemeData(
     shape: const RoundedRectangleBorder(),
     margin: const EdgeInsets.only(bottom: 16),
   ),
+
+  scrollbarTheme: ScrollbarThemeData(
+    thumbColor: WidgetStateProperty.all(AppColors.accent.withAlpha(100)),
+  ),
 );
